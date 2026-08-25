@@ -1,0 +1,35 @@
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix prism-outlet: <prism://ontology/outlet/> .
+@prefix prism-sales: <prism://ontology/sales-visit/> .
+
+# =============================================================================
+# Outlet Domain Anti-Collapse & Disjointness Shapes
+# =============================================================================
+
+# 1. 行政区域与销售辖区严格双轨制不坍缩
+prism-outlet:RegionVsTerritoryShape a sh:NodeShape ;
+    sh:targetClass prism-outlet:AdministrativeRegion ;
+    sh:not [
+        sh:class prism-outlet:Territory ;
+    ] ;
+    sh:message "法定行政区划 (AdministrativeRegion) 严禁与企业销售辖区 (Territory) 折叠为同一概念"@zh .
+
+# 2. 商业售点与客户角色不坍缩
+prism-outlet:OutletVsCustomerRoleShape a sh:NodeShape ;
+    sh:targetClass prism-outlet:Outlet ;
+    sh:not [
+        sh:class prism-sales:CustomerRole ;
+    ] ;
+    sh:message "客观商业售点 (Outlet) 严禁与销售情境下的业务角色 (CustomerRole) 折叠为同一概念"@zh .
+
+# 3. 售点观测必须指向合法售点实体
+prism-outlet:OutletObservationShape a sh:NodeShape ;
+    sh:targetClass prism-outlet:OutletObservation ;
+    sh:property [
+        sh:path prism-outlet:observesOutlet ;
+        sh:minCount 1 ;
+        sh:class prism-outlet:Outlet ;
+        sh:message "售点观测 (OutletObservation) 必须明确指向商业售点实体 (Outlet)"@zh ;
+    ] .

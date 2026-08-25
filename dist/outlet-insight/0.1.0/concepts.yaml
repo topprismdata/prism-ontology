@@ -1,0 +1,122 @@
+# ==============================================================================
+# concepts.yaml
+# 售点洞察场景运行 Profile 受管概念清单 (Curated Concepts)
+# ==============================================================================
+
+version: "1.0.0"
+profile: "prism://ontology/profiles/outlet-insight"
+
+concepts:
+  - uri: "prism:outlet/Outlet"
+    name: "商业售点"
+    category: "Entity"
+    parent: "prism:core/Entity"
+    description: "现实客观网点实体，为洞察分析的主体对象"
+
+  - uri: "prism:outlet/Brand"
+    name: "商业品牌"
+    category: "Entity"
+    parent: "prism:core/Entity"
+    description: "连锁品牌实体，用于品牌结构与集中度分析"
+
+  - uri: "prism:outlet/CommercialSite"
+    name: "商业场所"
+    category: "Entity"
+    parent: "prism:core/Entity"
+    description: "商圈、商场、餐饮街等聚集场所"
+
+  - uri: "prism:outlet/AdministrativeRegion"
+    name: "行政区划区域"
+    category: "SpatialGeometry"
+    parent: "prism:core/SpatialGeometry"
+    description: "省、市、区县等国家法定行政区域"
+
+  - uri: "prism:outlet/Territory"
+    name: "销售责任辖区"
+    category: "SpatialGeometry"
+    parent: "prism:core/SpatialGeometry"
+    description: "企业规划大区、办事处与线路空间范围"
+
+  - uri: "prism:outlet/ChannelType"
+    name: "业态渠道分类"
+    category: "InformationObject"
+    parent: "prism:core/InformationObject"
+    description: "餐饮、住宿、食杂等业态分类"
+
+  - uri: "prism:outlet/OutletObservation"
+    name: "售点客观观测"
+    category: "Observation"
+    parent: "prism:core/Observation"
+    description: "外部点评、携程、客流等观测事实"
+
+  - uri: "prism:outlet/DemographicObservation"
+    name: "人口客流画像观测"
+    category: "Observation"
+    parent: "prism:core/Observation"
+    description: "网格常住人口、消费力画像"
+
+  - uri: "prism:outlet/AssetAndDisplayObservation"
+    name: "店内设备与陈列观测"
+    category: "Observation"
+    parent: "prism:core/Observation"
+    description: "冰柜门数、排面陈列"
+
+  - uri: "prism:outlet/TownshipContext"
+    name: "下沉乡镇市场上下文"
+    category: "Observation"
+    parent: "prism:core/Observation"
+    description: "赶集日、红镇标记等"
+
+  - uri: "prism:quality/EntityResolutionAssessment"
+    name: "实体解析与匹配质量评估"
+    category: "Observation"
+    parent: "prism:core/Observation"
+    description: "地址解析质量与 POI 坐标匹配距离测量"
+
+  - uri: "prism:core/DerivedEstimate"
+    name: "派生推导估计"
+    category: "DerivedEstimate"
+    parent: "prism:core/DerivedEstimate"
+    description: "收入潜力、开店年限等算法推导值"
+
+  - uri: "prism:insight/AnalysisIntent"
+    name: "业务分析意图"
+    category: "InsightArtifact"
+    parent: "prism:core/InformationObject"
+    description: "第一棱镜编译输出的结构化意图"
+
+  - uri: "prism:insight/InsightClaim"
+    name: "分析主张"
+    category: "InsightArtifact"
+    parent: "prism:core/InformationObject"
+    description: "第二棱镜综合输出的带证据分析观点"
+
+  - uri: "prism:insight/InsightPackage"
+    name: "标准洞察包"
+    category: "InsightArtifact"
+    parent: "prism:core/InformationObject"
+    description: "标准 8 块交付物（3信封+8洞察块）"
+
+  - uri: "prism:insight/ElevationCandidate"
+    name: "提升候选物"
+    category: "InsightArtifact"
+    parent: "prism:core/InformationObject"
+    description: "被动导出的世界模型候选事实"
+
+  - uri: "prism:sales/CustomerAccount"
+    name: "企业客户账户"
+    category: "Entity"
+    parent: "prism:core/Entity"
+    description: "IT 系统中代表网点的客户账户"
+
+  - uri: "prism:sales/CustomerRole"
+    name: "客户业务角色"
+    category: "Role"
+    parent: "prism:core/Role"
+    description: "网点在销售情境下承担的业务角色"
+
+  - uri: "prism:sales/ServiceRelationship"
+    name: "销售服务关系"
+    category: "Activity"
+    parent: "prism:core/Activity"
+    description: "企业与网点间的时变服务状态"

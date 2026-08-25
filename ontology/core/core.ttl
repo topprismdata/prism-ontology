@@ -1,0 +1,120 @@
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+@prefix prov: <http://www.w3.org/ns/prov#> .
+@prefix sosa: <http://www.w3.org/ns/sosa/> .
+@prefix dqv: <http://www.w3.org/ns/dqv#> .
+@prefix schema: <http://schema.org/> .
+@prefix prism-core: <prism://ontology/core/> .
+
+<prism://ontology/core/> a owl:Ontology ;
+    rdfs:label "Prism Core Meta-Model"@zh , "TopPrism World Model L1 Core Ontology"@en ;
+    owl:versionInfo "0.1.0-rc1" ;
+    rdfs:comment "棱镜极世界模型 L1 通用上层元模型：定义现实世界实体、角色、事件、活动、观测与派生估计等通用基类。" .
+
+# =============================================================================
+# 1. 核心上层概念 (Core Meta Classes)
+# =============================================================================
+
+prism-core:Entity a owl:Class ;
+    rdfs:label "客观实体"@zh , "Entity"@en ;
+    rdfs:comment "物理或概念世界中客观存在、具有独立身份与生命周期的现实对象。" .
+
+prism-core:Role a owl:Class ;
+    rdfs:label "业务角色"@zh , "Role"@en ;
+    rdfs:comment "实体在特定业务情境或活动中临时承担的角色，与实体身份严格分离。" .
+
+prism-core:Organization a owl:Class ;
+    rdfs:subClassOf prism-core:Entity ;
+    rdfs:label "组织机构"@zh , "Organization"@en ;
+    rdfs:comment "法人实体、商业机构、销售组织或企业内部部门。" .
+
+prism-core:Event a owl:Class ;
+    rdfs:label "历史事件"@zh , "Event"@en ;
+    rdfs:comment "在特定时间、空间发生的客观事实事件。" .
+
+prism-core:Activity a owl:Class ;
+    rdfs:subClassOf prov:Activity ;
+    rdfs:label "业务活动"@zh , "Activity"@en ;
+    rdfs:comment "由行动主体发起、消耗时间并产生状态变化的业务过程。" .
+
+prism-core:Observation a owl:Class ;
+    rdfs:subClassOf sosa:Observation ;
+    rdfs:label "客观观测"@zh , "Observation"@en ;
+    rdfs:comment "外部数据源在特定时间点对实体属性的测量与观测事实，必须携带来源与时间。" .
+
+prism-core:DerivedEstimate a owl:Class ;
+    rdfs:label "派生估计"@zh , "DerivedEstimate"@en ;
+    rdfs:comment "基于算法模型、统计公式推导的预测或估计属性，严禁直接等同于既成事实。" .
+
+prism-core:InformationObject a owl:Class ;
+    rdfs:label "信息对象"@zh , "InformationObject"@en ;
+    rdfs:comment "结构化数据记录、报表、文档或系统账户等数据载体。" .
+
+prism-core:Evidence a owl:Class ;
+    rdfs:label "数据证据"@zh , "Evidence"@en ;
+    rdfs:comment "支撑分析主张或派生估计的可追溯数据记录与有效样本。" .
+
+prism-core:Policy a owl:Class ;
+    rdfs:label "业务政策"@zh , "Policy"@en ;
+    rdfs:comment "企业治理政策、合规规则或业务约束准则。" .
+
+prism-core:Constraint a owl:Class ;
+    rdfs:label "业务约束"@zh , "Constraint"@en ;
+    rdfs:comment "在特定场景下对实体、活动施加的硬性或软性限制条件。" .
+
+prism-core:Eligibility a owl:Class ;
+    rdfs:label "准入资格"@zh , "Eligibility"@en ;
+    rdfs:comment "实体是否满足参与特定业务活动的准入条件（与实际决策严格区分）。" .
+
+prism-core:Decision a owl:Class ;
+    rdfs:label "业务决策"@zh , "Decision"@en ;
+    rdfs:comment "基于资格与规则做出的业务选择（与具体执行计划严格区分）。" .
+
+prism-core:Plan a owl:Class ;
+    rdfs:label "执行计划"@zh , "Plan"@en ;
+    rdfs:comment "指导未来活动的结构化计划（与实际发生事件严格区分）。" .
+
+prism-core:SpatialGeometry a owl:Class ;
+    rdfs:label "空间几何与区域"@zh , "SpatialGeometry"@en ;
+    rdfs:comment "地理空间、多边形或行政区划边界。" .
+
+prism-core:TimeInterval a owl:Class ;
+    rdfs:label "时间区间"@zh , "TimeInterval"@en ;
+    rdfs:comment "具备开始与结束的双时间态有效时间范围。" .
+
+# =============================================================================
+# 2. 核心通用关系 (Core Meta Properties)
+# =============================================================================
+
+prism-core:hasIdentifier a owl:ObjectProperty ;
+    rdfs:domain prism-core:Entity ;
+    rdfs:label "持有标识"@zh , "hasIdentifier"@en .
+
+prism-core:hasName a owl:DatatypeProperty ;
+    rdfs:domain prism-core:Entity ;
+    rdfs:range xsd:string ;
+    rdfs:label "名称"@zh , "hasName"@en .
+
+prism-core:playsRole a owl:ObjectProperty ;
+    rdfs:domain prism-core:Entity ;
+    rdfs:range prism-core:Role ;
+    rdfs:label "承担角色"@zh , "playsRole"@en .
+
+prism-core:observesEntity a owl:ObjectProperty ;
+    rdfs:domain prism-core:Observation ;
+    rdfs:range prism-core:Entity ;
+    rdfs:label "观测对象"@zh , "observesEntity"@en .
+
+prism-core:derivedFrom a owl:ObjectProperty ;
+    rdfs:domain prism-core:DerivedEstimate ;
+    rdfs:label "派生自"@zh , "derivedFrom"@en .
+
+prism-core:hasEvidence a owl:ObjectProperty ;
+    rdfs:label "具备证据"@zh , "hasEvidence"@en .
+
+prism-core:validDuring a owl:ObjectProperty ;
+    rdfs:range prism-core:TimeInterval ;
+    rdfs:label "有效时间段"@zh , "validDuring"@en .

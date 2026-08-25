@@ -1,0 +1,70 @@
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix prism-core: <prism://ontology/core/> .
+@prefix prism-insight: <prism://ontology/insight/> .
+
+<prism://ontology/insight/> a owl:Ontology ;
+    rdfs:label "Prism Insight Artifact Ontology"@zh , "TopPrism World Model L2+ Insight Artifact Extension"@en ;
+    owl:versionInfo "0.1.0-rc1" ;
+    owl:imports <prism://ontology/core/> ;
+    rdfs:comment "洞察产物本体扩展：定义第一棱镜业务分析意图、受管度量、计算活动、分析主张、数据质量评估、标准洞察包以及被动提升候选物。" .
+
+# =============================================================================
+# 1. 洞察核心类 (Insight Artifact Classes)
+# =============================================================================
+
+prism-insight:AnalysisIntent a owl:Class ;
+    rdfs:subClassOf prism-core:InformationObject ;
+    rdfs:label "业务分析意图"@zh , "AnalysisIntent"@en ;
+    rdfs:comment "第一棱镜将自然语言业务问题编译展开出的结构化意图定义（含对象、范围、指标与规则）。" .
+
+prism-insight:MetricDefinition a owl:Class ;
+    rdfs:subClassOf prism-core:InformationObject ;
+    rdfs:label "受管度量定义"@zh , "MetricDefinition"@en ;
+    rdfs:comment "具有明确计算口径（分子、分母、适用有效群体、空间与时间范围）的受管业务指标定义。" .
+
+prism-insight:ComputationActivity a owl:Class ;
+    rdfs:subClassOf prism-core:Activity ;
+    rdfs:label "确定性分析计算活动"@zh , "ComputationActivity"@en ;
+    rdfs:comment "根据 AnalysisIntent 与 MetricDefinition 对数据执行的纯数学与统计确定性计算过程。" .
+
+prism-insight:InsightClaim a owl:Class ;
+    rdfs:subClassOf prism-core:InformationObject ;
+    rdfs:label "分析主张"@zh , "InsightClaim"@en ;
+    rdfs:comment "系统基于观测数据与确定性计算输出的分析结论观点（Claim）。严禁直接作为客观既成世界事实，更不得自动回写世界模型。" .
+
+prism-insight:QualityAssessment a owl:Class ;
+    rdfs:subClassOf prism-core:Observation ;
+    rdfs:label "数据质量与适用性评估"@zh , "QualityAssessment"@en ;
+    rdfs:comment "对样本完整度、维度覆盖率及适用边界的测量评估事实。" .
+
+prism-insight:InsightPackage a owl:Class ;
+    rdfs:subClassOf prism-core:InformationObject ;
+    rdfs:label "标准洞察交付包"@zh , "InsightPackage"@en ;
+    rdfs:comment "标准 8 块结构化洞察交付包（含 3 个信封/治理字段 + 8 个核心洞察块）。" .
+
+prism-insight:ElevationCandidate a owl:Class ;
+    rdfs:subClassOf prism-core:InformationObject ;
+    rdfs:label "提升事实候选物"@zh , "ElevationCandidate"@en ;
+    rdfs:comment "被动导出的候选世界模型事实 Payload；强制携带 unreviewed 状态且不直接产生任何世界状态写入。" .
+
+# =============================================================================
+# 2. 洞察关系与属性 (Insight Relations & Properties)
+# =============================================================================
+
+prism-insight:hasClaim a owl:ObjectProperty ;
+    rdfs:domain prism-insight:InsightPackage ;
+    rdfs:range prism-insight:InsightClaim ;
+    rdfs:label "包含主张"@zh , "hasClaim"@en .
+
+prism-insight:groundedInEvidence a owl:ObjectProperty ;
+    rdfs:domain prism-insight:InsightClaim ;
+    rdfs:range prism-core:Evidence ;
+    rdfs:label "基于数据证据"@zh , "groundedInEvidence"@en .
+
+prism-insight:appliesMetric a owl:ObjectProperty ;
+    rdfs:domain prism-insight:ComputationActivity ;
+    rdfs:range prism-insight:MetricDefinition ;
+    rdfs:label "应用度量定义"@zh , "appliesMetric"@en .

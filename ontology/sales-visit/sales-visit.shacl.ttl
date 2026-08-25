@@ -1,0 +1,41 @@
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix prism-sales: <prism://ontology/sales-visit/> .
+@prefix prism-core: <prism://ontology/core/> .
+
+# =============================================================================
+# Sales Visit Anti-Collapse & Disjointness Shapes
+# =============================================================================
+
+# 1. 实际拜访事件严禁与打卡记录信息对象折叠
+prism-sales:ActualVisitVsRecordShape a sh:NodeShape ;
+    sh:targetClass prism-sales:ActualVisit ;
+    sh:not [
+        sh:class prism-sales:VisitRecord ;
+    ] ;
+    sh:message "实际拜访物理事件 (ActualVisit) 严禁与移动打卡记录信息对象 (VisitRecord) 混淆声明"@zh .
+
+# 2. 拜访计划 (PJP) 严禁与实际拜访事件折叠
+prism-sales:VisitPlanVsActualVisitShape a sh:NodeShape ;
+    sh:targetClass prism-sales:VisitPlan ;
+    sh:not [
+        sh:class prism-sales:ActualVisit ;
+    ] ;
+    sh:message "前瞻性拜访计划 (VisitPlan) 严禁与实际发生拜访事件 (ActualVisit) 混淆声明"@zh .
+
+# 3. 客户账户与客户角色不坍缩
+prism-sales:AccountVsRoleShape a sh:NodeShape ;
+    sh:targetClass prism-sales:CustomerAccount ;
+    sh:not [
+        sh:class prism-sales:CustomerRole ;
+    ] ;
+    sh:message "企业客户账户 (CustomerAccount) 严禁与业务情境角色 (CustomerRole) 折叠为同一概念"@zh .
+
+# 4. 准入资格评估严禁与业务决策混淆
+prism-sales:EligibilityVsDecisionShape a sh:NodeShape ;
+    sh:targetClass prism-sales:VisitModeEligibility ;
+    sh:not [
+        sh:class prism-core:Decision ;
+    ] ;
+    sh:message "拜访准入资格评估 (VisitModeEligibility) 严禁直接断言为最终排程决策 (Decision)"@zh .

@@ -1,0 +1,190 @@
+# ==============================================================================
+# proposal-decisions.yaml
+# 棱镜极本体治理委员会对谋圣提案的官方裁定记录 (Governance Decisions)
+# ==============================================================================
+
+version: "1.0.0"
+governance_authority: "TopPrism Ontology Engineering Committee"
+decision_date: "2026-08-25"
+target_release: "outlet-insight-0.1.0-rc1"
+
+decisions:
+  - proposal_id: "MS-PROP-001"
+    proposed_uri: "prism:outlet/Outlet"
+    decision: "accepted"
+    canonical_uri: "prism:outlet/Outlet"
+    scope: "reference_ontology"
+    rationale: "零售与商业售点是现实世界客观稳定核心实体，跨所有数据供应商与商业企业通用"
+    external_alignment: ["schema:LocalBusiness", "wikidata:Q1313437"]
+    review_status: "approved_for_rc"
+
+  - proposal_id: "MS-PROP-002"
+    proposed_uri: "prism:outlet/Brand"
+    decision: "accepted"
+    canonical_uri: "prism:outlet/Brand"
+    scope: "reference_ontology"
+    rationale: "连锁品牌与商业集团为主数据通用概念"
+    external_alignment: ["schema:Brand"]
+    review_status: "approved_for_rc"
+
+  - proposal_id: "MS-PROP-003"
+    proposed_uri: "prism:outlet/CommercialSite"
+    decision: "accepted"
+    canonical_uri: "prism:outlet/CommercialSite"
+    scope: "reference_ontology"
+    rationale: "商圈、商场、餐饮街属于零售选址与空间分析的核心物理场所概念"
+    external_alignment: ["schema:Place", "geo:SpatialThing"]
+    review_status: "approved_for_rc"
+
+  - proposal_id: "MS-PROP-004"
+    proposed_uri: "prism:outlet/AdministrativeRegion"
+    decision: "accepted"
+    canonical_uri: "prism:outlet/AdministrativeRegion"
+    scope: "reference_ontology"
+    rationale: "国家行政区划具有法律与空间确定性，与企业内部销售辖区严格双轨隔离"
+    external_alignment: ["schema:AdministrativeArea"]
+    review_status: "approved_for_rc"
+
+  - proposal_id: "MS-PROP-005"
+    proposed_uri: "prism:outlet/Territory"
+    decision: "accepted"
+    canonical_uri: "prism:outlet/Territory"
+    scope: "reference_ontology"
+    rationale: "销售责任大区/办事处/线路为企业组织治理概念，与行政区划建立 covers 关联而非等同"
+    external_alignment: ["org:OrganizationalUnit"]
+    review_status: "approved_for_rc"
+
+  - proposal_id: "MS-PROP-006"
+    proposed_uri: "prism:outlet/ChannelType"
+    decision: "accepted"
+    canonical_uri: "prism:outlet/ChannelType"
+    scope: "reference_ontology"
+    rationale: "餐饮、住宿、食杂等业态分类体系具有行业通用性"
+    external_alignment: ["skos:Concept"]
+    review_status: "approved_for_rc"
+
+  - proposal_id: "MS-PROP-007"
+    proposed_uri: "prism:sales/ServiceRelationship"
+    decision: "accepted"
+    canonical_uri: "prism:sales/ServiceRelationship"
+    scope: "reference_ontology"
+    rationale: "服务状态为特定组织与网点间的时变业务关系（ServiceRelationship），彻底避免将其误建模为网点固有属性"
+    external_alignment: ["prov:Activity", "schema:Role"]
+    review_status: "approved_for_rc"
+
+  - proposal_id: "MS-PROP-008"
+    proposed_uri: "prism:sales/CustomerAccount"
+    decision: "accepted"
+    canonical_uri: "prism:sales/CustomerAccount"
+    scope: "reference_ontology"
+    rationale: "企业 IT 系统账户代表现实网点，三体分离不可或缺"
+    external_alignment: ["schema:Account"]
+    review_status: "approved_for_rc"
+
+  - proposal_id: "MS-PROP-009"
+    proposed_uri: "prism:sales/CustomerRole"
+    decision: "accepted"
+    canonical_uri: "prism:sales/CustomerRole"
+    scope: "reference_ontology"
+    rationale: "明确定义客户为销售业务情境下的 Role，彻底消除实体与角色坍缩"
+    external_alignment: ["schema:Role"]
+    review_status: "approved_for_rc"
+
+  - proposal_id: "MS-PROP-010"
+    proposed_uri: "prism:outlet/OutletObservation"
+    decision: "accepted"
+    canonical_uri: "prism:outlet/OutletObservation"
+    scope: "reference_ontology"
+    rationale: "外部平台（大众点评、携程等）的动态评分客流观测符合 W3C SOSA 观测模式"
+    external_alignment: ["sosa:Observation"]
+    review_status: "approved_for_rc"
+
+  - proposal_id: "MS-PROP-011"
+    proposed_uri: "prism:outlet/DemographicObservation"
+    decision: "accepted"
+    canonical_uri: "prism:outlet/DemographicObservation"
+    scope: "reference_ontology"
+    rationale: "商圈人口统计、客流画像观测模型"
+    external_alignment: ["sosa:Observation"]
+    review_status: "approved_for_rc"
+
+  - proposal_id: "MS-PROP-012"
+    proposed_uri: "prism:outlet/AssetAndDisplayObservation"
+    decision: "profile_local"
+    canonical_uri: "prism:outlet/AssetAndDisplayObservation"
+    scope: "operational_profile"
+    rationale: "冰柜门数、排面占比属于快消零售特定场景观测，暂定为 Profile 局部模型，不污染通用上层"
+    external_alignment: ["sosa:Observation"]
+    review_status: "approved_for_rc"
+
+  - proposal_id: "MS-PROP-013"
+    proposed_uri: "prism:outlet/TownshipContext"
+    decision: "profile_local"
+    canonical_uri: "prism:outlet/TownshipContext"
+    scope: "operational_profile"
+    rationale: "赶集日、红镇、距离 DC 等指标属于特定中国下沉市场特征，作为 Profile 局部上下文提供"
+    external_alignment: ["sosa:Observation"]
+    review_status: "approved_for_rc"
+
+  - proposal_id: "MS-PROP-014"
+    proposed_uri: "prism:quality/EntityResolutionAssessment"
+    decision: "accepted"
+    canonical_uri: "prism:quality/EntityResolutionAssessment"
+    scope: "reference_ontology"
+    rationale: "地理编码地址解析质量与 POI 坐标匹配距离属于实体解析评估测量，跨业务域通用"
+    external_alignment: ["dqv:QualityMeasurement"]
+    review_status: "approved_for_rc"
+
+  - proposal_id: "MS-PROP-015"
+    proposed_uri: "prism:outlet/DerivedEstimate"
+    decision: "accepted"
+    canonical_uri: "prism:core/DerivedEstimate"
+    scope: "reference_ontology"
+    rationale: "算法模型推导的潜力估计必须被视为 DerivedEstimate，与客观事实严格区分"
+    external_alignment: ["prov:Derivation"]
+    review_status: "approved_for_rc"
+
+  - proposal_id: "MS-PROP-016"
+    proposed_uri: "prism:outlet/CompetitorSalesVolume"
+    decision: "mapping_only"
+    canonical_uri: null
+    scope: "dataset_mapping"
+    rationale: "当前数据表缺失此数据，在 dataset_mapping 中标记为 unavailable 即可，本体无需单独立类"
+    external_alignment: []
+    review_status: "approved_for_rc"
+
+  - proposal_id: "MS-PROP-017"
+    proposed_uri: "prism:insight/AnalysisIntent"
+    decision: "accepted"
+    canonical_uri: "prism:insight/AnalysisIntent"
+    scope: "reference_ontology"
+    rationale: "第一棱镜意图模型，符合信息对象规范"
+    external_alignment: ["prov:Plan"]
+    review_status: "approved_for_rc"
+
+  - proposal_id: "MS-PROP-018"
+    proposed_uri: "prism:insight/InsightClaim"
+    decision: "accepted"
+    canonical_uri: "prism:insight/InsightClaim"
+    scope: "reference_ontology"
+    rationale: "分析主张是算法生成的观点（Claim），绝不能自动等同于既成世界事实"
+    external_alignment: ["prov:Entity"]
+    review_status: "approved_for_rc"
+
+  - proposal_id: "MS-PROP-019"
+    proposed_uri: "prism:insight/InsightPackage"
+    decision: "accepted"
+    canonical_uri: "prism:insight/InsightPackage"
+    scope: "reference_ontology"
+    rationale: "标准洞察交付包信息契约（3信封+8洞察块）"
+    external_alignment: ["schema:CreativeWork"]
+    review_status: "approved_for_rc"
+
+  - proposal_id: "MS-PROP-020"
+    proposed_uri: "prism:insight/ElevationCandidate"
+    decision: "accepted"
+    canonical_uri: "prism:insight/ElevationCandidate"
+    scope: "reference_ontology"
+    rationale: "被动候选导出模型，强制要求 unreviewed / world_state_effect: none / requires_external_governance: true"
+    external_alignment: ["prov:Entity"]
+    review_status: "approved_for_rc"

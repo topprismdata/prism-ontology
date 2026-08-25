@@ -1,0 +1,102 @@
+# ==============================================================================
+# ontology_crosswalk.yaml
+# 谋圣·售点洞察 (mousheng-outlet-insight) - 历史字段词典与新本体概念对照表 (Crosswalk)
+#
+# 目的：
+# 建立现有口语别名字典 (field_registry.json) 与标准 prism-ontology 概念之间的双向映射，
+# 确保在平滑过渡期内既能识别用户的历史习惯用语，又能将查询精准 Grounding 到本体概念。
+# ==============================================================================
+
+version: "1.0.0"
+governance_authority: "prism-ontology"
+
+crosswalk:
+  # ----------------------------------------------------------------------------
+  # 实体与概念映射
+  # ----------------------------------------------------------------------------
+  - legacy_alias_group: ["店名", "售点名称", "门店名称", "客户名称"]
+    canonical_physical_field: "腾讯售点名称"
+    ontology_concept_uri: "prism:outlet/Outlet"
+    ontology_property: "prism:core/hasName"
+    concept_layer: "L2"
+
+  - legacy_alias_group: ["品牌", "连锁品牌", "门店品牌", "连锁"]
+    canonical_physical_field: "连锁品牌名称"
+    ontology_concept_uri: "prism:outlet/Brand"
+    ontology_property: "prism:outlet/belongsToBrand"
+    concept_layer: "L2"
+
+  - legacy_alias_group: ["业态", "业态大类", "行业", "大类", "渠道组"]
+    canonical_physical_field: "渠道组"
+    ontology_concept_uri: "prism:outlet/ChannelType"
+    ontology_property: "prism:outlet/hasChannelType"
+    concept_layer: "L2"
+
+  - legacy_alias_group: ["场所", "经营场所", "场景", "商圈类型", "POI簇"]
+    canonical_physical_field: "经营场所"
+    ontology_concept_uri: "prism:outlet/CommercialSite"
+    ontology_property: "prism:outlet/operatedAtSite"
+    concept_layer: "L2"
+
+  - legacy_alias_group: ["省", "省份", "市", "城市", "区", "县", "区县"]
+    canonical_physical_field: "城市"
+    ontology_concept_uri: "prism:outlet/AdministrativeRegion"
+    ontology_property: "prism:outlet/locatedInRegion"
+    concept_layer: "L2"
+
+  - legacy_alias_group: ["大区", "规划大区", "责任区", "销售区"]
+    canonical_physical_field: "规划大区"
+    ontology_concept_uri: "prism:outlet/Territory"
+    ontology_property: "prism:outlet/belongsToTerritory"
+    concept_layer: "L2"
+
+  # ----------------------------------------------------------------------------
+  # 观测与度量映射 (Measures & Observations)
+  # ----------------------------------------------------------------------------
+  - legacy_measure_name: "点评评分"
+    legacy_alias_group: ["评分", "星级", "大众点评评分", "餐饮评分"]
+    canonical_physical_field: "大众点评餐饮点评评分星级"
+    ontology_concept_uri: "prism:outlet/OutletObservation"
+    metric_concept_uri: "prism:metric/DianpingRating"
+    applicable_channel: "餐饮"
+
+  - legacy_measure_name: "携程评分"
+    legacy_alias_group: ["酒店评分", "携程综合评分", "住宿评分"]
+    canonical_physical_field: "携程-综合评分"
+    ontology_concept_uri: "prism:outlet/OutletObservation"
+    metric_concept_uri: "prism:metric/CtripRating"
+    applicable_channel: "住宿"
+
+  - legacy_measure_name: "周末客流"
+    legacy_alias_group: ["客流", "周末人流", "人流量", "人流"]
+    canonical_physical_field: "周末均值客流(人)"
+    ontology_concept_uri: "prism:outlet/OutletObservation"
+    metric_concept_uri: "prism:metric/WeekendTraffic"
+
+  - legacy_measure_name: "房间数"
+    legacy_alias_group: ["客房数", "房型数", "酒店规模"]
+    canonical_physical_field: "携程-房间数"
+    ontology_concept_uri: "prism:outlet/OutletObservation"
+    metric_concept_uri: "prism:metric/RoomCount"
+    applicable_channel: "住宿"
+
+  - legacy_measure_name: "收入潜力"
+    legacy_alias_group: ["潜力", "预测潜力", "收入预测"]
+    canonical_physical_field: "月均收入潜力预测(无协议无冰柜)"
+    ontology_concept_uri: "prism:outlet/DerivedPotentialEstimate"
+    metric_concept_uri: "prism:metric/RevenuePotential"
+
+  # ----------------------------------------------------------------------------
+  # 分析产物与洞察映射 (Insight Artifact Crosswalk)
+  # ----------------------------------------------------------------------------
+  - legacy_dsl_type: "B"
+    legacy_description: "分布探索"
+    ontology_insight_type: "prism:insight/DistributionInsight"
+
+  - legacy_dsl_type: "C"
+    legacy_description: "自定义规则排行"
+    ontology_insight_type: "prism:insight/RuleEvaluationInsight"
+
+  - legacy_dsl_type: "A"
+    legacy_description: "明确条件清单"
+    ontology_insight_type: "prism:insight/PointInsight"

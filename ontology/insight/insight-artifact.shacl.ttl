@@ -1,0 +1,31 @@
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix prism-core: <prism://ontology/core/> .
+@prefix prism-insight: <prism://ontology/insight/> .
+
+# =============================================================================
+# Insight Artifact Anti-Collapse & Constraint Shapes
+# =============================================================================
+
+# 1. 洞察主张严禁与客观直接观测混淆声明
+prism-insight:InsightClaimVsObservationShape a sh:NodeShape ;
+    sh:targetClass prism-insight:InsightClaim ;
+    sh:not [
+        sh:class prism-core:Observation ;
+    ] ;
+    sh:message "分析主张 (InsightClaim) 是算法生成的分析观点，严禁直接断言为客观观测事实 (Observation)"@zh .
+
+# 2. ElevationCandidate 必须携带严格的治理约束
+prism-insight:ElevationCandidateShape a sh:NodeShape ;
+    sh:targetClass prism-insight:ElevationCandidate ;
+    sh:property [
+        sh:path prism-insight:requiresExternalGovernance ;
+        sh:hasValue true ;
+        sh:message "提升候选物 (ElevationCandidate) 必须显式标记 requiresExternalGovernance = true"@zh ;
+    ] ;
+    sh:property [
+        sh:path prism-insight:worldStateEffect ;
+        sh:hasValue "none" ;
+        sh:message "提升候选物 (ElevationCandidate) 的 worldStateEffect 必须为 'none'，严禁产生直接世界状态写入"@zh ;
+    ] .

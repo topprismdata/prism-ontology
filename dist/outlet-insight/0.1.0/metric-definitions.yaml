@@ -1,0 +1,83 @@
+# ==============================================================================
+# metric-definitions.yaml
+# 售点洞察场景受管度量定义 (Governed Metric Definitions with Semantic Premises)
+#
+# 规范要求：每个度量不仅要有数学计算公式，必须具备完整的语义前提与解释边界声明。
+# ==============================================================================
+
+version: "1.0.0"
+profile: "prism://ontology/profiles/outlet-insight"
+
+metrics:
+  # ----------------------------------------------------------------------------
+  # 1. 市场集中度与结构指标 (Concentration & Structure Metrics)
+  # ----------------------------------------------------------------------------
+  - uri: "prism:metric/HerfindahlHirschmanIndex"
+    name: "赫芬达尔-赫希曼指数 (HHI)"
+    category: "Structure"
+    formula: "HHI = sum((s_i * 100)^2), where s_i = outlet_count_i / total_outlets"
+    numerator: "特定品牌在指定区域/业态下的网点数量 (outlet_count_i)"
+    denominator: "该区域/业态下全部品牌网点总数 (total_outlets)"
+    eligible_population: "在该区域/业态中拥有至少 1 家网点的全部商业品牌"
+    spatial_scope: "由 AnalysisIntent 指定的 AdministrativeRegion 或 Territory"
+    temporal_scope: "当前有效数据快照周期"
+    aggregation_rule: "平方和累加 (Sum of squared shares)"
+    missing_value_policy: "排除品牌名为空的无牌独立店后再计算份额占比"
+    interpretation_boundary: "度量的是网点物理覆盖集中度，非实际销售金额市场份额；严禁直接推断法律意义上的垄断"
+
+  - uri: "prism:metric/Top4ConcentrationRatio"
+    name: "行业前四集中率 (CR4)"
+    category: "Structure"
+    formula: "CR4 = sum(s_1..s_4)"
+    numerator: "排名前 4 位的品牌网点数之和"
+    denominator: "区域业态网点总数"
+    eligible_population: "全部在册品牌"
+    spatial_scope: "指定区域"
+    temporal_scope: "当前快照"
+    aggregation_rule: "前4位占比累加"
+    missing_value_policy: "剔除无牌店"
+    interpretation_boundary: "用于描述头部聚集度（>0.65 为高集中，<0.30 为高度分散）"
+
+  # ----------------------------------------------------------------------------
+  # 2. 外部平台观测度量 (External Observation Metrics)
+  # ----------------------------------------------------------------------------
+  - uri: "prism:metric/DianpingRating"
+    name: "大众点评餐饮星级评分"
+    category: "Observation"
+    source_platform: "prism:source/Dianping"
+    channel_applicability: ["餐饮"]
+    eligible_population: "大众点评收录且有有效评分的餐饮售点"
+    value_range: [1.0, 5.0]
+    missing_value_policy: "缺失时不填补（保持 null），在质量评估中报告缺失率；缺失率 >50% 时降低分析置信度"
+    interpretation_boundary: "仅代表大众点评用户线上评价口碑，不适用住宿或非餐饮业态"
+
+  - uri: "prism:metric/CtripRoomCount"
+    name: "携程酒店客房数"
+    category: "Observation"
+    source_platform: "prism:source/Ctrip"
+    channel_applicability: ["住宿"]
+    eligible_population: "携程收录的酒店、客栈与民宿"
+    value_range: [1, 5000]
+    missing_value_policy: "非住宿业态自动判定为 not_applicable（不计入缺失率）；住宿业态缺失时保持 null"
+    interpretation_boundary: "仅反映住宿实体客房接待规模"
+
+  - uri: "prism:metric/WeekendTraffic"
+    name: "周末均值客流(人)"
+    category: "Observation"
+    source_platform: "prism:source/LocationIntelligence"
+    eligible_population: "拥有地理坐标的全部商业网点"
+    value_range: [0, 500000]
+    missing_value_policy: "剔除异常负数；缺失时按 null 处理"
+    interpretation_boundary: "基于移动信令与 POI 围栏估算的人流均值，反映商圈人流活力"
+
+  # ----------------------------------------------------------------------------
+  # 3. 派生推导估计指标 (Derived Estimates)
+  # ----------------------------------------------------------------------------
+  - uri: "prism:metric/RevenuePotentialBaseline"
+    name: "月均收入潜力预测 (无协议无冰柜基准)"
+    category: "DerivedEstimate"
+    estimation_method: "MachineLearningModel_v8"
+    based_on: ["prism:metric/WeekendTraffic", "prism:outlet/ChannelType", "prism:outlet/CommercialSite"]
+    eligible_population: "全部未服务潜客网点"
+    missing_value_policy: "特征缺失时采用中位数插补，置信度标记为 medium"
+    interpretation_boundary: "属于算法情景预测估计值，严禁作为财务实际收入既成事实使用"

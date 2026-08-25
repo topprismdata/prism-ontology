@@ -1,0 +1,30 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "prism-ontology"
+version = "0.1.0-rc1"
+description = "棱镜极 (TopPrism) 世界模型统一本体工程与语义权威底座"
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "Proprietary" }
+authors = [
+    { name = "TopPrism Ontology Engineering Team", email = "ontology@topprism.ai" }
+]
+dependencies = [
+    "rdflib>=7.0.0",
+    "pyshacl>=0.25.0",
+    "pyyaml>=6.0.0",
+    "jsonschema>=4.20.0"
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0.0",
+    "pytest-cov>=4.0.0"
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]

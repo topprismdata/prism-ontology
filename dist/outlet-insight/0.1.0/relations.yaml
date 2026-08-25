@@ -1,0 +1,68 @@
+# ==============================================================================
+# relations.yaml
+# 售点洞察场景运行 Profile 受管关系清单 (Curated Relations)
+# ==============================================================================
+
+version: "1.0.0"
+profile: "prism://ontology/profiles/outlet-insight"
+
+relations:
+  - uri: "prism:outlet/locatedInAdministrativeRegion"
+    name: "位于行政区域"
+    domain: "prism:outlet/Outlet"
+    range: "prism:outlet/AdministrativeRegion"
+
+  - uri: "prism:outlet/coveredBySalesTerritory"
+    name: "属于销售辖区"
+    domain: "prism:outlet/Outlet"
+    range: "prism:outlet/Territory"
+
+  - uri: "prism:outlet/territoryCoversRegion"
+    name: "辖区覆盖行政区"
+    domain: "prism:outlet/Territory"
+    range: "prism:outlet/AdministrativeRegion"
+
+  - uri: "prism:outlet/belongsToBrand"
+    name: "归属品牌"
+    domain: "prism:outlet/Outlet"
+    range: "prism:outlet/Brand"
+
+  - uri: "prism:outlet/operatedAtSite"
+    name: "经营场所"
+    domain: "prism:outlet/Outlet"
+    range: "prism:outlet/CommercialSite"
+
+  - uri: "prism:outlet/hasChannelType"
+    name: "具备业态分类"
+    domain: "prism:outlet/Outlet"
+    range: "prism:outlet/ChannelType"
+
+  - uri: "prism:outlet/observesOutlet"
+    name: "观测网点"
+    domain: "prism:outlet/OutletObservation"
+    range: "prism:outlet/Outlet"
+
+  - uri: "prism:sales/accountRepresentsOutlet"
+    name: "账户代表售点"
+    domain: "prism:sales/CustomerAccount"
+    range: "prism:outlet/Outlet"
+
+  - uri: "prism:sales/accountRealizesRole"
+    name: "账户实现角色"
+    domain: "prism:sales/CustomerAccount"
+    range: "prism:sales/CustomerRole"
+
+  - uri: "prism:sales/outletPlaysCustomerRole"
+    name: "售点承担客户角色"
+    domain: "prism:outlet/Outlet"
+    range: "prism:sales/CustomerRole"
+
+  - uri: "prism:insight/hasClaim"
+    name: "包含分析主张"
+    domain: "prism:insight/InsightPackage"
+    range: "prism:insight/InsightClaim"
+
+  - uri: "prism:insight/groundedInEvidence"
+    name: "基于数据证据"
+    domain: "prism:insight/InsightClaim"
+    range: "prism:core/Evidence"

@@ -1,0 +1,93 @@
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix prov: <http://www.w3.org/ns/prov#> .
+@prefix prism-core: <prism://ontology/core/> .
+@prefix prism-outlet: <prism://ontology/outlet/> .
+@prefix prism-sales: <prism://ontology/sales-visit/> .
+
+<prism://ontology/sales-visit/> a owl:Ontology ;
+    rdfs:label "Prism Sales Visit Boundary Ontology"@zh , "TopPrism World Model L2 Sales Visit Boundary Skeleton"@en ;
+    owl:versionInfo "0.1.0-rc1" ;
+    owl:imports <prism://ontology/core/> , <prism://ontology/outlet/> ;
+    rdfs:comment "快消零售 (FMCG) 销售拜访边界本体骨架：定义客户账户、客户角色、服务关系、PJP 线路拜访计划、RED 店内执行打卡与实际拜访事件等边界协同概念。" .
+
+# =============================================================================
+# 1. 销售拜访核心概念 (Sales Visit Boundary Classes)
+# =============================================================================
+
+prism-sales:CustomerAccount a owl:Class ;
+    rdfs:subClassOf prism-core:Entity ;
+    rdfs:label "企业客户账户"@zh , "CustomerAccount"@en ;
+    rdfs:comment "企业 IT (CRM/ERP/SFA) 系统中建立的客户主数据账户记录，代表物理售点实体。" .
+
+prism-sales:CustomerRole a owl:Class ;
+    rdfs:subClassOf prism-core:Role ;
+    rdfs:label "客户业务角色"@zh , "CustomerRole"@en ;
+    rdfs:comment "售点在特定销售、履约或服务业务情境下承担的角色。未服务网点尚未激活此角色。" .
+
+prism-sales:ServiceRelationship a owl:Class ;
+    rdfs:subClassOf prism-core:Activity ;
+    rdfs:label "销售服务业务关系"@zh , "ServiceRelationship"@en ;
+    rdfs:comment "特定销售组织（如装瓶厂/经销商）与售点之间建立的时变业务服务关系（如已服务、未服务、待开发）。" .
+
+prism-sales:VisitPurpose a owl:Class ;
+    rdfs:subClassOf prism-core:InformationObject ;
+    rdfs:label "拜访目的"@zh , "VisitPurpose"@en ;
+    rdfs:comment "拜访活动的业务目标（如新品铺货、生动化陈列、RED 审计、冰柜投放、客情维护）。" .
+
+prism-sales:VisitMode a owl:Class ;
+    rdfs:subClassOf prism-core:InformationObject ;
+    rdfs:label "拜访模式"@zh , "VisitMode"@en ;
+    rdfs:comment "拜访实施形式（如线下实地常规拜访、车销直送、电话远程跟进）。" .
+
+prism-sales:VisitModeConstraint a owl:Class ;
+    rdfs:subClassOf prism-core:Constraint ;
+    rdfs:label "拜访模式硬性约束"@zh , "VisitModeConstraint"@en ;
+    rdfs:comment "对特定业态或商圈施加的拜访频次、作业时长或通行限制。" .
+
+prism-sales:VisitModeEligibility a owl:Class ;
+    rdfs:subClassOf prism-core:Eligibility ;
+    rdfs:label "拜访准入资格评估"@zh , "VisitModeEligibility"@en ;
+    rdfs:comment "网点是否满足特定拜访模式准入条件的评估（与最终排程决策严格分离）。" .
+
+prism-sales:VisitPlan a owl:Class ;
+    rdfs:subClassOf prism-core:Plan ;
+    rdfs:label "销售拜访计划 (PJP)"@zh , "VisitPlan (Permanent Journey Plan)"@en ;
+    rdfs:comment "为销售人员制定的前瞻性 PJP 线路拜访任务计划（与实际发生的物理拜访事件严格区分）。" .
+
+prism-sales:ActualVisit a owl:Class ;
+    rdfs:subClassOf prism-core:Event ;
+    rdfs:label "实际拜访物理事件"@zh , "ActualVisit"@en ;
+    rdfs:comment "销售人员在物理网点实际发生的进店、停留、离店物理事实事件。" .
+
+prism-sales:VisitRecord a owl:Class ;
+    rdfs:subClassOf prism-core:InformationObject ;
+    rdfs:label "拜访打卡记录"@zh , "VisitRecord"@en ;
+    rdfs:comment "移动 SFA 系统记录的打卡时间、GPS 坐标与陈列照片等信息对象（与实际物理事件解耦）。" .
+
+# =============================================================================
+# 2. 核心跨域关系 (Cross-Domain Properties)
+# =============================================================================
+
+prism-sales:accountRepresentsOutlet a owl:ObjectProperty ;
+    rdfs:domain prism-sales:CustomerAccount ;
+    rdfs:range prism-outlet:Outlet ;
+    rdfs:label "账户代表售点"@zh , "accountRepresentsOutlet"@en .
+
+prism-sales:accountRealizesRole a owl:ObjectProperty ;
+    rdfs:domain prism-sales:CustomerAccount ;
+    rdfs:range prism-sales:CustomerRole ;
+    rdfs:label "账户实现角色"@zh , "accountRealizesRole"@en .
+
+prism-sales:outletPlaysCustomerRole a owl:ObjectProperty ;
+    rdfs:subPropertyOf prism-core:playsRole ;
+    rdfs:domain prism-outlet:Outlet ;
+    rdfs:range prism-sales:CustomerRole ;
+    rdfs:label "售点承担客户角色"@zh , "outletPlaysCustomerRole"@en .
+
+prism-sales:recordsVisitEvent a owl:ObjectProperty ;
+    rdfs:domain prism-sales:VisitRecord ;
+    rdfs:range prism-sales:ActualVisit ;
+    rdfs:label "记录拜访事件"@zh , "recordsVisitEvent"@en .
