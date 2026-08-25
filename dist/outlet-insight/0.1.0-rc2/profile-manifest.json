@@ -4,7 +4,7 @@
   "version": "0.1.0-rc2",
   "status": "release_candidate",
   "release_tag": "outlet-insight-v0.1.0-rc2",
-  "git_commit": "ec67757769ffda645b062ce8b8a5186d426bd257",
+  "git_commit": "4135058045edaf21295e645c3de26dd400484d3e",
   "clean_working_tree": true,
   "release_date": "2026-08-25",
   "authority": "TopPrism Ontology Engineering Committee",
