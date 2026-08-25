@@ -45,13 +45,13 @@ def test_rdf_syntax_and_owlrl_consistency():
 
 
 def test_anti_collapse_shacl_rejection_per_node():
-    """强负向测试：向图中注入 5 种违规，通过读取 SHACL 结果图 sh:focusNode 精确断言全部 5 处违规被捕获。"""
+    """强负向测试：向图中注入 7 种违规，通过读取 SHACL 结果图 sh:focusNode 精确断言全部 7 处违规被捕获。"""
     # 1. 组装形状图
     shacl_graph = Graph()
     for sf in SHACL_FILES:
         shacl_graph.parse(str(sf), format="turtle")
 
-    # 2. 构造 5 种故意违规的数据图
+    # 2. 构造 7 种故意违规的数据图
     bad_data_turtle = """
     @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
     @prefix prism-core: <prism://ontology/core/> .
@@ -71,8 +71,14 @@ def test_anti_collapse_shacl_rejection_per_node():
     # 违规 4: 拜访事件与打卡记录折叠
     <urn:bad:visit_record_collapse> a prism-sales:ActualVisit , prism-sales:VisitRecord .
 
-    # 违规 5: 出现被禁止的执行类对象
+    # 违规 5: 出现被禁止的 Task 执行类对象
     <urn:bad:prohibited_task> a <prism://ontology/execution/Task> .
+
+    # 违规 6: 出现被禁止的 CRMStateMutation 执行类对象
+    <urn:bad:prohibited_crm_mutation> a <prism://ontology/execution/CRMStateMutation> .
+
+    # 违规 7: 出现被禁止的 WorldStateWriteCommand 写入命令对象
+    <urn:bad:prohibited_world_write> a <prism://ontology/execution/WorldStateWriteCommand> .
     """
     
     data_graph = Graph()
@@ -99,11 +105,13 @@ def test_anti_collapse_shacl_rejection_per_node():
         "urn:bad:outlet_role_collapse",
         "urn:bad:orphan_observation",
         "urn:bad:visit_record_collapse",
-        "urn:bad:prohibited_task"
+        "urn:bad:prohibited_task",
+        "urn:bad:prohibited_crm_mutation",
+        "urn:bad:prohibited_world_write"
     ]
 
     for exp in expected_violations:
         assert exp in focus_nodes or exp in results_text, f"SHACL failed to catch expected violation on node: {exp}"
         print(f"  ✓ Individually Asserted Violation FocusNode: {exp}")
 
-    print("\nAll 5 Anti-Collapse & Disjointness SHACL Violations Individually Asserted & Passed.")
+    print("\nAll 7 Anti-Collapse & Disjointness SHACL Violations Individually Asserted & Passed.")
