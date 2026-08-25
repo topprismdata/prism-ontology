@@ -1,0 +1,130 @@
+@prefix prism-core: <prism://ontology/core/> .
+@prefix prism-insight: <prism://ontology/insight/> .
+@prefix prism-outlet: <prism://ontology/outlet/> .
+@prefix prism-sales: <prism://ontology/sales-visit/> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+prism-core:DerivedEstimateShape a sh:NodeShape ;
+    sh:message "派生估计 (DerivedEstimate) 严禁与客观直接观测 (Observation) 混淆声明"@zh ;
+    sh:not [ sh:class prism-core:Observation ] ;
+    sh:property [ sh:message "派生估计必须声明推导特征依据或算法模型 (derivedFrom)"@zh ;
+            sh:minCount 1 ;
+            sh:path prism-core:derivedFrom ] ;
+    sh:targetClass prism-core:DerivedEstimate .
+
+prism-core:EntityVsRoleShape a sh:NodeShape ;
+    sh:message "客观实体 (Entity) 严禁直接与业务角色 (Role) 折叠为一个类"@zh ;
+    sh:not [ sh:class prism-core:Role ] ;
+    sh:targetClass prism-core:Entity .
+
+prism-core:ObservationShape a sh:NodeShape ;
+    sh:property [ sh:message "客观观测必须显式指定被观测实体 (observesEntity)"@zh ;
+            sh:minCount 1 ;
+            sh:path prism-core:observesEntity ],
+        [ sh:message "客观观测必须包含观测测量值 (observedValue)"@zh ;
+            sh:minCount 1 ;
+            sh:path prism-core:observedValue ] ;
+    sh:targetClass prism-core:Observation .
+
+prism-insight:ElevationCandidateShape a sh:NodeShape ;
+    sh:property [ sh:hasValue true ;
+            sh:message "提升候选物 (ElevationCandidate) 必须显式标记 requiresExternalGovernance = true"@zh ;
+            sh:path prism-insight:requiresExternalGovernance ],
+        [ sh:hasValue "none" ;
+            sh:message "提升候选物 (ElevationCandidate) 的 worldStateEffect 必须为 'none'，严禁产生直接世界状态写入"@zh ;
+            sh:path prism-insight:worldStateEffect ] ;
+    sh:targetClass prism-insight:ElevationCandidate .
+
+prism-insight:InsightClaimVsObservationShape a sh:NodeShape ;
+    sh:message "分析主张 (InsightClaim) 是算法生成的分析观点，严禁直接断言为客观观测事实 (Observation)"@zh ;
+    sh:not [ sh:class prism-core:Observation ] ;
+    sh:targetClass prism-insight:InsightClaim .
+
+prism-insight:ProfileElevationCandidateShape a sh:NodeShape ;
+    sh:property [ sh:hasValue true ;
+            sh:message "ElevationCandidate 必须声明 requiresExternalGovernance = true"@zh ;
+            sh:path prism-insight:requiresExternalGovernance ],
+        [ sh:hasValue "none" ;
+            sh:message "ElevationCandidate 严禁声明对世界状态的直接写入效应 (worldStateEffect 必须为 'none')"@zh ;
+            sh:path prism-insight:worldStateEffect ] ;
+    sh:targetClass prism-insight:ElevationCandidate .
+
+prism-insight:ProfileInsightPackageShape a sh:NodeShape ;
+    sh:property [ sh:maxCount 1 ;
+            sh:message "InsightPackage 必须包含全局唯一分析标识 analysis_id"@zh ;
+            sh:minCount 1 ;
+            sh:path prism-insight:hasAnalysisId ],
+        [ sh:message "InsightPackage 必须包含至少一个分析主张 (hasClaim)"@zh ;
+            sh:minCount 1 ;
+            sh:path prism-insight:hasClaim ] ;
+    sh:targetClass prism-insight:InsightPackage .
+
+prism-insight:ProhibitCRMStateMutationExecutionShape a sh:NodeShape ;
+    sh:property [ sh:maxCount 0 ;
+            sh:message "谋圣·售点洞察场景运行 Profile 严禁实例化 CRMStateMutation 客户状态变更对象"@zh ;
+            sh:path rdf:type ] ;
+    sh:targetClass <prism://ontology/execution/CRMStateMutation> .
+
+prism-insight:ProhibitRoutePlanExecutionShape a sh:NodeShape ;
+    sh:property [ sh:maxCount 0 ;
+            sh:message "谋圣·售点洞察场景运行 Profile 严禁实例化 RoutePlan 路线规划对象"@zh ;
+            sh:path rdf:type ] ;
+    sh:targetClass <prism://ontology/execution/RoutePlan> .
+
+prism-insight:ProhibitScheduleDecisionExecutionShape a sh:NodeShape ;
+    sh:property [ sh:maxCount 0 ;
+            sh:message "谋圣·售点洞察场景运行 Profile 严禁实例化 ScheduleDecision 排程决策对象"@zh ;
+            sh:path rdf:type ] ;
+    sh:targetClass <prism://ontology/execution/ScheduleDecision> .
+
+prism-insight:ProhibitTaskExecutionShape a sh:NodeShape ;
+    sh:property [ sh:maxCount 0 ;
+            sh:message "谋圣·售点洞察场景运行 Profile 严禁实例化 Task 执行任务对象"@zh ;
+            sh:path rdf:type ] ;
+    sh:targetClass <prism://ontology/execution/Task> .
+
+prism-insight:ProhibitWorldStateWriteCommandExecutionShape a sh:NodeShape ;
+    sh:property [ sh:maxCount 0 ;
+            sh:message "谋圣·售点洞察场景运行 Profile 严禁实例化 WorldStateWriteCommand 世界状态写入命令对象"@zh ;
+            sh:path rdf:type ] ;
+    sh:targetClass <prism://ontology/execution/WorldStateWriteCommand> .
+
+prism-outlet:OutletObservationShape a sh:NodeShape ;
+    sh:property [ sh:class prism-outlet:Outlet ;
+            sh:message "售点观测 (OutletObservation) 必须明确指向商业售点实体 (Outlet)"@zh ;
+            sh:minCount 1 ;
+            sh:path prism-outlet:observesOutlet ] ;
+    sh:targetClass prism-outlet:OutletObservation .
+
+prism-outlet:OutletVsCustomerRoleShape a sh:NodeShape ;
+    sh:message "客观商业售点 (Outlet) 严禁与销售情境下的业务角色 (CustomerRole) 折叠为同一概念"@zh ;
+    sh:not [ sh:class prism-sales:CustomerRole ] ;
+    sh:targetClass prism-outlet:Outlet .
+
+prism-outlet:RegionVsTerritoryShape a sh:NodeShape ;
+    sh:message "法定行政区划 (AdministrativeRegion) 严禁与企业销售辖区 (Territory) 折叠为同一概念"@zh ;
+    sh:not [ sh:class prism-outlet:Territory ] ;
+    sh:targetClass prism-outlet:AdministrativeRegion .
+
+prism-sales:AccountVsRoleShape a sh:NodeShape ;
+    sh:message "企业客户账户 (CustomerAccount) 严禁与业务情境角色 (CustomerRole) 折叠为同一概念"@zh ;
+    sh:not [ sh:class prism-sales:CustomerRole ] ;
+    sh:targetClass prism-sales:CustomerAccount .
+
+prism-sales:ActualVisitVsRecordShape a sh:NodeShape ;
+    sh:message "实际拜访物理事件 (ActualVisit) 严禁与移动打卡记录信息对象 (VisitRecord) 混淆声明"@zh ;
+    sh:not [ sh:class prism-sales:VisitRecord ] ;
+    sh:targetClass prism-sales:ActualVisit .
+
+prism-sales:EligibilityVsDecisionShape a sh:NodeShape ;
+    sh:message "拜访准入资格评估 (VisitModeEligibility) 严禁直接断言为最终排程决策 (Decision)"@zh ;
+    sh:not [ sh:class prism-core:Decision ] ;
+    sh:targetClass prism-sales:VisitModeEligibility .
+
+prism-sales:VisitPlanVsActualVisitShape a sh:NodeShape ;
+    sh:message "前瞻性拜访计划 (VisitPlan) 严禁与实际发生拜访事件 (ActualVisit) 混淆声明"@zh ;
+    sh:not [ sh:class prism-sales:ActualVisit ] ;
+    sh:targetClass prism-sales:VisitPlan .
+

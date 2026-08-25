@@ -2,8 +2,8 @@
 """
 build_profile_release.py
 ========================
-确定性打包并发布 Outlet Insight Operational Profile v0.1.0-RC
-产出 dist/outlet-insight/0.1.0-rc1/ 包含 OWL 本体、SHACL 形状、度量定义、数据源、组织实体、Manifest 与 SHA-256 校验和。
+确定性打包并发布 Outlet Insight Operational Profile v0.1.0-rc2
+产出 dist/outlet-insight/0.1.0-rc2/ 包含 OWL 本体、SHACL 形状、度量定义、数据源、组织实体、Manifest 与 SHA-256 校验和。
 具备完全的幂等性与可复现性（基于 Git Commit 状态）。
 """
 import hashlib
@@ -16,15 +16,14 @@ from rdflib import Graph
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 PROFILE_DIR = PROJECT_ROOT / "profiles" / "outlet-insight"
-DIST_DIR = PROJECT_ROOT / "dist" / "outlet-insight" / "0.1.0-rc1"
+DIST_DIR = PROJECT_ROOT / "dist" / "outlet-insight" / "0.1.0-rc2"
 
 # 获取当前 Git Commit、Tag 与提交日期
 try:
     git_commit = subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=PROJECT_ROOT).decode("utf-8").strip()
     git_commit_date = subprocess.check_output(["git", "log", "-1", "--format=%cI"], cwd=PROJECT_ROOT).decode("utf-8").strip()
     git_status = subprocess.check_output(["git", "status", "--porcelain"], cwd=PROJECT_ROOT).decode("utf-8").strip()
-    # 如果只有 dist 目录的改动，视为干净工作树
-    status_lines = [l for l in git_status.splitlines() if not l.strip().endswith("dist/outlet-insight/0.1.0-rc1") and "dist/" not in l]
+    status_lines = [l for l in git_status.splitlines() if not l.strip().endswith("dist/outlet-insight/0.1.0-rc2") and "dist/" not in l]
     clean_tree = (len(status_lines) == 0)
 except Exception:
     git_commit = "unversioned"
@@ -82,7 +81,7 @@ with open(PROFILE_DIR / "competency-questions.yaml", "r", encoding="utf-8") as f
     cq_data = yaml.safe_load(f)
 
 cq_md_lines = [
-    "# Outlet Insight Profile v0.1.0-RC Competency Question Verification Report",
+    "# Outlet Insight Profile v0.1.0-rc2 Competency Question Verification Report",
     f"Generated at: {git_commit_date}",
     f"Profile URI: prism://ontology/profiles/outlet-insight",
     f"Git Commit: {git_commit}",
@@ -100,11 +99,11 @@ with open(cq_report_path, "w", encoding="utf-8") as f:
 manifest = {
     "profile_uri": "prism://ontology/profiles/outlet-insight",
     "profile_name": "outlet-insight",
-    "version": "0.1.0-rc1",
+    "version": "0.1.0-rc2",
     "status": "release_candidate",
-    "release_tag": "outlet-insight-v0.1.0-rc1",
+    "release_tag": "outlet-insight-v0.1.0-rc2",
     "git_commit": git_commit,
-    "clean_working_tree": True,
+    "clean_working_tree": clean_tree,
     "release_date": git_commit_date[:10],
     "authority": "TopPrism Ontology Engineering Committee",
     "included_files": [

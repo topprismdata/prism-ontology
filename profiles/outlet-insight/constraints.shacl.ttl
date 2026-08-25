@@ -36,6 +36,22 @@ prism-insight:ProhibitScheduleDecisionExecutionShape a sh:NodeShape ;
         sh:message "谋圣·售点洞察场景运行 Profile 严禁实例化 ScheduleDecision 排程决策对象"@zh ;
     ] .
 
+prism-insight:ProhibitCRMStateMutationExecutionShape a sh:NodeShape ;
+    sh:targetClass <prism://ontology/execution/CRMStateMutation> ;
+    sh:property [
+        sh:path rdf:type ;
+        sh:maxCount 0 ;
+        sh:message "谋圣·售点洞察场景运行 Profile 严禁实例化 CRMStateMutation 客户状态变更对象"@zh ;
+    ] .
+
+prism-insight:ProhibitWorldStateWriteCommandExecutionShape a sh:NodeShape ;
+    sh:targetClass <prism://ontology/execution/WorldStateWriteCommand> ;
+    sh:property [
+        sh:path rdf:type ;
+        sh:maxCount 0 ;
+        sh:message "谋圣·售点洞察场景运行 Profile 严禁实例化 WorldStateWriteCommand 世界状态写入命令对象"@zh ;
+    ] .
+
 # 2. 洞察包结构完整性约束 (3信封 + 8核心块)
 prism-insight:ProfileInsightPackageShape a sh:NodeShape ;
     sh:targetClass prism-insight:InsightPackage ;
