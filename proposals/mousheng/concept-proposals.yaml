@@ -1,0 +1,129 @@
+# ==============================================================================
+# concept-proposals.yaml
+# 谋圣需求方提交的候选本体概念清单 (Mousheng Demand Proposals)
+# ==============================================================================
+
+version: "1.0.0"
+source_component: "mousheng-outlet-insight"
+submission_date: "2026-08-25"
+
+proposals:
+  - id: "MS-PROP-001"
+    proposed_uri: "prism:outlet/Outlet"
+    category: "Entity"
+    description: "物理世界客观存在的商业零售与餐饮住宿网点实体"
+    suggested_parent: "prism:core/Entity"
+
+  - id: "MS-PROP-002"
+    proposed_uri: "prism:outlet/Brand"
+    category: "Entity"
+    description: "连锁商业品牌及集团实体"
+    suggested_parent: "prism:core/Entity"
+
+  - id: "MS-PROP-003"
+    proposed_uri: "prism:outlet/CommercialSite"
+    category: "Entity"
+    description: "经营场所、商圈、餐饮街等商业聚集物理场所"
+    suggested_parent: "prism:core/Entity"
+
+  - id: "MS-PROP-004"
+    proposed_uri: "prism:outlet/AdministrativeRegion"
+    category: "Spatial"
+    description: "国家法定行政区划（省、市、区县）"
+    suggested_parent: "prism:core/SpatialGeometry"
+
+  - id: "MS-PROP-005"
+    proposed_uri: "prism:outlet/Territory"
+    category: "Spatial/Organizational"
+    description: "企业划定的销售责任辖区、大区、办事处及线路"
+    suggested_parent: "prism:core/SpatialGeometry"
+
+  - id: "MS-PROP-006"
+    proposed_uri: "prism:outlet/ChannelType"
+    category: "Classification"
+    description: "售点所属的行业与业态分类（餐饮、住宿、食杂等）"
+    suggested_parent: "prism:core/InformationObject"
+
+  - id: "MS-PROP-007"
+    proposed_uri: "prism:sales/ServiceRelationship"
+    category: "Relationship"
+    description: "特定销售组织与售点之间的时变服务业务关系（如已服务、未服务）"
+    suggested_parent: "prism:core/Activity"
+
+  - id: "MS-PROP-008"
+    proposed_uri: "prism:sales/CustomerAccount"
+    category: "Entity/IT"
+    description: "企业 CRM/ERP 系统中代表售点的客户账户档案"
+    suggested_parent: "prism:core/Entity"
+
+  - id: "MS-PROP-009"
+    proposed_uri: "prism:sales/CustomerRole"
+    category: "Role"
+    description: "售点在销售/服务情境下承担的业务角色"
+    suggested_parent: "prism:core/Role"
+
+  - id: "MS-PROP-010"
+    proposed_uri: "prism:outlet/OutletObservation"
+    category: "Observation"
+    description: "外部平台（大众点评、携程等）对网点的动态评分、客流与规模观测"
+    suggested_parent: "prism:core/Observation"
+
+  - id: "MS-PROP-011"
+    proposed_uri: "prism:outlet/DemographicObservation"
+    category: "Observation"
+    description: "网点所在商圈/网格的常住人口、客流与消费力观测"
+    suggested_parent: "prism:core/Observation"
+
+  - id: "MS-PROP-012"
+    proposed_uri: "prism:outlet/AssetAndDisplayObservation"
+    category: "Observation"
+    description: "店内冰柜门数、排面数及货架陈列审计观测"
+    suggested_parent: "prism:core/Observation"
+
+  - id: "MS-PROP-013"
+    proposed_uri: "prism:outlet/TownshipContext"
+    category: "Observation/Context"
+    description: "下沉乡镇市场特征、赶集日、红镇与距离指标"
+    suggested_parent: "prism:core/Observation"
+
+  - id: "MS-PROP-014"
+    proposed_uri: "prism:quality/EntityResolutionAssessment"
+    category: "QualityAssessment"
+    description: "地址解析质量与 POI 坐标匹配距离等实体解析评估测量"
+    suggested_parent: "prism:core/Observation"
+
+  - id: "MS-PROP-015"
+    proposed_uri: "prism:outlet/DerivedEstimate"
+    category: "Estimate"
+    description: "基于机器学习或统计公式推导的收入潜力、开店年限等算法估计值"
+    suggested_parent: "prism:core/DerivedEstimate"
+
+  - id: "MS-PROP-016"
+    proposed_uri: "prism:outlet/CompetitorSalesVolume"
+    category: "MissingConcept"
+    description: "竞品在途销量 POS 实际数据（当前物理表缺失）"
+    suggested_parent: "prism:core/Observation"
+
+  - id: "MS-PROP-017"
+    proposed_uri: "prism:insight/AnalysisIntent"
+    category: "InsightArtifact"
+    description: "第一棱镜编译输出的结构化业务分析意图"
+    suggested_parent: "prism:core/InformationObject"
+
+  - id: "MS-PROP-018"
+    proposed_uri: "prism:insight/InsightClaim"
+    category: "InsightArtifact"
+    description: "第二棱镜综合输出的带证据分析主张"
+    suggested_parent: "prism:core/InformationObject"
+
+  - id: "MS-PROP-019"
+    proposed_uri: "prism:insight/InsightPackage"
+    category: "InsightArtifact"
+    description: "标准 8 块结构化洞察包与 3 个信封字段"
+    suggested_parent: "prism:core/InformationObject"
+
+  - id: "MS-PROP-020"
+    proposed_uri: "prism:insight/ElevationCandidate"
+    category: "InsightArtifact"
+    description: "被动导出的候选世界模型事实对象（需外部治理审核）"
+    suggested_parent: "prism:core/InformationObject"

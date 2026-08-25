@@ -1,0 +1,44 @@
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix prism-core: <prism://ontology/core/> .
+
+# =============================================================================
+# Core Anti-Collapse & Mandatory Attribute Constraints
+# =============================================================================
+
+# 1. 观测必须具备观测实体与数据源
+prism-core:ObservationShape a sh:NodeShape ;
+    sh:targetClass prism-core:Observation ;
+    sh:property [
+        sh:path prism-core:observesEntity ;
+        sh:minCount 1 ;
+        sh:message "客观观测必须显式指定被观测实体 (observesEntity)"@zh ;
+    ] ;
+    sh:property [
+        sh:path prism-core:observedValue ;
+        sh:minCount 1 ;
+        sh:message "客观观测必须包含观测测量值 (observedValue)"@zh ;
+    ] .
+
+# 2. 派生估计必须包含推导依据，严禁伪装为既成事实
+prism-core:DerivedEstimateShape a sh:NodeShape ;
+    sh:targetClass prism-core:DerivedEstimate ;
+    sh:property [
+        sh:path prism-core:derivedFrom ;
+        sh:minCount 1 ;
+        sh:message "派生估计必须声明推导特征依据或算法模型 (derivedFrom)"@zh ;
+    ] ;
+    sh:not [
+        sh:class prism-core:Observation ;
+    ] ;
+    sh:message "派生估计 (DerivedEstimate) 严禁与客观直接观测 (Observation) 混淆声明"@zh .
+
+# 3. 实体、角色与信息对象不坍缩约束
+prism-core:EntityVsRoleShape a sh:NodeShape ;
+    sh:targetClass prism-core:Entity ;
+    sh:not [
+        sh:class prism-core:Role ;
+    ] ;
+    sh:message "客观实体 (Entity) 严禁直接与业务角色 (Role) 折叠为一个类"@zh .

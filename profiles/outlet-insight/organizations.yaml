@@ -1,0 +1,7 @@
+version: 1.0.0
+profile: prism://ontology/profiles/outlet-insight
+organizations:
+- uri: prism:org/SwireCocaCola
+  name: 太古可口可乐装瓶集团
+  category: EnterpriseBottler
+  role: ServiceRelationshipSubject

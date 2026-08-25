@@ -1,0 +1,1996 @@
+version: 2.1.0
+governance_model: prism-ontology-three-layer
+dataset:
+  name: sh-store-insight-152
+  description: 华东大区售点洞察全量宽表（152列完整七类结构化模式映射）
+  physical_schema_columns: 152
+  runtime_analysis_frame_columns: 153
+  total_governance_mapping_records: 153
+  governance_status: verified_seven_class_pattern_complete
+field_classes:
+- id: entity_identity
+  name: 核心实体身份与生命周期字段
+  description: 售点、品牌、场所等客观实体的多方案标识 Scheme 与名称地址及上线建档时间
+- id: classification_and_role
+  name: 分类与角色关系字段
+  description: 业态分类、品牌归属及特定组织视角下的服务关系状态
+- id: spatial_and_territory
+  name: 空间与责任区域字段
+  description: 行政区划 (AdministrativeRegion) 与销售辖区 (Territory) 严格双轨制
+- id: external_observation
+  name: 外部平台客观观察字段
+  description: 大众点评、携程、高德、客流人口、实体匹配质检等多源动态观测事实
+- id: derived_estimate
+  name: 派生推导与预测估计字段
+  description: 潜力模型、开店年限等算法推导与估计属性
+- id: ambiguous_isolated
+  name: 临时业务标签与歧义字段
+  description: 含义不清或实验标签，显式隔离禁止进入执行
+- id: engineering_provenance
+  name: 数据工程与血缘溯源字段
+  description: ETL 管道、数据质量与日志列，不进入业务语义
+mappings:
+- col_index: 1
+  physical_column: 省份
+  semantic_binding_status: proposed
+  validation_status: pending_operational_profile
+  field_class: spatial_and_territory
+  semantic_pattern:
+    target_entity: prism:outlet/AdministrativeRegion
+    region_level: Province
+    relation_type: locatedInAdministrativeRegion
+  mapping_status: mapped
+  temporal_nature: stable_geographic
+- col_index: 2
+  physical_column: 城市
+  semantic_binding_status: proposed
+  validation_status: pending_operational_profile
+  field_class: spatial_and_territory
+  semantic_pattern:
+    target_entity: prism:outlet/AdministrativeRegion
+    region_level: City
+    relation_type: locatedInAdministrativeRegion
+  mapping_status: mapped
+  temporal_nature: stable_geographic
+  value_transformation:
+    type: geo_normalization
+    function: GEO_NORM
+    target_output_type: canonical_region_uri
+    description: 口语城市名称归一化至行政编码 URI (如 prism:geo/cn/310000)
+- col_index: 3
+  physical_column: 区县
+  semantic_binding_status: proposed
+  validation_status: pending_operational_profile
+  field_class: spatial_and_territory
+  semantic_pattern:
+    target_entity: prism:outlet/AdministrativeRegion
+    region_level: District
+    relation_type: locatedInAdministrativeRegion
+  mapping_status: mapped
+  temporal_nature: stable_geographic
+- col_index: 4
+  physical_column: RTMID
+  semantic_binding_status: proposed
+  validation_status: pending_operational_profile
+  field_class: entity_identity
+  semantic_pattern:
+    target_entity: prism:core/Entity
+    pattern_type: hasIdentifier
+    identifier_scheme: RTMRouteID
+  mapping_status: mapped
+  temporal_nature: immutable_static
+- col_index: 5
+  physical_column: 规划OU
+  semantic_binding_status: proposed
+  validation_status: pending_operational_profile
+  field_class: spatial_and_territory
+  semantic_pattern:
+    target_entity: prism:outlet/Territory
+    territory_level: SalesRoute
+    relation_type: coveredBySalesTerritory
+  mapping_status: mapped
+  temporal_nature: organizational_cadence_adjusted
+  notes: 企业内部划定的销售责任辖区路线，严禁与国家法定行政区划折叠
+- col_index: 6
+  physical_column: 规划大区
+  semantic_binding_status: proposed
+  validation_status: pending_operational_profile
+  field_class: spatial_and_territory
+  semantic_pattern:
+    target_entity: prism:outlet/Territory
+    territory_level: SalesRegion
+    relation_type: coveredBySalesTerritory
+  mapping_status: mapped
+  temporal_nature: organizational_cadence_adjusted
+  notes: 企业内部划定的销售责任辖区路线，严禁与国家法定行政区划折叠
+- col_index: 7
+  physical_column: 规划办事处
+  semantic_binding_status: proposed
+  validation_status: pending_operational_profile
+  field_class: spatial_and_territory
+  semantic_pattern:
+    target_entity: prism:outlet/Territory
+    territory_level: SalesOffice
+    relation_type: coveredBySalesTerritory
+  mapping_status: mapped
+  temporal_nature: organizational_cadence_adjusted
+  notes: 企业内部划定的销售责任辖区路线，严禁与国家法定行政区划折叠
+- col_index: 8
+  physical_column: 规划主管
+  semantic_binding_status: proposed
+  validation_status: pending_operational_profile
+  field_class: spatial_and_territory
+  semantic_pattern:
+    target_entity: prism:outlet/Territory
+    territory_level: SalesRoute
+    relation_type: coveredBySalesTerritory
+  mapping_status: mapped
+  temporal_nature: organizational_cadence_adjusted
+  notes: 企业内部划定的销售责任辖区路线，严禁与国家法定行政区划折叠
+- col_index: 9
+  physical_column: 规划线路
+  semantic_binding_status: proposed
+  validation_status: pending_operational_profile
+  field_class: spatial_and_territory
+  semantic_pattern:
+    target_entity: prism:outlet/Territory
+    territory_level: SalesRoute
+    relation_type: coveredBySalesTerritory
+  mapping_status: mapped
+  temporal_nature: organizational_cadence_adjusted
+  notes: 企业内部划定的销售责任辖区路线，严禁与国家法定行政区划折叠
+- col_index: 10
+  physical_column: KO_ID
+  semantic_binding_status: proposed
+  validation_status: pending_operational_profile
+  field_class: entity_identity
+  semantic_pattern:
+    target_entity: prism:outlet/Outlet
+    pattern_type: hasIdentifier
+    identifier_scheme: CocaColaInternalID
+  mapping_status: mapped
+  temporal_nature: immutable_static
+- col_index: 11
+  physical_column: 腾讯售点id
+  semantic_binding_status: proposed
+  validation_status: pending_operational_profile
+  field_class: entity_identity
+  semantic_pattern:
+    target_entity: prism:outlet/Outlet
+    pattern_type: hasIdentifier
+    identifier_scheme: TencentPOI
+  mapping_status: mapped
+  temporal_nature: immutable_static
+- col_index: 12
+  physical_column: 腾讯售点名称
+  semantic_binding_status: proposed
+  validation_status: pending_operational_profile
+  field_class: entity_identity
+  semantic_pattern:
+    target_entity: prism:outlet/Outlet
+    pattern_type: hasName
+  mapping_status: mapped
+  temporal_nature: low_volatility
+- col_index: 13
+  physical_column: 腾讯售点地址
+  semantic_binding_status: proposed
+  validation_status: pending_operational_profile
+  field_class: entity_identity
+  semantic_pattern:
+    target_entity: prism:outlet/Outlet
+    pattern_type: hasPhysicalAddress
+  mapping_status: mapped
+  temporal_nature: low_volatility
+- col_index: 14
+  physical_column: 电话
+  semantic_binding_status: proposed
+  validation_status: pending_operational_profile
+  field_class: entity_identity
+  semantic_pattern:
+    target_entity: prism:outlet/Outlet
+    pattern_type: hasPhysicalAddress
+  mapping_status: mapped
+  temporal_nature: low_volatility
+- col_index: 15
+  physical_column: 一级分类
+  semantic_binding_status: proposed
+  validation_status: pending_operational_profile
+  field_class: classification_and_role
+  semantic_pattern:
+    target_entity: prism:outlet/Outlet
+    pattern_type: hasChannelType
+    ontology_concept: prism:outlet/ChannelType
+    classification_level: 一级分类
+  mapping_status: mapped
+  temporal_nature: stable_classification
+- col_index: 16
+  physical_column: 二级分类
+  semantic_binding_status: proposed
+  validation_status: pending_operational_profile
+  field_class: classification_and_role
+  semantic_pattern:
+    target_entity: prism:outlet/Outlet
+    pattern_type: hasChannelType
+    ontology_concept: prism:outlet/ChannelType
+    classification_level: 二级分类
+  mapping_status: mapped
+  temporal_nature: stable_classification
+- col_index: 17
+  physical_column: 三级分类
+  semantic_binding_status: proposed
+  validation_status: pending_operational_profile
+  field_class: classification_and_role
+  semantic_pattern:
+    target_entity: prism:outlet/Outlet
+    pattern_type: hasChannelType
+    ontology_concept: prism:outlet/ChannelType
+    classification_level: 三级分类
+  mapping_status: mapped
+  temporal_nature: stable_classification
+- col_index: 18
+  physical_column: 渠道组
+  semantic_binding_status: proposed
+  validation_status: pending_operational_profile
+  field_class: classification_and_role
+  semantic_pattern:
+    target_entity: prism:outlet/Outlet
+    pattern_type: hasChannelType
+    ontology_concept: prism:outlet/ChannelType
+    classification_level: 渠道组
+  mapping_status: mapped
+  temporal_nature: stable_classification
+- col_index: 19
+  physical_column: 渠道
+  semantic_binding_status: proposed
+  validation_status: pending_operational_profile
+  field_class: classification_and_role
+  semantic_pattern:
+    target_entity: prism:outlet/Outlet
+    pattern_type: hasChannelType
+    ontology_concept: prism:outlet/ChannelType
+    classification_level: 渠道
+  mapping_status: mapped
+  temporal_nature: stable_classification
+- col_index: 20
+  physical_column: 子渠道
+  semantic_binding_status: proposed
+  validation_status: pending_operational_profile
+  field_class: classification_and_role
+  semantic_pattern:
+    target_entity: prism:outlet/Outlet
+    pattern_type: hasChannelType
+    ontology_concept: prism:outlet/ChannelType
+    classification_level: 子渠道
+  mapping_status: mapped
+  temporal_nature: stable_classification
+- col_index: 21
+  physical_column: 细分渠道
+  semantic_binding_status: proposed
+  validation_status: pending_operational_profile
+  field_class: classification_and_role
+  semantic_pattern:
+    target_entity: prism:outlet/Outlet
+    pattern_type: hasChannelType
+    ontology_concept: prism:outlet/ChannelType
+    classification_level: 细分渠道
+  mapping_status: mapped
+  temporal_nature: stable_classification
+- col_index: 22
+  physical_column: 待开发客户细分
+  semantic_binding_status: proposed
+  validation_status: pending_operational_profile
+  field_class: ambiguous_isolated
+  semantic_pattern: null
+  mapping_status: ambiguous
+  isolation_policy: excluded_from_execution
+  candidate_meanings:
+  - segmentation_label
+  - customer_priority_tier
+  - internal_sales_flag
+  governance_required: true
+  reason: 业务定义存在多重解释或为临时业务标签，已显式隔离并阻断进入任何分析计划
+- col_index: 23
+  physical_column: 是否高德扫街榜/状元榜
+  semantic_binding_status: proposed
+  validation_status: pending_operational_profile
+  field_class: external_observation
+  semantic_pattern:
+    observation_concept: prism:outlet/OutletObservation
+    observed_entity: prism:outlet/Outlet
+    observed_property: prism:metric/是否高德扫街榜/状元榜
+    data_source: prism:source/AMap
+    channel_applicability: all
+  mapping_status: mapped
+  temporal_nature: periodic_snapshot_updated
+- col_index: 24
+  physical_column: 高德扫街榜/状元榜榜单及排名
+  semantic_binding_status: proposed
+  validation_status: pending_operational_profile
+  field_class: external_observation
+  semantic_pattern:
+    observation_concept: prism:outlet/OutletObservation
+    observed_entity: prism:outlet/Outlet
+    observed_property: prism:metric/高德扫街榜/状元榜榜单及排名
+    data_source: prism:source/AMap
+    channel_applicability: all
+  mapping_status: mapped
+  temporal_nature: periodic_snapshot_updated
+- col_index: 25
+  physical_column: 是否匹配
+  semantic_binding_status: proposed
+  validation_status: pending_operational_profile
+  field_class: ambiguous_isolated
+  semantic_pattern: null
+  mapping_status: ambiguous
+  isolation_policy: excluded_from_execution
+  candidate_meanings:
+  - fuzzy_match_success_flag
+  - poi_binding_status
+  governance_required: true
+  reason: 业务定义存在多重解释或为临时业务标签，已显式隔离并阻断进入任何分析计划
+- col_index: 26
+  physical_column: 是否连锁
+  semantic_binding_status: proposed
+  validation_status: pending_operational_profile
+  field_class: classification_and_role
+  semantic_pattern:
+    target_entity: prism:outlet/Outlet
+    pattern_type: belongsToBrand
+    ontology_concept: prism:outlet/Brand
+    brand_property: 是否连锁
+  mapping_status: mapped
+  temporal_nature: stable_classification
+  value_transformation:
+    type: boolean_conversion
+    true_values:
+    - 是
+    - Y
+    - '1'
+    false_values:
+    - 否
+    - N
+    - '0'
+- col_index: 27
+  physical_column: 连锁品牌ID
+  semantic_binding_status: proposed
+  validation_status: pending_operational_profile
+  field_class: entity_identity
+  semantic_pattern:
+    target_entity: prism:core/Entity
+    pattern_type: hasIdentifier
+    identifier_scheme: BrandRegistryID
+  mapping_status: mapped
+  temporal_nature: immutable_static
+- col_index: 28
+  physical_column: 连锁品牌名称
+  semantic_binding_status: proposed
+  validation_status: pending_operational_profile
+  field_class: classification_and_role
+  semantic_pattern:
+    target_entity: prism:outlet/Outlet
+    pattern_type: belongsToBrand
+    ontology_concept: prism:outlet/Brand
+    brand_property: 连锁品牌名称
+  mapping_status: mapped
+  temporal_nature: stable_classification
+- col_index: 29
+  physical_column: 连锁集团ID
+  semantic_binding_status: proposed
+  validation_status: pending_operational_profile
+  field_class: entity_identity
+  semantic_pattern:
+    target_entity: prism:core/Entity
+    pattern_type: hasIdentifier
+    identifier_scheme: GroupRegistryID
+  mapping_status: mapped
+  temporal_nature: immutable_static
+- col_index: 30
+  physical_column: 连锁集团名称
+  semantic_binding_status: proposed
+  validation_status: pending_operational_profile
+  field_class: classification_and_role
+  semantic_pattern:
+    target_entity: prism:outlet/Outlet
+    pattern_type: belongsToBrand
+    ontology_concept: prism:outlet/Brand
+    brand_property: 连锁集团名称
+  mapping_status: mapped
+  temporal_nature: stable_classification
+- col_index: 31
+  physical_column: 连锁品牌信息备注
+  semantic_binding_status: proposed
+  validation_status: pending_operational_profile
+  field_class: classification_and_role
+  semantic_pattern:
+    target_entity: prism:outlet/Outlet
+    pattern_type: belongsToBrand
+    ontology_concept: prism:outlet/Brand
+    brand_property: 连锁品牌信息备注
+  mapping_status: mapped
+  temporal_nature: stable_classification
+- col_index: 32
+  physical_column: 连锁来源
+  semantic_binding_status: proposed
+  validation_status: pending_operational_profile
+  field_class: classification_and_role
+  semantic_pattern:
+    target_entity: prism:outlet/Outlet
+    pattern_type: belongsToBrand
+    ontology_concept: prism:outlet/Brand
+    brand_property: 连锁来源
+  mapping_status: mapped
+  temporal_nature: stable_classification
+- col_index: 33
+  physical_column: 服务状态
+  semantic_binding_status: proposed
+  validation_status: pending_operational_profile
+  field_class: classification_and_role
+  semantic_pattern:
+    target_entity: prism:sales/ServiceRelationship
+    pattern_type: playsRoleInService
+    relationship_context:
+      subject: prism:org/SwireCocaCola
+      target: prism:outlet/Outlet
+      status_property: 服务状态
+  mapping_status: mapped
+  temporal_nature: time_varying_state
+  notes: 此字段表示特定组织在特定时间下的服务业务关系状态，非 Outlet 自身物理属性
+- col_index: 34
+  physical_column: 经营场所
+  semantic_binding_status: proposed
+  validation_status: pending_operational_profile
+  field_class: spatial_and_territory
+  semantic_pattern:
+    target_entity: prism:outlet/CommercialSite
+    pattern_type: spatialBufferTradeArea
+    site_category: 经营场所
+  mapping_status: mapped
+  temporal_nature: stable_geographic
+- col_index: 35
+  physical_column: 经营场所名称
+  semantic_binding_status: proposed
+  validation_status: pending_operational_profile
+  field_class: entity_identity
+  semantic_pattern:
+    target_entity: prism:outlet/CommercialSite
+    pattern_type: hasName
+  mapping_status: mapped
+  temporal_nature: low_volatility
+- col_index: 36
+  physical_column: 经营场所ID
+  semantic_binding_status: proposed
+  validation_status: pending_operational_profile
+  field_class: entity_identity
+  semantic_pattern:
+    target_entity: prism:core/Entity
+    pattern_type: hasIdentifier
+    identifier_scheme: CommercialSiteID
+  mapping_status: mapped
+  temporal_nature: immutable_static
+- col_index: 37
+  physical_column: 大学\高职外50米
+  semantic_binding_status: proposed
+  validation_status: pending_operational_profile
+  field_class: spatial_and_territory
+  semantic_pattern:
+    target_entity: prism:outlet/CommercialSite
+    pattern_type: spatialBufferTradeArea
+    site_category: 大学\高职外50米
+  mapping_status: mapped
+  temporal_nature: stable_geographic
+  value_transformation:
+    type: boolean_conversion
+- col_index: 38
+  physical_column: 大学\高职外500米
+  semantic_binding_status: proposed
+  validation_status: pending_operational_profile
+  field_class: spatial_and_territory
+  semantic_pattern:
+    target_entity: prism:outlet/CommercialSite
+    pattern_type: spatialBufferTradeArea
+    site_category: 大学\高职外500米
+  mapping_status: mapped
+  temporal_nature: stable_geographic
+  value_transformation:
+    type: boolean_conversion
+- col_index: 39
+  physical_column: 中学外50米
+  semantic_binding_status: proposed
+  validation_status: pending_operational_profile
+  field_class: spatial_and_territory
+  semantic_pattern:
+    target_entity: prism:outlet/CommercialSite
+    pattern_type: spatialBufferTradeArea
+    site_category: 中学外50米
+  mapping_status: mapped
+  temporal_nature: stable_geographic
+  value_transformation:
+    type: boolean_conversion
+- col_index: 40
+  physical_column: 景区外50米
+  semantic_binding_status: proposed
+  validation_status: pending_operational_profile
+  field_class: spatial_and_territory
+  semantic_pattern:
+    target_entity: prism:outlet/CommercialSite
+    pattern_type: spatialBufferTradeArea
+    site_category: 景区外50米
+  mapping_status: mapped
+  temporal_nature: stable_geographic
+  value_transformation:
+    type: boolean_conversion
+- col_index: 41
+  physical_column: 景区外1公里
+  semantic_binding_status: proposed
+  validation_status: pending_operational_profile
+  field_class: spatial_and_territory
+  semantic_pattern:
+    target_entity: prism:outlet/CommercialSite
+    pattern_type: spatialBufferTradeArea
+    site_category: 景区外1公里
+  mapping_status: mapped
+  temporal_nature: stable_geographic
+  value_transformation:
+    type: boolean_conversion
+- col_index: 42
+  physical_column: 景区外2公里
+  semantic_binding_status: proposed
+  validation_status: pending_operational_profile
+  field_class: spatial_and_territory
+  semantic_pattern:
+    target_entity: prism:outlet/CommercialSite
+    pattern_type: spatialBufferTradeArea
+    site_category: 景区外2公里
+  mapping_status: mapped
+  temporal_nature: stable_geographic
+  value_transformation:
+    type: boolean_conversion
+- col_index: 43
+  physical_column: 工矿外100米
+  semantic_binding_status: proposed
+  validation_status: pending_operational_profile
+  field_class: spatial_and_territory
+  semantic_pattern:
+    target_entity: prism:outlet/CommercialSite
+    pattern_type: spatialBufferTradeArea
+    site_category: 工矿外100米
+  mapping_status: mapped
+  temporal_nature: stable_geographic
+  value_transformation:
+    type: boolean_conversion
+- col_index: 44
+  physical_column: 小区外50米
+  semantic_binding_status: proposed
+  validation_status: pending_operational_profile
+  field_class: spatial_and_territory
+  semantic_pattern:
+    target_entity: prism:outlet/CommercialSite
+    pattern_type: spatialBufferTradeArea
+    site_category: 小区外50米
+  mapping_status: mapped
+  temporal_nature: stable_geographic
+  value_transformation:
+    type: boolean_conversion
+- col_index: 45
+  physical_column: 月均收入潜力预测(如有协议)
+  semantic_binding_status: proposed
+  validation_status: pending_operational_profile
+  field_class: derived_estimate
+  semantic_pattern:
+    estimate_concept: prism:outlet/DerivedEstimate
+    estimated_property: prism:metric/月均收入潜力预测(如有协议)
+    based_on:
+    - prism:outlet/DemographicObservation
+    - prism:outlet/ChannelType
+    - prism:outlet/CommercialSite
+    estimation_method: MachineLearningModel_v8
+    model_confidence: medium
+  mapping_status: derived
+  temporal_nature: model_versioned
+  notes: 基于多维特征与算法推导的估计值，严禁作为客观既成事实使用
+- col_index: 46
+  physical_column: 月均收入潜力预测(如有冰柜无协议)
+  semantic_binding_status: proposed
+  validation_status: pending_operational_profile
+  field_class: external_observation
+  semantic_pattern:
+    observation_concept: prism:outlet/AssetAndDisplayObservation
+    observed_entity: prism:outlet/Outlet
+    observed_property: prism:metric/月均收入潜力预测(如有冰柜无协议)
+    data_source: prism:source/FieldExecutionAudit
+  mapping_status: mapped
+  temporal_nature: audit_cadence_updated
+- col_index: 47
+  physical_column: 月均收入潜力预测(无协议无冰柜)
+  semantic_binding_status: proposed
+  validation_status: pending_operational_profile
+  field_class: external_observation
+  semantic_pattern:
+    observation_concept: prism:outlet/AssetAndDisplayObservation
+    observed_entity: prism:outlet/Outlet
+    observed_property: prism:metric/月均收入潜力预测(无协议无冰柜)
+    data_source: prism:source/FieldExecutionAudit
+  mapping_status: mapped
+  temporal_nature: audit_cadence_updated
+- col_index: 48
+  physical_column: 营业面积
+  semantic_binding_status: proposed
+  validation_status: pending_operational_profile
+  field_class: derived_estimate
+  semantic_pattern:
+    estimate_concept: prism:outlet/DerivedEstimate
+    estimated_property: prism:metric/营业面积
+    based_on:
+    - prism:outlet/DemographicObservation
+    - prism:outlet/ChannelType
+    - prism:outlet/CommercialSite
+    estimation_method: IndexCalculation
+    model_confidence: medium
+  mapping_status: derived
+  temporal_nature: model_versioned
+  notes: 基于多维特征与算法推导的估计值，严禁作为客观既成事实使用
+- col_index: 49
+  physical_column: NIQ-是否实际营业面积
+  semantic_binding_status: proposed
+  validation_status: pending_operational_profile
+  field_class: derived_estimate
+  semantic_pattern:
+    estimate_concept: prism:outlet/DerivedEstimate
+    estimated_property: prism:metric/NIQ-是否实际营业面积
+    based_on:
+    - prism:outlet/DemographicObservation
+    - prism:outlet/ChannelType
+    - prism:outlet/CommercialSite
+    estimation_method: IndexCalculation
+    model_confidence: medium
+  mapping_status: derived
+  temporal_nature: model_versioned
+  notes: 基于多维特征与算法推导的估计值，严禁作为客观既成事实使用
+- col_index: 50
+  physical_column: NIQ-NARTD指数
+  semantic_binding_status: proposed
+  validation_status: pending_operational_profile
+  field_class: derived_estimate
+  semantic_pattern:
+    estimate_concept: prism:outlet/DerivedEstimate
+    estimated_property: prism:metric/NIQ-NARTD指数
+    based_on:
+    - prism:outlet/DemographicObservation
+    - prism:outlet/ChannelType
+    - prism:outlet/CommercialSite
+    estimation_method: IndexCalculation
+    model_confidence: medium
+  mapping_status: derived
+  temporal_nature: model_versioned
+  notes: 基于多维特征与算法推导的估计值，严禁作为客观既成事实使用
+- col_index: 51
+  physical_column: LINX MT黄金门店
+  semantic_binding_status: proposed
+  validation_status: pending_operational_profile
+  field_class: derived_estimate
+  semantic_pattern:
+    estimate_concept: prism:outlet/DerivedEstimate
+    estimated_property: prism:metric/LINX MT黄金门店
+    based_on:
+    - prism:outlet/DemographicObservation
+    - prism:outlet/ChannelType
+    - prism:outlet/CommercialSite
+    estimation_method: IndexCalculation
+    model_confidence: medium
+  mapping_status: derived
+  temporal_nature: model_versioned
+  notes: 基于多维特征与算法推导的估计值，严禁作为客观既成事实使用
+- col_index: 52
+  physical_column: 携程-ID
+  semantic_binding_status: proposed
+  validation_status: pending_operational_profile
+  field_class: entity_identity
+  semantic_pattern:
+    target_entity: prism:core/Entity
+    pattern_type: hasIdentifier
+    identifier_scheme: CtripPOI
+  mapping_status: mapped
+  temporal_nature: immutable_static
+- col_index: 53
+  physical_column: 携程-名称
+  semantic_binding_status: proposed
+  validation_status: pending_operational_profile
+  field_class: external_observation
+  semantic_pattern:
+    observation_concept: prism:outlet/OutletObservation
+    observed_entity: prism:outlet/Outlet
+    observed_property: prism:metric/Ctrip_名称
+    data_source: prism:source/Ctrip
+    channel_applicability: 住宿
+  mapping_status: mapped
+  temporal_nature: periodic_snapshot_updated
+- col_index: 54
+  physical_column: 携程-类型
+  semantic_binding_status: proposed
+  validation_status: pending_operational_profile
+  field_class: external_observation
+  semantic_pattern:
+    observation_concept: prism:outlet/OutletObservation
+    observed_entity: prism:outlet/Outlet
+    observed_property: prism:metric/Ctrip_类型
+    data_source: prism:source/Ctrip
+    channel_applicability: 住宿
+  mapping_status: mapped
+  temporal_nature: periodic_snapshot_updated
+- col_index: 55
+  physical_column: 携程-酒店/民宿分类
+  semantic_binding_status: proposed
+  validation_status: pending_operational_profile
+  field_class: external_observation
+  semantic_pattern:
+    observation_concept: prism:outlet/OutletObservation
+    observed_entity: prism:outlet/Outlet
+    observed_property: prism:metric/Ctrip_酒店/民宿分类
+    data_source: prism:source/Ctrip
+    channel_applicability: 住宿
+  mapping_status: mapped
+  temporal_nature: periodic_snapshot_updated
+- col_index: 56
+  physical_column: 携程-品牌
+  semantic_binding_status: proposed
+  validation_status: pending_operational_profile
+  field_class: external_observation
+  semantic_pattern:
+    observation_concept: prism:outlet/OutletObservation
+    observed_entity: prism:outlet/Outlet
+    observed_property: prism:metric/Ctrip_品牌
+    data_source: prism:source/Ctrip
+    channel_applicability: 住宿
+  mapping_status: mapped
+  temporal_nature: periodic_snapshot_updated
+- col_index: 57
+  physical_column: 携程-集团
+  semantic_binding_status: proposed
+  validation_status: pending_operational_profile
+  field_class: external_observation
+  semantic_pattern:
+    observation_concept: prism:outlet/OutletObservation
+    observed_entity: prism:outlet/Outlet
+    observed_property: prism:metric/Ctrip_集团
+    data_source: prism:source/Ctrip
+    channel_applicability: 住宿
+  mapping_status: mapped
+  temporal_nature: periodic_snapshot_updated
+- col_index: 58
+  physical_column: 携程-总部所在地
+  semantic_binding_status: proposed
+  validation_status: pending_operational_profile
+  field_class: external_observation
+  semantic_pattern:
+    observation_concept: prism:outlet/OutletObservation
+    observed_entity: prism:outlet/Outlet
+    observed_property: prism:metric/Ctrip_总部所在地
+    data_source: prism:source/Ctrip
+    channel_applicability: 住宿
+  mapping_status: mapped
+  temporal_nature: periodic_snapshot_updated
+- col_index: 59
+  physical_column: 携程-连锁类型
+  semantic_binding_status: proposed
+  validation_status: pending_operational_profile
+  field_class: external_observation
+  semantic_pattern:
+    observation_concept: prism:outlet/OutletObservation
+    observed_entity: prism:outlet/Outlet
+    observed_property: prism:metric/Ctrip_连锁类型
+    data_source: prism:source/Ctrip
+    channel_applicability: 住宿
+  mapping_status: mapped
+  temporal_nature: periodic_snapshot_updated
+- col_index: 60
+  physical_column: 携程-星级
+  semantic_binding_status: proposed
+  validation_status: pending_operational_profile
+  field_class: external_observation
+  semantic_pattern:
+    observation_concept: prism:outlet/OutletObservation
+    observed_entity: prism:outlet/Outlet
+    observed_property: prism:metric/Ctrip_星级
+    data_source: prism:source/Ctrip
+    channel_applicability: 住宿
+  mapping_status: mapped
+  temporal_nature: periodic_snapshot_updated
+  value_transformation:
+    type: numeric_clean
+- col_index: 61
+  physical_column: 携程-连锁级别
+  semantic_binding_status: proposed
+  validation_status: pending_operational_profile
+  field_class: external_observation
+  semantic_pattern:
+    observation_concept: prism:outlet/OutletObservation
+    observed_entity: prism:outlet/Outlet
+    observed_property: prism:metric/Ctrip_连锁级别
+    data_source: prism:source/Ctrip
+    channel_applicability: 住宿
+  mapping_status: mapped
+  temporal_nature: periodic_snapshot_updated
+- col_index: 62
+  physical_column: 携程-评论数
+  semantic_binding_status: proposed
+  validation_status: pending_operational_profile
+  field_class: external_observation
+  semantic_pattern:
+    observation_concept: prism:outlet/OutletObservation
+    observed_entity: prism:outlet/Outlet
+    observed_property: prism:metric/Ctrip_评论数
+    data_source: prism:source/Ctrip
+    channel_applicability: 住宿
+  mapping_status: mapped
+  temporal_nature: periodic_snapshot_updated
+  value_transformation:
+    type: numeric_clean
+- col_index: 63
+  physical_column: 携程-综合评分
+  semantic_binding_status: proposed
+  validation_status: pending_operational_profile
+  field_class: external_observation
+  semantic_pattern:
+    observation_concept: prism:outlet/OutletObservation
+    observed_entity: prism:outlet/Outlet
+    observed_property: prism:metric/Ctrip_综合评分
+    data_source: prism:source/Ctrip
+    channel_applicability: 住宿
+  mapping_status: mapped
+  temporal_nature: periodic_snapshot_updated
+  value_transformation:
+    type: numeric_clean
+- col_index: 64
+  physical_column: 携程-开业时间
+  semantic_binding_status: proposed
+  validation_status: pending_operational_profile
+  field_class: external_observation
+  semantic_pattern:
+    observation_concept: prism:outlet/OutletObservation
+    observed_entity: prism:outlet/Outlet
+    observed_property: prism:metric/Ctrip_开业时间
+    data_source: prism:source/Ctrip
+    channel_applicability: 住宿
+  mapping_status: mapped
+  temporal_nature: periodic_snapshot_updated
+- col_index: 65
+  physical_column: 携程-房间数
+  semantic_binding_status: proposed
+  validation_status: pending_operational_profile
+  field_class: external_observation
+  semantic_pattern:
+    observation_concept: prism:outlet/OutletObservation
+    observed_entity: prism:outlet/Outlet
+    observed_property: prism:metric/Ctrip_房间数
+    data_source: prism:source/Ctrip
+    channel_applicability: 住宿
+  mapping_status: mapped
+  temporal_nature: periodic_snapshot_updated
+  value_transformation:
+    type: numeric_clean
+- col_index: 66
+  physical_column: 大众点评ID
+  semantic_binding_status: proposed
+  validation_status: pending_operational_profile
+  field_class: entity_identity
+  semantic_pattern:
+    target_entity: prism:core/Entity
+    pattern_type: hasIdentifier
+    identifier_scheme: DianpingPOI
+  mapping_status: mapped
+  temporal_nature: immutable_static
+- col_index: 67
+  physical_column: 大众点评营业时间
+  semantic_binding_status: proposed
+  validation_status: pending_operational_profile
+  field_class: external_observation
+  semantic_pattern:
+    observation_concept: prism:outlet/OutletObservation
+    observed_entity: prism:outlet/Outlet
+    observed_property: prism:metric/大众点评营业时间
+    data_source: prism:source/Dianping
+    channel_applicability: all
+  mapping_status: mapped
+  temporal_nature: periodic_snapshot_updated
+- col_index: 68
+  physical_column: 大众点评营业状态
+  semantic_binding_status: proposed
+  validation_status: pending_operational_profile
+  field_class: external_observation
+  semantic_pattern:
+    observation_concept: prism:outlet/OutletObservation
+    observed_entity: prism:outlet/Outlet
+    observed_property: prism:metric/大众点评营业状态
+    data_source: prism:source/Dianping
+    channel_applicability: all
+  mapping_status: mapped
+  temporal_nature: periodic_snapshot_updated
+- col_index: 69
+  physical_column: 大众点评菜系
+  semantic_binding_status: proposed
+  validation_status: pending_operational_profile
+  field_class: external_observation
+  semantic_pattern:
+    observation_concept: prism:outlet/OutletObservation
+    observed_entity: prism:outlet/Outlet
+    observed_property: prism:metric/大众点评菜系
+    data_source: prism:source/Dianping
+    channel_applicability: 餐饮
+  mapping_status: mapped
+  temporal_nature: periodic_snapshot_updated
+- col_index: 70
+  physical_column: 大众点评-必吃榜和黑珍珠
+  semantic_binding_status: proposed
+  validation_status: pending_operational_profile
+  field_class: external_observation
+  semantic_pattern:
+    observation_concept: prism:outlet/OutletObservation
+    observed_entity: prism:outlet/Outlet
+    observed_property: prism:metric/大众点评-必吃榜和黑珍珠
+    data_source: prism:source/Dianping
+    channel_applicability: all
+  mapping_status: mapped
+  temporal_nature: periodic_snapshot_updated
+- col_index: 71
+  physical_column: 大众点评餐饮用户评论数量
+  semantic_binding_status: proposed
+  validation_status: pending_operational_profile
+  field_class: external_observation
+  semantic_pattern:
+    observation_concept: prism:outlet/OutletObservation
+    observed_entity: prism:outlet/Outlet
+    observed_property: prism:metric/大众点评餐饮用户评论数量
+    data_source: prism:source/Dianping
+    channel_applicability: 餐饮
+  mapping_status: mapped
+  temporal_nature: periodic_snapshot_updated
+  value_transformation:
+    type: numeric_clean
+- col_index: 72
+  physical_column: 大众点评餐饮口味评分星级
+  semantic_binding_status: proposed
+  validation_status: pending_operational_profile
+  field_class: external_observation
+  semantic_pattern:
+    observation_concept: prism:outlet/OutletObservation
+    observed_entity: prism:outlet/Outlet
+    observed_property: prism:metric/大众点评餐饮口味评分星级
+    data_source: prism:source/Dianping
+    channel_applicability: 餐饮
+  mapping_status: mapped
+  temporal_nature: periodic_snapshot_updated
+  value_transformation:
+    type: numeric_clean
+- col_index: 73
+  physical_column: 大众点评餐饮环境评分星级
+  semantic_binding_status: proposed
+  validation_status: pending_operational_profile
+  field_class: external_observation
+  semantic_pattern:
+    observation_concept: prism:outlet/OutletObservation
+    observed_entity: prism:outlet/Outlet
+    observed_property: prism:metric/大众点评餐饮环境评分星级
+    data_source: prism:source/Dianping
+    channel_applicability: 餐饮
+  mapping_status: mapped
+  temporal_nature: periodic_snapshot_updated
+  value_transformation:
+    type: numeric_clean
+- col_index: 74
+  physical_column: 大众点评餐饮服务评分星级
+  semantic_binding_status: proposed
+  validation_status: pending_operational_profile
+  field_class: external_observation
+  semantic_pattern:
+    observation_concept: prism:outlet/OutletObservation
+    observed_entity: prism:outlet/Outlet
+    observed_property: prism:metric/大众点评餐饮服务评分星级
+    data_source: prism:source/Dianping
+    channel_applicability: 餐饮
+  mapping_status: mapped
+  temporal_nature: periodic_snapshot_updated
+  value_transformation:
+    type: numeric_clean
+- col_index: 75
+  physical_column: 大众点评餐饮点评评分星级
+  semantic_binding_status: proposed
+  validation_status: pending_operational_profile
+  field_class: external_observation
+  semantic_pattern:
+    observation_concept: prism:outlet/OutletObservation
+    observed_entity: prism:outlet/Outlet
+    observed_property: prism:metric/大众点评餐饮点评评分星级
+    data_source: prism:source/Dianping
+    channel_applicability: 餐饮
+  mapping_status: mapped
+  temporal_nature: periodic_snapshot_updated
+  value_transformation:
+    type: numeric_clean
+- col_index: 76
+  physical_column: 大众点评点评榜单(详细)
+  semantic_binding_status: proposed
+  validation_status: pending_operational_profile
+  field_class: external_observation
+  semantic_pattern:
+    observation_concept: prism:outlet/OutletObservation
+    observed_entity: prism:outlet/Outlet
+    observed_property: prism:metric/大众点评点评榜单(详细)
+    data_source: prism:source/Dianping
+    channel_applicability: all
+  mapping_status: mapped
+  temporal_nature: periodic_snapshot_updated
+- col_index: 77
+  physical_column: 大众点评餐饮人均消费
+  semantic_binding_status: proposed
+  validation_status: pending_operational_profile
+  field_class: external_observation
+  semantic_pattern:
+    observation_concept: prism:outlet/OutletObservation
+    observed_entity: prism:outlet/Outlet
+    observed_property: prism:metric/大众点评餐饮人均消费
+    data_source: prism:source/Dianping
+    channel_applicability: 餐饮
+  mapping_status: mapped
+  temporal_nature: periodic_snapshot_updated
+  value_transformation:
+    type: numeric_clean
+- col_index: 78
+  physical_column: 大众点评连锁等级
+  semantic_binding_status: proposed
+  validation_status: pending_operational_profile
+  field_class: external_observation
+  semantic_pattern:
+    observation_concept: prism:outlet/OutletObservation
+    observed_entity: prism:outlet/Outlet
+    observed_property: prism:metric/大众点评连锁等级
+    data_source: prism:source/Dianping
+    channel_applicability: all
+  mapping_status: mapped
+  temporal_nature: periodic_snapshot_updated
+- col_index: 79
+  physical_column: 大众点评连锁范围
+  semantic_binding_status: proposed
+  validation_status: pending_operational_profile
+  field_class: external_observation
+  semantic_pattern:
+    observation_concept: prism:outlet/OutletObservation
+    observed_entity: prism:outlet/Outlet
+    observed_property: prism:metric/大众点评连锁范围
+    data_source: prism:source/Dianping
+    channel_applicability: all
+  mapping_status: mapped
+  temporal_nature: periodic_snapshot_updated
+- col_index: 80
+  physical_column: 大众点评是否有点评信息
+  semantic_binding_status: proposed
+  validation_status: pending_operational_profile
+  field_class: external_observation
+  semantic_pattern:
+    observation_concept: prism:outlet/OutletObservation
+    observed_entity: prism:outlet/Outlet
+    observed_property: prism:metric/大众点评是否有点评信息
+    data_source: prism:source/Dianping
+    channel_applicability: all
+  mapping_status: mapped
+  temporal_nature: periodic_snapshot_updated
+- col_index: 81
+  physical_column: 是否是O2O门店
+  semantic_binding_status: proposed
+  validation_status: pending_operational_profile
+  field_class: external_observation
+  semantic_pattern:
+    observation_concept: prism:outlet/OutletObservation
+    observed_entity: prism:outlet/Outlet
+    observed_property: prism:metric/是否是O2O门店
+    data_source: prism:source/Dianping
+    channel_applicability: all
+  mapping_status: mapped
+  temporal_nature: periodic_snapshot_updated
+- col_index: 82
+  physical_column: 是否商超O2O
+  semantic_binding_status: proposed
+  validation_status: pending_operational_profile
+  field_class: external_observation
+  semantic_pattern:
+    observation_concept: prism:outlet/OutletObservation
+    observed_entity: prism:outlet/Outlet
+    observed_property: prism:metric/是否商超O2O
+    data_source: prism:source/Dianping
+    channel_applicability: all
+  mapping_status: mapped
+  temporal_nature: periodic_snapshot_updated
+- col_index: 83
+  physical_column: 太古乡镇
+  semantic_binding_status: proposed
+  validation_status: pending_operational_profile
+  field_class: external_observation
+  semantic_pattern:
+    observation_concept: prism:outlet/TownshipContext
+    observed_entity: prism:outlet/AdministrativeRegion
+    observed_property: prism:metric/太古乡镇
+    data_source: prism:source/SwireTownshipMaster
+  mapping_status: mapped
+  temporal_nature: annual_master_updated
+- col_index: 84
+  physical_column: 太古乡镇编码
+  semantic_binding_status: proposed
+  validation_status: pending_operational_profile
+  field_class: entity_identity
+  semantic_pattern:
+    target_entity: prism:core/Entity
+    pattern_type: hasIdentifier
+    identifier_scheme: SwireTownshipCode
+  mapping_status: mapped
+  temporal_nature: immutable_static
+- col_index: 85
+  physical_column: 系统乡镇
+  semantic_binding_status: proposed
+  validation_status: pending_operational_profile
+  field_class: external_observation
+  semantic_pattern:
+    observation_concept: prism:outlet/TownshipContext
+    observed_entity: prism:outlet/AdministrativeRegion
+    observed_property: prism:metric/系统乡镇
+    data_source: prism:source/SwireTownshipMaster
+  mapping_status: mapped
+  temporal_nature: annual_master_updated
+- col_index: 86
+  physical_column: 据DC距离(KM)
+  semantic_binding_status: proposed
+  validation_status: pending_operational_profile
+  field_class: external_observation
+  semantic_pattern:
+    observation_concept: prism:outlet/DemographicObservation
+    observed_entity: prism:outlet/TradeArea
+    observed_property: prism:metric/据DC距离(KM)
+    data_source: prism:source/LocationIntelligence
+  mapping_status: mapped
+  temporal_nature: quarterly_updated
+  value_transformation:
+    type: numeric_clean
+- col_index: 87
+  physical_column: 据办事处距离(KM)
+  semantic_binding_status: proposed
+  validation_status: pending_operational_profile
+  field_class: external_observation
+  semantic_pattern:
+    observation_concept: prism:outlet/DemographicObservation
+    observed_entity: prism:outlet/TradeArea
+    observed_property: prism:metric/据办事处距离(KM)
+    data_source: prism:source/LocationIntelligence
+  mapping_status: mapped
+  temporal_nature: quarterly_updated
+  value_transformation:
+    type: numeric_clean
+- col_index: 88
+  physical_column: 市场区隔
+  semantic_binding_status: proposed
+  validation_status: pending_operational_profile
+  field_class: external_observation
+  semantic_pattern:
+    observation_concept: prism:outlet/TownshipContext
+    observed_entity: prism:outlet/AdministrativeRegion
+    observed_property: prism:metric/市场区隔
+    data_source: prism:source/SwireTownshipMaster
+  mapping_status: mapped
+  temporal_nature: annual_master_updated
+- col_index: 89
+  physical_column: 乡镇属性
+  semantic_binding_status: proposed
+  validation_status: pending_operational_profile
+  field_class: external_observation
+  semantic_pattern:
+    observation_concept: prism:outlet/TownshipContext
+    observed_entity: prism:outlet/AdministrativeRegion
+    observed_property: prism:metric/乡镇属性
+    data_source: prism:source/SwireTownshipMaster
+  mapping_status: mapped
+  temporal_nature: annual_master_updated
+- col_index: 90
+  physical_column: 赶集日
+  semantic_binding_status: proposed
+  validation_status: pending_operational_profile
+  field_class: external_observation
+  semantic_pattern:
+    observation_concept: prism:outlet/TownshipContext
+    observed_entity: prism:outlet/AdministrativeRegion
+    observed_property: prism:metric/赶集日
+    data_source: prism:source/SwireTownshipMaster
+  mapping_status: mapped
+  temporal_nature: annual_master_updated
+- col_index: 91
+  physical_column: 是否红镇，默认否
+  semantic_binding_status: proposed
+  validation_status: pending_operational_profile
+  field_class: external_observation
+  semantic_pattern:
+    observation_concept: prism:outlet/TownshipContext
+    observed_entity: prism:outlet/AdministrativeRegion
+    observed_property: prism:metric/是否红镇，默认否
+    data_source: prism:source/SwireTownshipMaster
+  mapping_status: mapped
+  temporal_nature: annual_master_updated
+- col_index: 92
+  physical_column: 客资编号
+  semantic_binding_status: proposed
+  validation_status: pending_operational_profile
+  field_class: entity_identity
+  semantic_pattern:
+    target_entity: prism:outlet/Outlet
+    pattern_type: hasIdentifier
+    identifier_scheme: CustomerAccountID
+  mapping_status: mapped
+  temporal_nature: immutable_static
+- col_index: 93
+  physical_column: 客资名称
+  semantic_binding_status: proposed
+  validation_status: pending_operational_profile
+  field_class: entity_identity
+  semantic_pattern:
+    target_entity: prism:outlet/Outlet
+    pattern_type: hasName
+  mapping_status: mapped
+  temporal_nature: low_volatility
+- col_index: 94
+  physical_column: 客资地址
+  semantic_binding_status: proposed
+  validation_status: pending_operational_profile
+  field_class: entity_identity
+  semantic_pattern:
+    target_entity: prism:outlet/Outlet
+    pattern_type: hasPhysicalAddress
+  mapping_status: mapped
+  temporal_nature: low_volatility
+- col_index: 95
+  physical_column: KA名称
+  semantic_binding_status: proposed
+  validation_status: pending_operational_profile
+  field_class: classification_and_role
+  semantic_pattern:
+    target_entity: prism:outlet/Outlet
+    pattern_type: belongsToBrand
+    ontology_concept: prism:outlet/Brand
+    brand_property: KA名称
+  mapping_status: mapped
+  temporal_nature: stable_classification
+- col_index: 96
+  physical_column: 连锁名称
+  semantic_binding_status: proposed
+  validation_status: pending_operational_profile
+  field_class: classification_and_role
+  semantic_pattern:
+    target_entity: prism:outlet/Outlet
+    pattern_type: belongsToBrand
+    ontology_concept: prism:outlet/Brand
+    brand_property: 连锁名称
+  mapping_status: mapped
+  temporal_nature: stable_classification
+- col_index: 97
+  physical_column: 连锁类型
+  semantic_binding_status: proposed
+  validation_status: pending_operational_profile
+  field_class: classification_and_role
+  semantic_pattern:
+    target_entity: prism:outlet/Outlet
+    pattern_type: belongsToBrand
+    ontology_concept: prism:outlet/Brand
+    brand_property: 连锁类型
+  mapping_status: mapped
+  temporal_nature: stable_classification
+- col_index: 98
+  physical_column: 客户状态码
+  semantic_binding_status: proposed
+  validation_status: pending_operational_profile
+  field_class: classification_and_role
+  semantic_pattern:
+    target_entity: prism:sales/ServiceRelationship
+    pattern_type: playsRoleInService
+    relationship_context:
+      subject: prism:org/SwireCocaCola
+      target: prism:outlet/Outlet
+      status_property: 客户状态码
+  mapping_status: mapped
+  temporal_nature: time_varying_state
+  notes: 此字段表示特定组织在特定时间下的服务业务关系状态，非 Outlet 自身物理属性
+- col_index: 99
+  physical_column: 是否协议客户
+  semantic_binding_status: proposed
+  validation_status: pending_operational_profile
+  field_class: classification_and_role
+  semantic_pattern:
+    target_entity: prism:sales/ServiceRelationship
+    pattern_type: playsRoleInService
+    relationship_context:
+      subject: prism:org/SwireCocaCola
+      target: prism:outlet/Outlet
+      status_property: 是否协议客户
+  mapping_status: mapped
+  temporal_nature: time_varying_state
+  notes: 此字段表示特定组织在特定时间下的服务业务关系状态，非 Outlet 自身物理属性
+- col_index: 100
+  physical_column: 冰柜门数
+  semantic_binding_status: proposed
+  validation_status: pending_operational_profile
+  field_class: external_observation
+  semantic_pattern:
+    observation_concept: prism:outlet/AssetAndDisplayObservation
+    observed_entity: prism:outlet/Outlet
+    observed_property: prism:metric/冰柜门数
+    data_source: prism:source/FieldExecutionAudit
+  mapping_status: mapped
+  temporal_nature: audit_cadence_updated
+- col_index: 101
+  physical_column: TOP
+  semantic_binding_status: proposed
+  validation_status: pending_operational_profile
+  field_class: external_observation
+  semantic_pattern:
+    observation_concept: prism:outlet/AssetAndDisplayObservation
+    observed_entity: prism:outlet/Outlet
+    observed_property: prism:metric/TOP
+    data_source: prism:source/FieldExecutionAudit
+  mapping_status: mapped
+  temporal_nature: audit_cadence_updated
+- col_index: 102
+  physical_column: 未拿到费用协议客户
+  semantic_binding_status: proposed
+  validation_status: pending_operational_profile
+  field_class: classification_and_role
+  semantic_pattern:
+    target_entity: prism:sales/ServiceRelationship
+    pattern_type: playsRoleInService
+    relationship_context:
+      subject: prism:org/SwireCocaCola
+      target: prism:outlet/Outlet
+      status_property: 未拿到费用协议客户
+  mapping_status: mapped
+  temporal_nature: time_varying_state
+  notes: 此字段表示特定组织在特定时间下的服务业务关系状态，非 Outlet 自身物理属性
+- col_index: 103
+  physical_column: 配送类型
+  semantic_binding_status: proposed
+  validation_status: pending_operational_profile
+  field_class: external_observation
+  semantic_pattern:
+    observation_concept: prism:outlet/AssetAndDisplayObservation
+    observed_entity: prism:outlet/Outlet
+    observed_property: prism:metric/配送类型
+    data_source: prism:source/FieldExecutionAudit
+  mapping_status: mapped
+  temporal_nature: audit_cadence_updated
+- col_index: 104
+  physical_column: 滚动12个月销售收入
+  semantic_binding_status: proposed
+  validation_status: pending_operational_profile
+  field_class: external_observation
+  semantic_pattern:
+    observation_concept: prism:outlet/AssetAndDisplayObservation
+    observed_entity: prism:outlet/Outlet
+    observed_property: prism:metric/滚动12个月销售收入
+    data_source: prism:source/FieldExecutionAudit
+  mapping_status: mapped
+  temporal_nature: audit_cadence_updated
+- col_index: 105
+  physical_column: NARTD排面数
+  semantic_binding_status: proposed
+  validation_status: pending_operational_profile
+  field_class: external_observation
+  semantic_pattern:
+    observation_concept: prism:outlet/AssetAndDisplayObservation
+    observed_entity: prism:outlet/Outlet
+    observed_property: prism:metric/NARTD排面数
+    data_source: prism:source/FieldExecutionAudit
+  mapping_status: mapped
+  temporal_nature: audit_cadence_updated
+- col_index: 106
+  physical_column: SOVI排面占比%
+  semantic_binding_status: proposed
+  validation_status: pending_operational_profile
+  field_class: external_observation
+  semantic_pattern:
+    observation_concept: prism:outlet/AssetAndDisplayObservation
+    observed_entity: prism:outlet/Outlet
+    observed_property: prism:metric/SOVI排面占比%
+    data_source: prism:source/FieldExecutionAudit
+  mapping_status: mapped
+  temporal_nature: audit_cadence_updated
+- col_index: 107
+  physical_column: NARTD冰冻排面数
+  semantic_binding_status: proposed
+  validation_status: pending_operational_profile
+  field_class: external_observation
+  semantic_pattern:
+    observation_concept: prism:outlet/AssetAndDisplayObservation
+    observed_entity: prism:outlet/Outlet
+    observed_property: prism:metric/NARTD冰冻排面数
+    data_source: prism:source/FieldExecutionAudit
+  mapping_status: mapped
+  temporal_nature: audit_cadence_updated
+- col_index: 108
+  physical_column: SOCI冰冻排面占比%
+  semantic_binding_status: proposed
+  validation_status: pending_operational_profile
+  field_class: external_observation
+  semantic_pattern:
+    observation_concept: prism:outlet/AssetAndDisplayObservation
+    observed_entity: prism:outlet/Outlet
+    observed_property: prism:metric/SOCI冰冻排面占比%
+    data_source: prism:source/FieldExecutionAudit
+  mapping_status: mapped
+  temporal_nature: audit_cadence_updated
+- col_index: 109
+  physical_column: 拜访日
+  semantic_binding_status: proposed
+  validation_status: pending_operational_profile
+  field_class: engineering_provenance
+  semantic_pattern:
+    provenance_concept: prism:provenance/DataEngineeringContext
+    context_property: 拜访日
+  mapping_status: not_applicable
+  temporal_nature: pipeline_execution_timestamp
+  notes: ETL 管道或外部移动执行系统打卡日志列，不进入售点洞察业务分析
+- col_index: 110
+  physical_column: 拜访就近客户编码
+  semantic_binding_status: proposed
+  validation_status: pending_operational_profile
+  field_class: engineering_provenance
+  semantic_pattern:
+    provenance_concept: prism:provenance/DataEngineeringContext
+    context_property: 拜访就近客户编码
+  mapping_status: not_applicable
+  temporal_nature: pipeline_execution_timestamp
+  notes: ETL 管道或外部移动执行系统打卡日志列，不进入售点洞察业务分析
+- col_index: 111
+  physical_column: OU回传数据_是否存在
+  semantic_binding_status: proposed
+  validation_status: pending_operational_profile
+  field_class: engineering_provenance
+  semantic_pattern:
+    provenance_concept: prism:provenance/DataEngineeringContext
+    context_property: OU回传数据_是否存在
+  mapping_status: not_applicable
+  temporal_nature: pipeline_execution_timestamp
+  notes: ETL 管道或外部移动执行系统打卡日志列，不进入售点洞察业务分析
+- col_index: 112
+  physical_column: OU回传数据_是否过滤
+  semantic_binding_status: proposed
+  validation_status: pending_operational_profile
+  field_class: engineering_provenance
+  semantic_pattern:
+    provenance_concept: prism:provenance/DataEngineeringContext
+    context_property: OU回传数据_是否过滤
+  mapping_status: not_applicable
+  temporal_nature: pipeline_execution_timestamp
+  notes: ETL 管道或外部移动执行系统打卡日志列，不进入售点洞察业务分析
+- col_index: 113
+  physical_column: 备注
+  semantic_binding_status: proposed
+  validation_status: pending_operational_profile
+  field_class: engineering_provenance
+  semantic_pattern:
+    provenance_concept: prism:provenance/DataEngineeringContext
+    context_property: 备注
+  mapping_status: not_applicable
+  temporal_nature: pipeline_execution_timestamp
+  notes: ETL 管道或外部移动执行系统打卡日志列，不进入售点洞察业务分析
+- col_index: 114
+  physical_column: POI上线时间
+  semantic_binding_status: proposed
+  validation_status: pending_operational_profile
+  field_class: entity_identity
+  semantic_pattern:
+    target_entity: prism:outlet/Outlet
+    pattern_type: hasLifecycleEvent
+    lifecycle_property: prism:lifecycle/EntityOnlineTime
+  mapping_status: mapped
+  temporal_nature: immutable_timestamp
+- col_index: 115
+  physical_column: 客资地址质量
+  semantic_binding_status: proposed
+  validation_status: pending_operational_profile
+  field_class: external_observation
+  semantic_pattern:
+    observation_concept: prism:quality/EntityResolutionAssessment
+    observed_entity: prism:quality/MatchPairAssessment
+    observed_property: prism:metric/客资地址质量
+    data_source: prism:source/GeocodingAuditService
+    notes: 地址解析与腾讯POI匹配质量评估测量，观察对象为匹配对实体解析评估
+  mapping_status: mapped
+  temporal_nature: batch_audit_snapshot
+- col_index: 116
+  physical_column: 客资标杆位置与地址解析位置之间的距离（米）
+  semantic_binding_status: proposed
+  validation_status: pending_operational_profile
+  field_class: external_observation
+  semantic_pattern:
+    observation_concept: prism:quality/EntityResolutionAssessment
+    observed_entity: prism:quality/MatchPairAssessment
+    observed_property: prism:metric/客资标杆位置与地址解析位置之间的距离（米）
+    data_source: prism:source/GeocodingAuditService
+    notes: 地址解析与腾讯POI匹配质量评估测量，观察对象为匹配对实体解析评估
+  mapping_status: mapped
+  temporal_nature: batch_audit_snapshot
+  value_transformation:
+    type: numeric_clean
+- col_index: 117
+  physical_column: 客资标杆位置与匹配腾讯POI位置之间的距离（米）
+  semantic_binding_status: proposed
+  validation_status: pending_operational_profile
+  field_class: external_observation
+  semantic_pattern:
+    observation_concept: prism:quality/EntityResolutionAssessment
+    observed_entity: prism:quality/MatchPairAssessment
+    observed_property: prism:metric/客资标杆位置与匹配腾讯POI位置之间的距离（米）
+    data_source: prism:source/GeocodingAuditService
+    notes: 地址解析与腾讯POI匹配质量评估测量，观察对象为匹配对实体解析评估
+  mapping_status: mapped
+  temporal_nature: batch_audit_snapshot
+  value_transformation:
+    type: numeric_clean
+- col_index: 118
+  physical_column: 建档时间
+  semantic_binding_status: proposed
+  validation_status: pending_operational_profile
+  field_class: entity_identity
+  semantic_pattern:
+    target_entity: prism:sales/CustomerAccount
+    pattern_type: hasLifecycleEvent
+    lifecycle_property: prism:lifecycle/RecordCreationTime
+  mapping_status: mapped
+  temporal_nature: immutable_timestamp
+- col_index: 119
+  physical_column: 区域线路编码
+  semantic_binding_status: proposed
+  validation_status: pending_operational_profile
+  field_class: spatial_and_territory
+  semantic_pattern:
+    target_entity: prism:outlet/Territory
+    territory_level: SalesRoute
+    relation_type: coveredBySalesTerritory
+  mapping_status: mapped
+  temporal_nature: organizational_cadence_adjusted
+  notes: 企业内部划定的销售责任辖区路线，严禁与国家法定行政区划折叠
+- col_index: 120
+  physical_column: 区域线路办事处
+  semantic_binding_status: proposed
+  validation_status: pending_operational_profile
+  field_class: spatial_and_territory
+  semantic_pattern:
+    target_entity: prism:outlet/Territory
+    territory_level: SalesOffice
+    relation_type: coveredBySalesTerritory
+  mapping_status: mapped
+  temporal_nature: organizational_cadence_adjusted
+  notes: 企业内部划定的销售责任辖区路线，严禁与国家法定行政区划折叠
+- col_index: 121
+  physical_column: 手机端反馈售点是否存在
+  semantic_binding_status: proposed
+  validation_status: pending_operational_profile
+  field_class: engineering_provenance
+  semantic_pattern:
+    provenance_concept: prism:provenance/DataEngineeringContext
+    context_property: 手机端反馈售点是否存在
+  mapping_status: not_applicable
+  temporal_nature: pipeline_execution_timestamp
+  notes: ETL 管道或外部移动执行系统打卡日志列，不进入售点洞察业务分析
+- col_index: 122
+  physical_column: 手机端反馈渠道是否正确
+  semantic_binding_status: proposed
+  validation_status: pending_operational_profile
+  field_class: engineering_provenance
+  semantic_pattern:
+    provenance_concept: prism:provenance/DataEngineeringContext
+    context_property: 手机端反馈渠道是否正确
+  mapping_status: not_applicable
+  temporal_nature: pipeline_execution_timestamp
+  notes: ETL 管道或外部移动执行系统打卡日志列，不进入售点洞察业务分析
+- col_index: 123
+  physical_column: 是否闪电仓客户
+  semantic_binding_status: proposed
+  validation_status: pending_operational_profile
+  field_class: classification_and_role
+  semantic_pattern:
+    target_entity: prism:sales/ServiceRelationship
+    pattern_type: playsRoleInService
+    relationship_context:
+      subject: prism:org/SwireCocaCola
+      target: prism:outlet/Outlet
+      status_property: 是否闪电仓客户
+  mapping_status: mapped
+  temporal_nature: time_varying_state
+  notes: 此字段表示特定组织在特定时间下的服务业务关系状态，非 Outlet 自身物理属性
+- col_index: 124
+  physical_column: 闪电仓系统
+  semantic_binding_status: proposed
+  validation_status: pending_operational_profile
+  field_class: classification_and_role
+  semantic_pattern:
+    target_entity: prism:sales/ServiceRelationship
+    pattern_type: playsRoleInService
+    relationship_context:
+      subject: prism:org/SwireCocaCola
+      target: prism:outlet/Outlet
+      status_property: 闪电仓系统
+  mapping_status: mapped
+  temporal_nature: time_varying_state
+  notes: 此字段表示特定组织在特定时间下的服务业务关系状态，非 Outlet 自身物理属性
+- col_index: 125
+  physical_column: Universe以外数据来源
+  semantic_binding_status: proposed
+  validation_status: pending_operational_profile
+  field_class: ambiguous_isolated
+  semantic_pattern: null
+  mapping_status: ambiguous
+  isolation_policy: excluded_from_execution
+  candidate_meanings:
+  - third_party_crawler_source
+  - ad_hoc_campaign_dataset
+  governance_required: true
+  reason: 业务定义存在多重解释或为临时业务标签，已显式隔离并阻断进入任何分析计划
+- col_index: 126
+  physical_column: 是否移动端推荐客户
+  semantic_binding_status: proposed
+  validation_status: pending_operational_profile
+  field_class: classification_and_role
+  semantic_pattern:
+    target_entity: prism:sales/ServiceRelationship
+    pattern_type: playsRoleInService
+    relationship_context:
+      subject: prism:org/SwireCocaCola
+      target: prism:outlet/Outlet
+      status_property: 是否移动端推荐客户
+  mapping_status: mapped
+  temporal_nature: time_varying_state
+  notes: 此字段表示特定组织在特定时间下的服务业务关系状态，非 Outlet 自身物理属性
+- col_index: 127
+  physical_column: 居住人口(人)
+  semantic_binding_status: proposed
+  validation_status: pending_operational_profile
+  field_class: external_observation
+  semantic_pattern:
+    observation_concept: prism:outlet/DemographicObservation
+    observed_entity: prism:outlet/TradeArea
+    observed_property: prism:metric/居住人口(人)
+    data_source: prism:source/LocationIntelligence
+  mapping_status: mapped
+  temporal_nature: quarterly_updated
+  value_transformation:
+    type: numeric_clean
+- col_index: 128
+  physical_column: 办公人口(人)
+  semantic_binding_status: proposed
+  validation_status: pending_operational_profile
+  field_class: external_observation
+  semantic_pattern:
+    observation_concept: prism:outlet/DemographicObservation
+    observed_entity: prism:outlet/TradeArea
+    observed_property: prism:metric/办公人口(人)
+    data_source: prism:source/LocationIntelligence
+  mapping_status: mapped
+  temporal_nature: quarterly_updated
+  value_transformation:
+    type: numeric_clean
+- col_index: 129
+  physical_column: 平日均值客流(人)
+  semantic_binding_status: proposed
+  validation_status: pending_operational_profile
+  field_class: external_observation
+  semantic_pattern:
+    observation_concept: prism:outlet/DemographicObservation
+    observed_entity: prism:outlet/TradeArea
+    observed_property: prism:metric/平日均值客流(人)
+    data_source: prism:source/LocationIntelligence
+  mapping_status: mapped
+  temporal_nature: quarterly_updated
+  value_transformation:
+    type: numeric_clean
+- col_index: 130
+  physical_column: 周末均值客流(人)
+  semantic_binding_status: proposed
+  validation_status: pending_operational_profile
+  field_class: external_observation
+  semantic_pattern:
+    observation_concept: prism:outlet/DemographicObservation
+    observed_entity: prism:outlet/TradeArea
+    observed_property: prism:metric/周末均值客流(人)
+    data_source: prism:source/LocationIntelligence
+  mapping_status: mapped
+  temporal_nature: quarterly_updated
+  value_transformation:
+    type: numeric_clean
+- col_index: 131
+  physical_column: 日均客流
+  semantic_binding_status: proposed
+  validation_status: pending_operational_profile
+  field_class: external_observation
+  semantic_pattern:
+    observation_concept: prism:outlet/DemographicObservation
+    observed_entity: prism:outlet/TradeArea
+    observed_property: prism:metric/日均客流
+    data_source: prism:source/LocationIntelligence
+  mapping_status: mapped
+  temporal_nature: quarterly_updated
+  value_transformation:
+    type: numeric_clean
+- col_index: 132
+  physical_column: 消费水平
+  semantic_binding_status: proposed
+  validation_status: pending_operational_profile
+  field_class: external_observation
+  semantic_pattern:
+    observation_concept: prism:outlet/DemographicObservation
+    observed_entity: prism:outlet/TradeArea
+    observed_property: prism:metric/消费水平
+    data_source: prism:source/LocationIntelligence
+  mapping_status: mapped
+  temporal_nature: quarterly_updated
+  value_transformation:
+    type: string_strip
+- col_index: 133
+  physical_column: 餐饮消费水平
+  semantic_binding_status: proposed
+  validation_status: pending_operational_profile
+  field_class: external_observation
+  semantic_pattern:
+    observation_concept: prism:outlet/DemographicObservation
+    observed_entity: prism:outlet/TradeArea
+    observed_property: prism:metric/餐饮消费水平
+    data_source: prism:source/LocationIntelligence
+  mapping_status: mapped
+  temporal_nature: quarterly_updated
+  value_transformation:
+    type: string_strip
+- col_index: 134
+  physical_column: 居住社区房价等级
+  semantic_binding_status: proposed
+  validation_status: pending_operational_profile
+  field_class: external_observation
+  semantic_pattern:
+    observation_concept: prism:outlet/DemographicObservation
+    observed_entity: prism:outlet/TradeArea
+    observed_property: prism:metric/居住社区房价等级
+    data_source: prism:source/LocationIntelligence
+  mapping_status: mapped
+  temporal_nature: quarterly_updated
+  value_transformation:
+    type: numeric_clean
+- col_index: 135
+  physical_column: 居住酒店档次
+  semantic_binding_status: proposed
+  validation_status: pending_operational_profile
+  field_class: external_observation
+  semantic_pattern:
+    observation_concept: prism:outlet/OtherObservation
+    observed_property: prism:metric/居住酒店档次
+  mapping_status: mapped
+  temporal_nature: periodic_snapshot_updated
+- col_index: 136
+  physical_column: 女性人口占比%
+  semantic_binding_status: proposed
+  validation_status: pending_operational_profile
+  field_class: external_observation
+  semantic_pattern:
+    observation_concept: prism:outlet/DemographicObservation
+    observed_entity: prism:outlet/TradeArea
+    observed_property: prism:metric/女性人口占比%
+    data_source: prism:source/LocationIntelligence
+  mapping_status: mapped
+  temporal_nature: quarterly_updated
+  value_transformation:
+    type: numeric_clean
+- col_index: 137
+  physical_column: 18-60岁人口占比%
+  semantic_binding_status: proposed
+  validation_status: pending_operational_profile
+  field_class: external_observation
+  semantic_pattern:
+    observation_concept: prism:outlet/DemographicObservation
+    observed_entity: prism:outlet/TradeArea
+    observed_property: prism:metric/18-60岁人口占比%
+    data_source: prism:source/LocationIntelligence
+  mapping_status: mapped
+  temporal_nature: quarterly_updated
+  value_transformation:
+    type: numeric_clean
+- col_index: 138
+  physical_column: 18-40岁人口占比%
+  semantic_binding_status: proposed
+  validation_status: pending_operational_profile
+  field_class: external_observation
+  semantic_pattern:
+    observation_concept: prism:outlet/DemographicObservation
+    observed_entity: prism:outlet/TradeArea
+    observed_property: prism:metric/18-40岁人口占比%
+    data_source: prism:source/LocationIntelligence
+  mapping_status: mapped
+  temporal_nature: quarterly_updated
+  value_transformation:
+    type: numeric_clean
+- col_index: 139
+  physical_column: 大专学历以上人口占比%
+  semantic_binding_status: proposed
+  validation_status: pending_operational_profile
+  field_class: external_observation
+  semantic_pattern:
+    observation_concept: prism:outlet/DemographicObservation
+    observed_entity: prism:outlet/TradeArea
+    observed_property: prism:metric/大专学历以上人口占比%
+    data_source: prism:source/LocationIntelligence
+  mapping_status: mapped
+  temporal_nature: quarterly_updated
+  value_transformation:
+    type: numeric_clean
+- col_index: 140
+  physical_column: 社区居住房价
+  semantic_binding_status: proposed
+  validation_status: pending_operational_profile
+  field_class: external_observation
+  semantic_pattern:
+    observation_concept: prism:outlet/DemographicObservation
+    observed_entity: prism:outlet/TradeArea
+    observed_property: prism:metric/社区居住房价
+    data_source: prism:source/LocationIntelligence
+  mapping_status: mapped
+  temporal_nature: quarterly_updated
+  value_transformation:
+    type: numeric_clean
+- col_index: 141
+  physical_column: 居住酒店价格
+  semantic_binding_status: proposed
+  validation_status: pending_operational_profile
+  field_class: external_observation
+  semantic_pattern:
+    observation_concept: prism:outlet/OtherObservation
+    observed_property: prism:metric/居住酒店价格
+  mapping_status: mapped
+  temporal_nature: periodic_snapshot_updated
+- col_index: 142
+  physical_column: 到访偏好
+  semantic_binding_status: proposed
+  validation_status: pending_operational_profile
+  field_class: external_observation
+  semantic_pattern:
+    observation_concept: prism:outlet/DemographicObservation
+    observed_entity: prism:outlet/TradeArea
+    observed_property: prism:metric/到访偏好
+    data_source: prism:source/LocationIntelligence
+  mapping_status: mapped
+  temporal_nature: quarterly_updated
+  value_transformation:
+    type: string_strip
+- col_index: 143
+  physical_column: 职住直线距离
+  semantic_binding_status: proposed
+  validation_status: pending_operational_profile
+  field_class: external_observation
+  semantic_pattern:
+    observation_concept: prism:outlet/DemographicObservation
+    observed_entity: prism:outlet/TradeArea
+    observed_property: prism:metric/职住直线距离
+    data_source: prism:source/LocationIntelligence
+  mapping_status: mapped
+  temporal_nature: quarterly_updated
+  value_transformation:
+    type: numeric_clean
+- col_index: 144
+  physical_column: 重要客户名称
+  semantic_binding_status: proposed
+  validation_status: pending_operational_profile
+  field_class: entity_identity
+  semantic_pattern:
+    target_entity: prism:outlet/CommercialSite
+    pattern_type: hasName
+  mapping_status: mapped
+  temporal_nature: low_volatility
+- col_index: 145
+  physical_column: KA客户类型名称
+  semantic_binding_status: proposed
+  validation_status: pending_operational_profile
+  field_class: classification_and_role
+  semantic_pattern:
+    target_entity: prism:outlet/Outlet
+    pattern_type: belongsToBrand
+    ontology_concept: prism:outlet/Brand
+    brand_property: KA客户类型名称
+  mapping_status: mapped
+  temporal_nature: stable_classification
+- col_index: 146
+  physical_column: 客户集团
+  semantic_binding_status: proposed
+  validation_status: pending_operational_profile
+  field_class: classification_and_role
+  semantic_pattern:
+    target_entity: prism:outlet/Outlet
+    pattern_type: belongsToBrand
+    ontology_concept: prism:outlet/Brand
+    brand_property: 客户集团
+  mapping_status: mapped
+  temporal_nature: stable_classification
+- col_index: 147
+  physical_column: 连锁范围名称
+  semantic_binding_status: proposed
+  validation_status: pending_operational_profile
+  field_class: classification_and_role
+  semantic_pattern:
+    target_entity: prism:outlet/Outlet
+    pattern_type: belongsToBrand
+    ontology_concept: prism:outlet/Brand
+    brand_property: 连锁范围名称
+  mapping_status: mapped
+  temporal_nature: stable_classification
+- col_index: 148
+  physical_column: KA业态分类名称
+  semantic_binding_status: proposed
+  validation_status: pending_operational_profile
+  field_class: classification_and_role
+  semantic_pattern:
+    target_entity: prism:outlet/Outlet
+    pattern_type: belongsToBrand
+    ontology_concept: prism:outlet/Brand
+    brand_property: KA业态分类名称
+  mapping_status: mapped
+  temporal_nature: stable_classification
+- col_index: 149
+  physical_column: 是否攻坚客户
+  semantic_binding_status: proposed
+  validation_status: pending_operational_profile
+  field_class: classification_and_role
+  semantic_pattern:
+    target_entity: prism:sales/ServiceRelationship
+    pattern_type: playsRoleInService
+    relationship_context:
+      subject: prism:org/SwireCocaCola
+      target: prism:outlet/Outlet
+      status_property: 是否攻坚客户
+  mapping_status: mapped
+  temporal_nature: time_varying_state
+  notes: 此字段表示特定组织在特定时间下的服务业务关系状态，非 Outlet 自身物理属性
+- col_index: 150
+  physical_column: 冰柜投放目标客户标签
+  semantic_binding_status: proposed
+  validation_status: pending_operational_profile
+  field_class: external_observation
+  semantic_pattern:
+    observation_concept: prism:outlet/AssetAndDisplayObservation
+    observed_entity: prism:outlet/Outlet
+    observed_property: prism:metric/冰柜投放目标客户标签
+    data_source: prism:source/FieldExecutionAudit
+  mapping_status: mapped
+  temporal_nature: audit_cadence_updated
+- col_index: 151
+  physical_column: 非密集区域乡镇客户(200米)
+  semantic_binding_status: proposed
+  validation_status: pending_operational_profile
+  field_class: external_observation
+  semantic_pattern:
+    observation_concept: prism:outlet/TownshipContext
+    observed_entity: prism:outlet/AdministrativeRegion
+    observed_property: prism:metric/非密集区域乡镇客户(200米)
+    data_source: prism:source/SwireTownshipMaster
+  mapping_status: mapped
+  temporal_nature: annual_master_updated
+- col_index: 152
+  physical_column: 非密集区域乡镇客户(400米)
+  semantic_binding_status: proposed
+  validation_status: pending_operational_profile
+  field_class: external_observation
+  semantic_pattern:
+    observation_concept: prism:outlet/TownshipContext
+    observed_entity: prism:outlet/AdministrativeRegion
+    observed_property: prism:metric/非密集区域乡镇客户(400米)
+    data_source: prism:source/SwireTownshipMaster
+  mapping_status: mapped
+  temporal_nature: annual_master_updated
+- col_index: null
+  physical_column: null
+  field_class: external_observation
+  semantic_pattern:
+    observation_concept: prism:outlet/CompetitorSalesVolume
+    observed_entity: prism:outlet/Outlet
+    observed_property: prism:metric/ActualSalesCrates
+    missing_reason: 当前物理宽表仅含售点自身静态与客流画像，未包含竞品在途销量 POS/开箱数据
+  mapping_status: unavailable
+  handling_policy: output_explicit_limitation
+  semantic_binding_status: proposed
+  validation_status: pending_operational_profile
+  notes: 系统严禁推算真实销量市场份额，仅可计算网点覆盖份额

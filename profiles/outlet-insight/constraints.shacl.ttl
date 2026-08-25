@@ -1,0 +1,54 @@
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix prism-core: <prism://ontology/core/> .
+@prefix prism-outlet: <prism://ontology/outlet/> .
+@prefix prism-insight: <prism://ontology/insight/> .
+@prefix prism-sales: <prism://ontology/sales-visit/> .
+
+# =============================================================================
+# Profile Level Constraints (Outlet Insight Profile v0.1.0-RC)
+# =============================================================================
+
+# 1. 严格禁止在售点洞察场景中生成执行类对象 (Execution Prohibition)
+prism-insight:ProhibitExecutionObjectsShape a sh:NodeShape ;
+    sh:targetNode "ProfileInstance" ;
+    sh:not [
+        sh:or (
+            [ sh:class <prism://ontology/execution/Task> ]
+            [ sh:class <prism://ontology/execution/RoutePlan> ]
+            [ sh:class <prism://ontology/execution/ScheduleDecision> ]
+            [ sh:class <prism://ontology/execution/CRMStateMutation> ]
+            [ sh:class <prism://ontology/execution/WorldStateWriteCommand> ]
+        )
+    ] ;
+    sh:message "谋圣·售点洞察场景运行 Profile 严禁包含任何任务排程、路线规划或世界状态写入命令等执行类对象"@zh .
+
+# 2. 洞察包结构完整性约束 (3信封 + 8核心块)
+prism-insight:ProfileInsightPackageShape a sh:NodeShape ;
+    sh:targetClass prism-insight:InsightPackage ;
+    sh:property [
+        sh:path prism-insight:hasAnalysisId ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:message "InsightPackage 必须包含全局唯一分析标识 analysis_id"@zh ;
+    ] ;
+    sh:property [
+        sh:path prism-insight:hasClaim ;
+        sh:minCount 1 ;
+        sh:message "InsightPackage 必须包含至少一个分析主张 (hasClaim)"@zh ;
+    ] .
+
+# 3. 提升事实候选物安全性约束
+prism-insight:ProfileElevationCandidateShape a sh:NodeShape ;
+    sh:targetClass prism-insight:ElevationCandidate ;
+    sh:property [
+        sh:path prism-insight:requiresExternalGovernance ;
+        sh:hasValue true ;
+        sh:message "ElevationCandidate 必须声明 requiresExternalGovernance = true"@zh ;
+    ] ;
+    sh:property [
+        sh:path prism-insight:worldStateEffect ;
+        sh:hasValue "none" ;
+        sh:message "ElevationCandidate 严禁声明对世界状态的直接写入效应 (worldStateEffect 必须为 'none')"@zh ;
+    ] .

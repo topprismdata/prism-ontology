@@ -1,0 +1,91 @@
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix prism-core: <prism://ontology/core/> .
+@prefix prism-outlet: <prism://ontology/outlet/> .
+
+<prism://ontology/outlet/> a owl:Ontology ;
+    rdfs:label "Prism Outlet Domain Ontology"@zh , "TopPrism World Model L2 Outlet Domain Ontology"@en ;
+    owl:versionInfo "0.1.0-rc1" ;
+    owl:imports <prism://ontology/core/> ;
+    rdfs:comment "售点领域本体：定义商业售点、连锁品牌、商业场所、行政区划与销售辖区双轨制、业态分类及售点多源观测事实。" .
+
+# =============================================================================
+# 1. 售点领域核心类 (Outlet Domain Classes)
+# =============================================================================
+
+prism-outlet:Outlet a owl:Class ;
+    rdfs:subClassOf prism-core:Entity ;
+    rdfs:label "商业售点"@zh , "Commercial Outlet"@en ;
+    rdfs:comment "现实物理世界中从事零售、餐饮、住宿或服务的商业网点门店实体。无论是否进入 CRM，客观独立存在。" .
+
+prism-outlet:Brand a owl:Class ;
+    rdfs:subClassOf prism-core:Entity ;
+    rdfs:label "商业品牌/集团"@zh , "Brand"@en ;
+    rdfs:comment "商业连锁品牌或集团母公司实体。" .
+
+prism-outlet:CommercialSite a owl:Class ;
+    rdfs:subClassOf prism-core:Entity ;
+    rdfs:label "商业经营场所"@zh , "CommercialSite"@en ;
+    rdfs:comment "商圈、商场、餐饮街、社区或工矿园区等网点聚集场所。" .
+
+prism-outlet:AdministrativeRegion a owl:Class ;
+    rdfs:subClassOf prism-core:SpatialGeometry ;
+    rdfs:label "行政区划区域"@zh , "AdministrativeRegion"@en ;
+    rdfs:comment "国家法定行政地理区域（省、市、区县、乡镇），具有法定边界与行政编码。" .
+
+prism-outlet:Territory a owl:Class ;
+    rdfs:subClassOf prism-core:SpatialGeometry ;
+    rdfs:label "销售责任辖区"@zh , "SalesTerritory"@en ;
+    rdfs:comment "企业销售组织根据管理需求划定的大区、办事处、配送路线责任空间，严禁与国家法定行政区划混淆。" .
+
+prism-outlet:ChannelType a owl:Class ;
+    rdfs:subClassOf prism-core:InformationObject ;
+    rdfs:label "业态渠道分类"@zh , "ChannelType"@en ;
+    rdfs:comment "售点所归属的行业业态分类（餐饮、住宿、食杂、娱乐、教育、旅游等）。" .
+
+prism-outlet:OutletObservation a owl:Class ;
+    rdfs:subClassOf prism-core:Observation ;
+    rdfs:label "售点客观观测"@zh , "OutletObservation"@en ;
+    rdfs:comment "多源外部平台（大众点评、携程、高德等）在特定时间对售点的评分、客流、房间数等客观动态测量事实。" .
+
+# =============================================================================
+# 2. 售点核心关系与属性 (Outlet Relations & Properties)
+# =============================================================================
+
+prism-outlet:locatedInAdministrativeRegion a owl:ObjectProperty ;
+    rdfs:domain prism-outlet:Outlet ;
+    rdfs:range prism-outlet:AdministrativeRegion ;
+    rdfs:label "位于行政区"@zh , "locatedInAdministrativeRegion"@en .
+
+prism-outlet:coveredBySalesTerritory a owl:ObjectProperty ;
+    rdfs:domain prism-outlet:Outlet ;
+    rdfs:range prism-outlet:Territory ;
+    rdfs:label "属于销售辖区"@zh , "coveredBySalesTerritory"@en .
+
+prism-outlet:territoryCoversRegion a owl:ObjectProperty ;
+    rdfs:domain prism-outlet:Territory ;
+    rdfs:range prism-outlet:AdministrativeRegion ;
+    rdfs:label "辖区覆盖行政区"@zh , "territoryCoversRegion"@en .
+
+prism-outlet:belongsToBrand a owl:ObjectProperty ;
+    rdfs:domain prism-outlet:Outlet ;
+    rdfs:range prism-outlet:Brand ;
+    rdfs:label "归属品牌"@zh , "belongsToBrand"@en .
+
+prism-outlet:operatedAtSite a owl:ObjectProperty ;
+    rdfs:domain prism-outlet:Outlet ;
+    rdfs:range prism-outlet:CommercialSite ;
+    rdfs:label "经营场所"@zh , "operatedAtSite"@en .
+
+prism-outlet:hasChannelType a owl:ObjectProperty ;
+    rdfs:domain prism-outlet:Outlet ;
+    rdfs:range prism-outlet:ChannelType ;
+    rdfs:label "具备业态分类"@zh , "hasChannelType"@en .
+
+prism-outlet:observesOutlet a owl:ObjectProperty ;
+    rdfs:subPropertyOf prism-core:observesEntity ;
+    rdfs:domain prism-outlet:OutletObservation ;
+    rdfs:range prism-outlet:Outlet ;
+    rdfs:label "观测售点"@zh , "observesOutlet"@en .

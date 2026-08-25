@@ -1,0 +1,214 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "prism://schemas/mousheng-outlet-insight/insight-package.schema.json",
+  "title": "MoushengOutletInsightPackage",
+  "description": "谋圣·售点洞察标准洞察包契约（含 2 个信封字段 + 8 个核心洞察块，严禁决策越界）",
+  "type": "object",
+  "required": [
+    "analysis_id",
+    "artifact_type",
+    "request_context",
+    "conclusion",
+    "evidence",
+    "structure",
+    "differences",
+    "anomalies",
+    "quality_and_limits",
+    "followups",
+    "provenance"
+  ],
+  "properties": {
+    "analysis_id": {
+      "type": "string",
+      "description": "信封字段 1：本次分析运行的全局唯一追踪标识 (UUIDv4/Hash)"
+    },
+    "artifact_type": {
+      "type": "string",
+      "enum": ["InsightPackage", "ElevationCandidate"],
+      "default": "InsightPackage",
+      "description": "产物类型；若标记为 ElevationCandidate 则为被动导出候选物"
+    },
+    "request_context": {
+      "type": "object",
+      "description": "核心洞察块 1：问题、范围与分析对象（第一棱镜 Analysis Intent 映射）",
+      "required": ["question", "intent", "scope", "target_entity"],
+      "properties": {
+        "question": { "type": "string", "description": "用户原始自然语言提问" },
+        "intent": {
+          "type": "string",
+          "enum": ["detail_list", "distribution_comparison", "rule_ranking", "concentration_analysis", "anomaly_detection"],
+          "description": "意图类型"
+        },
+        "target_entity": { "type": "string", "description": "分析核心实体概念 URI (如 prism:outlet/Outlet)" },
+        "scope": { "type": "object", "description": "空间、时间及业务范围约束" },
+        "entities": { "type": "array", "items": { "type": "string" } },
+        "metrics": { "type": "array", "items": { "type": "string" } },
+        "rules": { "type": "array", "items": { "type": "object" } },
+        "ambiguities": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "conclusion": {
+      "type": "object",
+      "description": "核心洞察块 2：直接回答问题的核心结论（按置信度分级用词，严禁包含执行命令）",
+      "required": ["summary", "confidence_level", "verdict"],
+      "properties": {
+        "summary": { "type": "string", "description": "直接回答问题的核心一句话结论" },
+        "confidence_level": { "type": "string", "enum": ["high", "medium", "low"] },
+        "verdict": { "type": "string", "description": "定性陈述 (如 '头部集中明显', 严禁使用 '垄断/必选/应派单')" }
+      }
+    },
+    "evidence": {
+      "type": "object",
+      "description": "核心洞察块 3：支撑事实的数据证据",
+      "required": ["sample_size", "effective_sample_size", "table_preview"],
+      "properties": {
+        "sample_size": { "type": "integer" },
+        "effective_sample_size": { "type": "integer" },
+        "table_preview": { "type": "array", "items": { "type": "object" } },
+        "drilldown_keys": { "type": "array", "items": { "type": "object" } },
+        "out_csv_path": { "type": ["string", "null"] },
+        "chart_spec_ref": { "type": ["string", "null"] }
+      }
+    },
+    "structure": {
+      "type": "object",
+      "description": "核心洞察块 4：分布形态、集中度与结构特征",
+      "properties": {
+        "concentration_metrics": {
+          "type": "object",
+          "properties": {
+            "hhi": { "type": "number", "description": "赫芬达尔指数 (0~10000)" },
+            "cr4": { "type": "number", "description": "前4大实体份额合计 (0~1)" },
+            "cr8": { "type": "number", "description": "前8大实体份额合计 (0~1)" },
+            "gini": { "type": "number", "description": "基尼系数" },
+            "category": { "type": "string", "enum": ["high_concentration", "moderate_concentration", "unconcentrated"] }
+          }
+        },
+        "distributions": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["dimension", "top_segments", "long_tail_ratio"],
+            "properties": {
+              "dimension": { "type": "string" },
+              "top_segments": { "type": "array", "items": { "type": "object" } },
+              "long_tail_ratio": { "type": "number" }
+            }
+          }
+        }
+      }
+    },
+    "differences": {
+      "type": "object",
+      "description": "核心洞察块 5：群体对比、同态分析与显著性差异",
+      "properties": {
+        "compared_groups": { "type": "array", "items": { "type": "string" } },
+        "metric_contrasts": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["metric", "group_a_val", "group_b_val", "absolute_diff"],
+            "properties": {
+              "metric": { "type": "string" },
+              "group_a_val": { "type": "number" },
+              "group_b_val": { "type": "number" },
+              "absolute_diff": { "type": "number" },
+              "relative_diff_pct": { "type": "number" }
+            }
+          }
+        }
+      }
+    },
+    "anomalies": {
+      "type": "object",
+      "description": "核心洞察块 6：离群对象、指标背离异动及其判定基准",
+      "properties": {
+        "baseline_method": { "type": "string" },
+        "detected_outliers": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["entity_id", "entity_name", "metric", "value", "baseline_range", "anomaly_type"],
+            "properties": {
+              "entity_id": { "type": "string" },
+              "entity_name": { "type": "string" },
+              "metric": { "type": "string" },
+              "value": { "type": "number" },
+              "baseline_range": { "type": "string" },
+              "anomaly_type": { "type": "string", "enum": ["statistical_outlier", "metric_discrepancy"] }
+            }
+          }
+        }
+      }
+    },
+    "quality_and_limits": {
+      "type": "object",
+      "description": "核心洞察块 7：数据质量、覆盖率、置信度与适用边界限制",
+      "required": ["completeness_score", "field_coverage", "limitations"],
+      "properties": {
+        "completeness_score": { "type": "number" },
+        "field_coverage": { "type": "object", "additionalProperties": { "type": "number" } },
+        "applicable_dimensions": { "type": "array", "items": { "type": "string" } },
+        "warnings": { "type": "array", "items": { "type": "string" } },
+        "limitations": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "followups": {
+      "type": "array",
+      "description": "核心洞察块 8：建议继续追问的下一步分析方向（严禁包含派单/排程/决策等执行建议）",
+      "items": {
+        "type": "object",
+        "required": ["suggested_question", "analytical_intent"],
+        "properties": {
+          "suggested_question": { "type": "string" },
+          "analytical_intent": { "type": "string" }
+        }
+      }
+    },
+    "provenance": {
+      "type": "object",
+      "description": "信封字段 2：版本溯源与治理元数据",
+      "required": ["dataset_id", "data_version", "ontology_profile_version", "generated_at"],
+      "properties": {
+        "dataset_id": { "type": "string" },
+        "data_version": { "type": "string" },
+        "ontology_profile_version": { "type": "string" },
+        "dataset_mapping_version": { "type": "string" },
+        "generated_at": { "type": "string", "format": "date-time" },
+        "elevation_metadata": {
+          "type": "object",
+          "description": "Elevation Candidate 导出强制元数据",
+          "properties": {
+            "status": { "type": "string", "enum": ["unreviewed"] },
+            "world_state_effect": { "type": "string", "enum": ["none"] },
+            "requires_external_governance": { "type": "boolean", "enum": [true] }
+          }
+        }
+      }
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": { "artifact_type": { "const": "ElevationCandidate" } }
+      },
+      "then": {
+        "properties": {
+          "provenance": {
+            "required": ["elevation_metadata"],
+            "properties": {
+              "elevation_metadata": {
+                "required": ["status", "world_state_effect", "requires_external_governance"],
+                "properties": {
+                  "status": { "const": "unreviewed" },
+                  "world_state_effect": { "const": "none" },
+                  "requires_external_governance": { "const": true }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  ]
+}

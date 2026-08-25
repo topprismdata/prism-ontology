@@ -1,0 +1,130 @@
+# ==============================================================================
+# competency-questions.yaml
+# 售点洞察场景运行 Profile 核心业务能力验证题集 (10 Golden CQs)
+#
+# 验证标准：
+# - semantic_expressibility: 该业务问题能否完全由本 Profile 中的受管概念表达 (100% pass)
+# - data_answerability: 当前数据宽表对该问题的可回答性 (full / partial / none)
+# ==============================================================================
+
+version: "1.0.0"
+profile: "prism://ontology/profiles/outlet-insight"
+
+competency_questions:
+  - id: "CQ-001"
+    scenario: "指定品牌与区域清单"
+    question: "浦西大区的美宜佳清单"
+    formal_expression:
+      target_entity: "prism:outlet/Outlet"
+      constraints:
+        - property: "prism:outlet/belongsToBrand"
+          value: "prism:outlet/Brand:美宜佳"
+        - property: "prism:outlet/coveredBySalesTerritory"
+          value: "prism:outlet/Territory:浦西大区"
+    semantic_expressibility: "pass"
+    data_answerability: "full"
+
+  - id: "CQ-002"
+    scenario: "区域业态结构分布"
+    question: "江苏省各业态的售点数量分布"
+    formal_expression:
+      target_entity: "prism:outlet/Outlet"
+      group_by: "prism:outlet/hasChannelType"
+      scope:
+        property: "prism:outlet/locatedInAdministrativeRegion"
+        value: "prism:outlet/AdministrativeRegion:江苏省"
+      metric: "count()"
+    semantic_expressibility: "pass"
+    data_answerability: "full"
+
+  - id: "CQ-003"
+    scenario: "业态品牌集中度分析"
+    question: "上海城区餐饮连锁品牌的集中度与头部排行"
+    formal_expression:
+      target_entity: "prism:outlet/Brand"
+      channel_scope: "prism:outlet/ChannelType:餐饮"
+      geo_scope: "prism:outlet/AdministrativeRegion:上海城区"
+      metrics: ["prism:metric/HerfindahlHirschmanIndex", "prism:metric/Top4ConcentrationRatio"]
+    semantic_expressibility: "pass"
+    data_answerability: "full"
+
+  - id: "CQ-004"
+    scenario: "群体同态指标对比"
+    question: "浦东大区与浦西大区在食杂店平均客流上的差异"
+    formal_expression:
+      target_entity: "prism:outlet/Outlet"
+      channel_scope: "prism:outlet/ChannelType:食杂"
+      contrast_groups: ["prism:outlet/Territory:浦东大区", "prism:outlet/Territory:浦西大区"]
+      metric: "prism:metric/WeekendTraffic"
+    semantic_expressibility: "pass"
+    data_answerability: "full"
+
+  - id: "CQ-005"
+    scenario: "多因子规则符合度评估"
+    question: "餐饮街门店数≥20家，周末客流排序，评分3.8占比超50%的街道候选"
+    formal_expression:
+      target_entity: "prism:outlet/CommercialSite:餐饮街"
+      rules:
+        - metric: "count(prism:outlet/Outlet)"
+          min_value: 20
+        - metric: "ratio(prism:metric/DianpingRating >= 3.8)"
+          min_ratio: 0.50
+      order_by: "prism:metric/WeekendTraffic"
+    semantic_expressibility: "pass"
+    data_answerability: "full"
+
+  - id: "CQ-006"
+    scenario: "多维指标背离检测"
+    question: "哪些商圈存在高客流但大众点评评分显著偏低的背离现象？"
+    formal_expression:
+      target_entity: "prism:outlet/CommercialSite"
+      anomaly_type: "metric_discrepancy"
+      metrics: ["prism:metric/WeekendTraffic", "prism:metric/DianpingRating"]
+    semantic_expressibility: "pass"
+    data_answerability: "full"
+
+  - id: "CQ-007"
+    scenario: "数据稀疏度质检"
+    question: "景区周边客栈的客房数与星级分布"
+    formal_expression:
+      target_entity: "prism:outlet/Outlet"
+      channel_scope: "prism:outlet/ChannelType:住宿"
+      site_scope: "prism:outlet/TradeAreaBuffer:景区周边"
+      metrics: ["prism:metric/CtripRoomCount", "prism:metric/Ctrip_星级"]
+    semantic_expressibility: "pass"
+    data_answerability: "partial"
+    blocking_reason: "部分小微客栈缺少携程星级数据，触发质量限制提示并降级置信度"
+
+  - id: "CQ-008"
+    scenario: "外部竞品销量份额 (拒绝计算)"
+    question: "可口可乐 vs 百事可乐在华东食杂店的真实销售箱数份额"
+    formal_expression:
+      target_entity: "prism:outlet/Outlet"
+      channel_scope: "prism:outlet/ChannelType:食杂"
+      missing_concept: "prism:outlet/CompetitorSalesVolume"
+    semantic_expressibility: "pass"
+    data_answerability: "none"
+    blocking_reason: "物理宽表缺失竞品在途销量 POS 数据，系统显式拒绝计算并输出限制"
+
+  - id: "CQ-009"
+    scenario: "统计到明细下钻"
+    question: "看排第一的瑞幸咖啡在上海城区的具体门店清单"
+    formal_expression:
+      target_entity: "prism:outlet/Outlet"
+      drilldown_filters:
+        - property: "prism:outlet/belongsToBrand"
+          value: "瑞幸咖啡"
+        - property: "prism:outlet/locatedInAdministrativeRegion"
+          value: "上海城区"
+    semantic_expressibility: "pass"
+    data_answerability: "full"
+
+  - id: "CQ-010"
+    scenario: "视觉证据生成"
+    question: "生成上海市餐饮连锁品牌 TOP20 的门店数与评分双轴图"
+    formal_expression:
+      target_entity: "prism:outlet/Brand"
+      geo_scope: "prism:outlet/AdministrativeRegion:上海城区"
+      visual_spec: "ComboChart(x=Brand, y1=OutletCount, y2=AvgRating)"
+    semantic_expressibility: "pass"
+    data_answerability: "full"
