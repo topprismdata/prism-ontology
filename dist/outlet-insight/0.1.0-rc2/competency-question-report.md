@@ -1,7 +1,7 @@
 # Outlet Insight Profile v0.1.0-rc2 Competency Question Verification Report
-Generated at: 2026-08-25T13:10:27+08:00
+Generated at: 2026-08-25T13:12:11+08:00
 Profile URI: prism://ontology/profiles/outlet-insight
-Git Commit: 957880c4f0804e6b18cdbe570f68030d7e724776
+Git Commit: 9f35d2d6dd9cf5b697c22f5822cfab14d7d3e486
 
 | CQ ID | 场景 | 自然语言提问 | 语义可表达性 | 数据可回答性 | 阻断限制原因 |
 |---|---|---|---|---|---|
