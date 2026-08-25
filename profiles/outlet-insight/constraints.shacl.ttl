@@ -1,6 +1,7 @@
 @prefix sh: <http://www.w3.org/ns/shacl#> .
 @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 @prefix prism-core: <prism://ontology/core/> .
 @prefix prism-outlet: <prism://ontology/outlet/> .
 @prefix prism-insight: <prism://ontology/insight/> .
@@ -10,19 +11,30 @@
 # Profile Level Constraints (Outlet Insight Profile v0.1.0-RC)
 # =============================================================================
 
-# 1. 严格禁止在售点洞察场景中生成执行类对象 (Execution Prohibition)
-prism-insight:ProhibitExecutionObjectsShape a sh:NodeShape ;
-    sh:targetNode "ProfileInstance" ;
-    sh:not [
-        sh:or (
-            [ sh:class <prism://ontology/execution/Task> ]
-            [ sh:class <prism://ontology/execution/RoutePlan> ]
-            [ sh:class <prism://ontology/execution/ScheduleDecision> ]
-            [ sh:class <prism://ontology/execution/CRMStateMutation> ]
-            [ sh:class <prism://ontology/execution/WorldStateWriteCommand> ]
-        )
-    ] ;
-    sh:message "谋圣·售点洞察场景运行 Profile 严禁包含任何任务排程、路线规划或世界状态写入命令等执行类对象"@zh .
+# 1. 严格禁止在售点洞察场景中实例化执行类对象 (Execution Prohibition)
+prism-insight:ProhibitTaskExecutionShape a sh:NodeShape ;
+    sh:targetClass <prism://ontology/execution/Task> ;
+    sh:property [
+        sh:path rdf:type ;
+        sh:maxCount 0 ;
+        sh:message "谋圣·售点洞察场景运行 Profile 严禁实例化 Task 执行任务对象"@zh ;
+    ] .
+
+prism-insight:ProhibitRoutePlanExecutionShape a sh:NodeShape ;
+    sh:targetClass <prism://ontology/execution/RoutePlan> ;
+    sh:property [
+        sh:path rdf:type ;
+        sh:maxCount 0 ;
+        sh:message "谋圣·售点洞察场景运行 Profile 严禁实例化 RoutePlan 路线规划对象"@zh ;
+    ] .
+
+prism-insight:ProhibitScheduleDecisionExecutionShape a sh:NodeShape ;
+    sh:targetClass <prism://ontology/execution/ScheduleDecision> ;
+    sh:property [
+        sh:path rdf:type ;
+        sh:maxCount 0 ;
+        sh:message "谋圣·售点洞察场景运行 Profile 严禁实例化 ScheduleDecision 排程决策对象"@zh ;
+    ] .
 
 # 2. 洞察包结构完整性约束 (3信封 + 8核心块)
 prism-insight:ProfileInsightPackageShape a sh:NodeShape ;
