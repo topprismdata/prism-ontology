@@ -87,13 +87,13 @@ relations:
   name: 月均收入潜力预测(如有协议)
   category: DerivedEstimateProperty
   physical_column: 月均收入潜力预测(如有协议)
-- uri: prism:observed/月均收入潜力预测(如有冰柜无协议)
+- uri: prism:estimate/RevenuePotentialWithCoolerNoAgreement
   name: 月均收入潜力预测(如有冰柜无协议)
-  category: ObservedProperty
+  category: DerivedEstimateProperty
   physical_column: 月均收入潜力预测(如有冰柜无协议)
-- uri: prism:observed/月均收入潜力预测(无协议无冰柜)
+- uri: prism:estimate/RevenuePotentialNoAgreementNoCooler
   name: 月均收入潜力预测(无协议无冰柜)
-  category: ObservedProperty
+  category: DerivedEstimateProperty
   physical_column: 月均收入潜力预测(无协议无冰柜)
 - uri: prism:estimate/OperatingAreaSquareMeters
   name: 营业面积
