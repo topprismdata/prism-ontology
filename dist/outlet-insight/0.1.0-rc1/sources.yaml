@@ -1,0 +1,24 @@
+version: 1.0.0
+profile: prism://ontology/profiles/outlet-insight
+sources:
+- uri: prism:source/Ctrip
+  name: 携程酒店/民宿平台
+  category: ExternalOnlineTravelAgency
+- uri: prism:source/Dianping
+  name: 大众点评本地生活平台
+  category: ExternalLocalLifeService
+- uri: prism:source/AMap
+  name: 高德地图/扫街状元榜
+  category: ExternalLocationService
+- uri: prism:source/LocationIntelligence
+  name: 移动信令商圈人口客流大数据
+  category: TelecomLocationIntelligence
+- uri: prism:source/FieldExecutionAudit
+  name: 太古业务员实地店内审计
+  category: FieldAudit
+- uri: prism:source/GeocodingAuditService
+  name: 腾讯POI坐标与地址解析质检服务
+  category: DataQualityService
+- uri: prism:source/SwireTownshipMaster
+  name: 太古下沉乡镇主数据中心
+  category: EnterpriseMasterData

@@ -6,7 +6,7 @@ test_ontology_integrity.py
 """
 import pytest
 from pathlib import Path
-from rdflib import Graph, URIRef, RDF, RDFS, OWL
+from rdflib import Graph, URIRef, Namespace, RDF, RDFS, OWL
 import pyshacl
 import owlrl
 
@@ -45,7 +45,7 @@ def test_rdf_syntax_and_owlrl_consistency():
 
 
 def test_anti_collapse_shacl_rejection_per_node():
-    """强负向测试：向图中注入 5 种违规，分别精确断言 5 个违规焦点节点全部被对应 SHACL 形状捕获。"""
+    """强负向测试：向图中注入 5 种违规，通过读取 SHACL 结果图 sh:focusNode 精确断言全部 5 处违规被捕获。"""
     # 1. 组装形状图
     shacl_graph = Graph()
     for sf in SHACL_FILES:
@@ -88,10 +88,22 @@ def test_anti_collapse_shacl_rejection_per_node():
 
     assert not conforms, "SHACL validation should FAIL on collapsed/prohibited instances"
     
-    # 4. 精确逐项断言全部 5 处违规均被捕获
-    assert "region_territory_collapse" in results_text, "Failed to catch region_territory_collapse"
-    assert "outlet_role_collapse" in results_text, "Failed to catch outlet_role_collapse"
-    assert "orphan_observation" in results_text, "Failed to catch orphan_observation"
-    assert "visit_record_collapse" in results_text, "Failed to catch visit_record_collapse"
+    # 4. 从结果图中提取所有违规 focusNode 并执行精确集合断言
+    SH = Namespace("http://www.w3.org/ns/shacl#")
+    focus_nodes = set(str(fn) for fn in results_graph.objects(None, SH.focusNode))
+
+    print("SHACL Violation Focus Nodes Caught:", focus_nodes)
     
-    print("\nAll 5 Anti-Collapse & Disjointness SHACL Violations Individually Asserted & Passed:\n")
+    expected_violations = [
+        "urn:bad:region_territory_collapse",
+        "urn:bad:outlet_role_collapse",
+        "urn:bad:orphan_observation",
+        "urn:bad:visit_record_collapse",
+        "urn:bad:prohibited_task"
+    ]
+
+    for exp in expected_violations:
+        assert exp in focus_nodes or exp in results_text, f"SHACL failed to catch expected violation on node: {exp}"
+        print(f"  ✓ Individually Asserted Violation FocusNode: {exp}")
+
+    print("\nAll 5 Anti-Collapse & Disjointness SHACL Violations Individually Asserted & Passed.")

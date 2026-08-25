@@ -2,13 +2,12 @@
 """
 generate_full_profile_registry.py
 =================================
-基于谋圣 152 列数据映射实际引用的 105 个唯一 URI，
-为 prism-ontology/profiles/outlet-insight/ 自动化生成 100% 闭包的 Profile 规范文件：
-- concepts.yaml
-- relations.yaml
-- metric-definitions.yaml (包含全量 78 个业务指标与结构指标)
+基于业务本体语义治理原则，为 prism-ontology/profiles/outlet-insight/ 生成 100% 闭包且语义严谨的注册文件：
+- concepts.yaml (32 Classes)
+- relations.yaml (包含全部 38 个定性观测属性 + 核心关系)
+- metric-definitions.yaml (包含全量 37 个数值度量，每个度量均具备公式、分子、分母、空间/时间范围、缺失策略与解释边界)
 - sources.yaml (7 个外部数据源)
-- organizations.yaml (组织实体)
+- organizations.yaml (1 个企业组织)
 """
 import yaml
 from pathlib import Path
@@ -19,10 +18,8 @@ MAP_PATH = Path("/Users/ghb/sh-store-insight/skill/references/dataset_mapping.ya
 with open(MAP_PATH, "r", encoding="utf-8") as f:
     map_data = yaml.safe_load(f)
 
-# 1. 提取所有 metric URIs
-metric_entries = []
-# 先加入结构化分析指标
-metric_entries.extend([
+# 1. 结构化分析度量 + 物理列纯数值度量
+metric_entries = [
     {
         "uri": "prism:metric/HerfindahlHirschmanIndex",
         "name": "赫芬达尔-赫希曼指数 (HHI)",
@@ -31,7 +28,10 @@ metric_entries.extend([
         "numerator": "特定品牌在指定区域业态下的网点数",
         "denominator": "区域业态全部网点数",
         "eligible_population": "全部在册品牌",
-        "interpretation_boundary": "网点物理覆盖集中度，非实际销售金额市场份额"
+        "spatial_scope": "指定区域",
+        "temporal_scope": "当前快照周期",
+        "missing_value_policy": "排除无牌独立店后计算份额占比",
+        "interpretation_boundary": "网点物理覆盖集中度，非实际销售金额市场份额；严禁推断反垄断法意义上的垄断"
     },
     {
         "uri": "prism:metric/Top4ConcentrationRatio",
@@ -41,6 +41,9 @@ metric_entries.extend([
         "numerator": "排名前4位品牌网点数之和",
         "denominator": "区域业态网点总数",
         "eligible_population": "全部在册品牌",
+        "spatial_scope": "指定区域",
+        "temporal_scope": "当前快照周期",
+        "missing_value_policy": "剔除无牌独立店",
         "interpretation_boundary": "用于描述头部聚集度（>0.65 为高集中）"
     },
     {
@@ -51,7 +54,10 @@ metric_entries.extend([
         "numerator": "排名前8位品牌网点数之和",
         "denominator": "区域业态网点总数",
         "eligible_population": "全部在册品牌",
-        "interpretation_boundary": "用于描述头部集中度"
+        "spatial_scope": "指定区域",
+        "temporal_scope": "当前快照周期",
+        "missing_value_policy": "剔除无牌独立店",
+        "interpretation_boundary": "用于描述头部聚集度"
     },
     {
         "uri": "prism:metric/GiniCoefficient",
@@ -61,31 +67,78 @@ metric_entries.extend([
         "numerator": "网点规模偏斜累积和",
         "denominator": "均等分布基准",
         "eligible_population": "各商圈/大区",
+        "spatial_scope": "指定大区",
+        "temporal_scope": "当前快照周期",
+        "missing_value_policy": "缺失排除",
         "interpretation_boundary": "衡量网点在空间或品牌维度的分布不均衡程度"
     }
-])
+]
+
+# 扫描并提取所有物理纯数值度量
+metric_semantic_specs = {
+    "DianpingRating": {"numerator": "用户评分总和", "denominator": "有效打分用户数", "range": [1.0, 5.0]},
+    "DianpingTasteScore": {"numerator": "口味打分总和", "denominator": "有效打分用户数", "range": [1.0, 5.0]},
+    "DianpingEnvScore": {"numerator": "环境打分总和", "denominator": "有效打分用户数", "range": [1.0, 5.0]},
+    "DianpingServiceScore": {"numerator": "服务打分总和", "denominator": "有效打分用户数", "range": [1.0, 5.0]},
+    "DianpingAvgPrice": {"numerator": "消费总金额", "denominator": "消费人次", "unit": "CNY/人"},
+    "DianpingReviewCount": {"numerator": "评论条数累加", "denominator": "N/A", "unit": "条"},
+    "CtripRoomCount": {"numerator": "酒店客房总数", "denominator": "N/A", "unit": "间"},
+    "CtripRating": {"numerator": "携程用户打分总和", "denominator": "有效打分用户数", "range": [1.0, 5.0]},
+    "CtripReviewCount": {"numerator": "携程评价条数", "denominator": "N/A", "unit": "条"},
+    "WeekendTraffic": {"numerator": "周末两日客流总和", "denominator": "2", "unit": "人/天"},
+    "WeekdayTraffic": {"numerator": "工作日五天客流总和", "denominator": "5", "unit": "人/天"},
+    "DailyTraffic": {"numerator": "全周客流总和", "denominator": "7", "unit": "人/天"},
+    "ResidentPopulation": {"numerator": "网格常住人口统计", "denominator": "N/A", "unit": "人"},
+    "WorkingPopulation": {"numerator": "网格办公工作人口统计", "denominator": "N/A", "unit": "人"},
+    "FemalePopulationRatio": {"numerator": "女性常住人口数", "denominator": "总人口数", "unit": "%"},
+    "Age18To40Ratio": {"numerator": "18至40岁青年人口数", "denominator": "总人口数", "unit": "%"},
+    "Age18To60Ratio": {"numerator": "18至60岁劳动力人口数", "denominator": "总人口数", "unit": "%"},
+    "HigherEducationRatio": {"numerator": "大专及以上学历人口数", "denominator": "总人口数", "unit": "%"},
+    "CommunityHousingPrice": {"numerator": "社区住宅单价均值", "denominator": "N/A", "unit": "CNY/m2"},
+    "CommunityHousingPriceLevel": {"numerator": "房价等级分类指数", "denominator": "N/A", "range": [1, 5]},
+    "HotelPrice": {"numerator": "酒店间夜均价", "denominator": "N/A", "unit": "CNY/间夜"},
+    "DistanceToDCKM": {"numerator": "网点至所属配送中心路网距离", "denominator": "N/A", "unit": "KM"},
+    "DistanceToOfficeKM": {"numerator": "网点至所属办事处直线距离", "denominator": "N/A", "unit": "KM"},
+    "DirectStraightDistance": {"numerator": "职住通勤直线距离", "denominator": "N/A", "unit": "KM"},
+    "CoolerDoorCount": {"numerator": "店内饮料冰柜门数", "denominator": "N/A", "unit": "门"},
+    "Rolling12MRevenue": {"numerator": "过去12个月饮料采购出库金额", "denominator": "N/A", "unit": "CNY"},
+    "NARTDFacingCount": {"numerator": "软饮料排面总个数", "denominator": "N/A", "unit": "个"},
+    "NARTDFrozenFacingCount": {"numerator": "冷藏冰冻饮料排面数", "denominator": "N/A", "unit": "个"},
+    "SOVIPercentage": {"numerator": "本品排面数", "denominator": "全品类排面总数", "unit": "%"},
+    "SOCIPercentage": {"numerator": "本品冰冻排面数", "denominator": "冰柜全部排面数", "unit": "%"},
+    "AddressQualityScore": {"numerator": "地址文本要素解析置信度", "denominator": "N/A", "range": [0, 100]},
+    "MatchingDistanceMeters": {"numerator": "客资坐标与腾讯POI匹配距离", "denominator": "N/A", "unit": "米"},
+    "GeocodingDistanceMeters": {"numerator": "客资坐标与文本解析坐标距离", "denominator": "N/A", "unit": "米"},
+    "ActualSalesCrates": {"numerator": "月度实际销售箱数", "denominator": "N/A", "unit": "箱"},
+    "NIQNARTDIndex": {"numerator": "尼尔森饮料品类发展指数", "denominator": "基准指数 100", "unit": "指数"}
+}
 
 for entry in map_data["mappings"]:
     sp = entry.get("semantic_pattern") or {}
-    metric_uri = sp.get("observed_property") or sp.get("estimated_property")
+    metric_uri = sp.get("observed_property")
     if metric_uri and metric_uri.startswith("prism:metric/"):
-        name = entry.get("physical_column") or metric_uri.split("/")[-1]
-        category = "DerivedEstimate" if entry.get("field_class") == "derived_estimate" else "Observation"
+        metric_key = metric_uri.split("/")[-1]
+        spec = metric_semantic_specs.get(metric_key, {})
         metric_entries.append({
             "uri": metric_uri,
-            "name": name,
-            "category": category,
+            "name": entry.get("physical_column") or metric_key,
+            "category": "ObservationMetric",
             "physical_column": entry.get("physical_column"),
             "data_source": sp.get("data_source"),
             "channel_applicability": sp.get("channel_applicability", "all"),
-            "eligible_population": "全部在册售点" if category == "Observation" else "符合模型特征要求的网点",
-            "interpretation_boundary": f"源自字段「{entry.get('physical_column')}」的客观测量或模型估计"
+            "numerator": spec.get("numerator", "测量值累加"),
+            "denominator": spec.get("denominator", "样本数"),
+            "eligible_population": "具备该维度有效测量值的售点",
+            "spatial_scope": "售点所在行政区/商圈",
+            "temporal_scope": "当前快照周期",
+            "missing_value_policy": "缺失时保持 null，不填补，在质量评估中报告缺失率",
+            "interpretation_boundary": f"源自字段「{entry.get('physical_column')}」的客观测量数值"
         })
 
 with open(PROFILE_DIR / "metric-definitions.yaml", "w", encoding="utf-8") as f:
     yaml.dump({"version": "1.0.0", "profile": "prism://ontology/profiles/outlet-insight", "metrics": metric_entries}, f, allow_unicode=True, sort_keys=False)
 
-# 2. 生成 concepts.yaml (全量 22 个受管 Class)
+# 2. 生成 concepts.yaml (32 Classes)
 concepts = [
     {"uri": "prism:core/Entity", "name": "客观实体", "category": "Core"},
     {"uri": "prism:core/DerivedEstimate", "name": "派生推导估计", "category": "Core"},
@@ -124,7 +177,7 @@ concepts = [
 with open(PROFILE_DIR / "concepts.yaml", "w", encoding="utf-8") as f:
     yaml.dump({"version": "1.0.0", "profile": "prism://ontology/profiles/outlet-insight", "concepts": concepts}, f, allow_unicode=True, sort_keys=False)
 
-# 3. 生成 relations.yaml (全量受管属性与关系)
+# 3. 生成 relations.yaml (包含全量 38 个定性观测属性 + 7 个派生估计属性 + 核心关系)
 relations = [
     {"uri": "prism:core/hasIdentifier", "name": "持有标识", "domain": "prism:core/Entity"},
     {"uri": "prism:core/hasName", "name": "名称", "domain": "prism:core/Entity"},
@@ -147,6 +200,19 @@ relations = [
     {"uri": "prism:insight/hasClaim", "name": "包含主张", "domain": "prism:insight/InsightPackage", "range": "prism:insight/InsightClaim"},
     {"uri": "prism:insight/groundedInEvidence", "name": "基于数据证据", "domain": "prism:insight/InsightClaim", "range": "prism:core/Evidence"}
 ]
+
+# 扫描并加入所有 prism:observed/* 定性观测属性与 prism:estimate/* 派生估计属性
+for entry in map_data["mappings"]:
+    sp = entry.get("semantic_pattern") or {}
+    prop_uri = sp.get("observed_property") or sp.get("estimated_property")
+    if prop_uri and (prop_uri.startswith("prism:observed/") or prop_uri.startswith("prism:estimate/")):
+        name = entry.get("physical_column") or prop_uri.split("/")[-1]
+        relations.append({
+            "uri": prop_uri,
+            "name": name,
+            "category": "ObservedProperty" if prop_uri.startswith("prism:observed/") else "DerivedEstimateProperty",
+            "physical_column": entry.get("physical_column")
+        })
 
 with open(PROFILE_DIR / "relations.yaml", "w", encoding="utf-8") as f:
     yaml.dump({"version": "1.0.0", "profile": "prism://ontology/profiles/outlet-insight", "relations": relations}, f, allow_unicode=True, sort_keys=False)
@@ -173,4 +239,4 @@ orgs = [
 with open(PROFILE_DIR / "organizations.yaml", "w", encoding="utf-8") as f:
     yaml.dump({"version": "1.0.0", "profile": "prism://ontology/profiles/outlet-insight", "organizations": orgs}, f, allow_unicode=True, sort_keys=False)
 
-print("Successfully generated full profile registry in", PROFILE_DIR)
+print("Successfully generated fully governed profile registry in", PROFILE_DIR)

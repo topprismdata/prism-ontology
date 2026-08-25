@@ -1,0 +1,23 @@
+{
+  "profile_uri": "prism://ontology/profiles/outlet-insight",
+  "profile_name": "outlet-insight",
+  "version": "0.1.0-rc1",
+  "status": "release_candidate",
+  "release_tag": "outlet-insight-v0.1.0-rc1",
+  "git_commit": "70417212cb23d70e83b4e703c4e84a0a654808bb",
+  "clean_working_tree": false,
+  "release_date": "2026-08-25",
+  "authority": "TopPrism Ontology Engineering Committee",
+  "included_files": [
+    "outlet-insight.profile.yaml",
+    "outlet-insight.owl.ttl",
+    "outlet-insight.shacl.ttl",
+    "metric-definitions.yaml",
+    "concepts.yaml",
+    "relations.yaml",
+    "sources.yaml",
+    "organizations.yaml",
+    "competency-questions.yaml",
+    "competency-question-report.md"
+  ]
+}

@@ -1,0 +1,64 @@
+# ==============================================================================
+# profile.yaml
+# 谋圣·售点洞察场景运行契约 Profile 定义 (Mousheng Outlet Insight Profile)
+# ==============================================================================
+
+profile_metadata:
+  profile_uri: "prism://ontology/profiles/outlet-insight"
+  profile_name: "outlet-insight"
+  display_name: "谋圣·售点洞察场景运行 Profile"
+  version: "0.1.0-rc1"
+  status: "release_candidate"
+  target_audience: "Mousheng Outlet Insight Analysis Engine"
+  governance:
+    authority: "TopPrism Ontology Engineering Committee"
+    maintainer: "ontology@topprism.ai"
+    release_date: "2026-08-25"
+
+# 包含的上游 Reference Ontology 模块
+included_modules:
+  - module_id: "prism:core"
+    source_path: "ontology/core/core.ttl"
+    shacl_path: "ontology/core/core.shacl.ttl"
+  - module_id: "prism:outlet"
+    source_path: "ontology/outlet/outlet.ttl"
+    shacl_path: "ontology/outlet/outlet.shacl.ttl"
+  - module_id: "prism:insight"
+    source_path: "ontology/insight/insight-artifact.ttl"
+    shacl_path: "ontology/insight/insight-artifact.shacl.ttl"
+  - module_id: "prism:sales-visit-boundary"
+    source_path: "ontology/sales-visit/sales-visit.ttl"
+    shacl_path: "ontology/sales-visit/sales-visit.shacl.ttl"
+
+# 明确允许进入本场景的受管业务概念
+allowed_concept_scopes:
+  - "prism:outlet/Outlet"
+  - "prism:outlet/Brand"
+  - "prism:outlet/CommercialSite"
+  - "prism:outlet/AdministrativeRegion"
+  - "prism:outlet/Territory"
+  - "prism:outlet/ChannelType"
+  - "prism:outlet/OutletObservation"
+  - "prism:outlet/DemographicObservation"
+  - "prism:outlet/AssetAndDisplayObservation"
+  - "prism:outlet/TownshipContext"
+  - "prism:quality/EntityResolutionAssessment"
+  - "prism:core/DerivedEstimate"
+  - "prism:insight/AnalysisIntent"
+  - "prism:insight/MetricDefinition"
+  - "prism:insight/ComputationActivity"
+  - "prism:insight/InsightClaim"
+  - "prism:insight/QualityAssessment"
+  - "prism:insight/InsightPackage"
+  - "prism:insight/ElevationCandidate"
+  - "prism:sales/CustomerAccount"
+  - "prism:sales/CustomerRole"
+  - "prism:sales/ServiceRelationship"
+
+# 明确禁止在本场景中生成或使用的执行类对象 (Execution Prohibition)
+prohibited_execution_concepts:
+  - "prism:execution/Task"
+  - "prism:execution/RoutePlan"
+  - "prism:execution/ScheduleDecision"
+  - "prism:execution/CRMStateMutation"
+  - "prism:execution/WorldStateWriteCommand"

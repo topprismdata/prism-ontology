@@ -1,0 +1,388 @@
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix prism-core: <prism://ontology/core/> .
+@prefix prism-insight: <prism://ontology/insight/> .
+@prefix prism-outlet: <prism://ontology/outlet/> .
+@prefix prism-sales: <prism://ontology/sales-visit/> .
+@prefix prov: <http://www.w3.org/ns/prov#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix sosa: <http://www.w3.org/ns/sosa/> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+prism-core:Decision a owl:Class ;
+    rdfs:label "Decision"@en,
+        "业务决策"@zh ;
+    rdfs:comment "基于资格与规则做出的业务选择（与具体执行计划严格区分）。" .
+
+prism-core:Organization a owl:Class ;
+    rdfs:label "Organization"@en,
+        "组织机构"@zh ;
+    rdfs:comment "法人实体、商业机构、销售组织或企业内部部门。" ;
+    rdfs:subClassOf prism-core:Entity .
+
+prism-core:Policy a owl:Class ;
+    rdfs:label "Policy"@en,
+        "业务政策"@zh ;
+    rdfs:comment "企业治理政策、合规规则或业务约束准则。" .
+
+prism-core:derivedFrom a owl:ObjectProperty ;
+    rdfs:label "derivedFrom"@en,
+        "派生自"@zh ;
+    rdfs:domain prism-core:DerivedEstimate .
+
+prism-core:hasEvidence a owl:ObjectProperty ;
+    rdfs:label "hasEvidence"@en,
+        "具备证据"@zh .
+
+prism-core:hasIdentifier a owl:ObjectProperty ;
+    rdfs:label "hasIdentifier"@en,
+        "持有标识"@zh ;
+    rdfs:domain prism-core:Entity .
+
+prism-core:hasName a owl:DatatypeProperty ;
+    rdfs:label "hasName"@en,
+        "名称"@zh ;
+    rdfs:domain prism-core:Entity ;
+    rdfs:range xsd:string .
+
+prism-core:validDuring a owl:ObjectProperty ;
+    rdfs:label "validDuring"@en,
+        "有效时间段"@zh ;
+    rdfs:range prism-core:TimeInterval .
+
+prism-insight: a owl:Ontology ;
+    rdfs:label "TopPrism World Model L2+ Insight Artifact Extension"@en,
+        "Prism Insight Artifact Ontology"@zh ;
+    rdfs:comment "洞察产物本体扩展：定义第一棱镜业务分析意图、受管度量、计算活动、分析主张、数据质量评估、标准洞察包以及被动提升候选物。" ;
+    owl:imports prism-core: ;
+    owl:versionInfo "0.1.0-rc1" .
+
+prism-insight:AnalysisIntent a owl:Class ;
+    rdfs:label "AnalysisIntent"@en,
+        "业务分析意图"@zh ;
+    rdfs:comment "第一棱镜将自然语言业务问题编译展开出的结构化意图定义（含对象、范围、指标与规则）。" ;
+    rdfs:subClassOf prism-core:InformationObject .
+
+prism-insight:ElevationCandidate a owl:Class ;
+    rdfs:label "ElevationCandidate"@en,
+        "提升事实候选物"@zh ;
+    rdfs:comment "被动导出的候选世界模型事实 Payload；强制携带 unreviewed 状态且不直接产生任何世界状态写入。" ;
+    rdfs:subClassOf prism-core:InformationObject .
+
+prism-insight:QualityAssessment a owl:Class ;
+    rdfs:label "QualityAssessment"@en,
+        "数据质量与适用性评估"@zh ;
+    rdfs:comment "对样本完整度、维度覆盖率及适用边界的测量评估事实。" ;
+    rdfs:subClassOf prism-core:Observation .
+
+prism-insight:appliesMetric a owl:ObjectProperty ;
+    rdfs:label "appliesMetric"@en,
+        "应用度量定义"@zh ;
+    rdfs:domain prism-insight:ComputationActivity ;
+    rdfs:range prism-insight:MetricDefinition .
+
+prism-insight:groundedInEvidence a owl:ObjectProperty ;
+    rdfs:label "groundedInEvidence"@en,
+        "基于数据证据"@zh ;
+    rdfs:domain prism-insight:InsightClaim ;
+    rdfs:range prism-core:Evidence .
+
+prism-insight:hasClaim a owl:ObjectProperty ;
+    rdfs:label "hasClaim"@en,
+        "包含主张"@zh ;
+    rdfs:domain prism-insight:InsightPackage ;
+    rdfs:range prism-insight:InsightClaim .
+
+prism-outlet:belongsToBrand a owl:ObjectProperty ;
+    rdfs:label "belongsToBrand"@en,
+        "归属品牌"@zh ;
+    rdfs:domain prism-outlet:Outlet ;
+    rdfs:range prism-outlet:Brand .
+
+prism-outlet:coveredBySalesTerritory a owl:ObjectProperty ;
+    rdfs:label "coveredBySalesTerritory"@en,
+        "属于销售辖区"@zh ;
+    rdfs:domain prism-outlet:Outlet ;
+    rdfs:range prism-outlet:Territory .
+
+prism-outlet:hasChannelType a owl:ObjectProperty ;
+    rdfs:label "hasChannelType"@en,
+        "具备业态分类"@zh ;
+    rdfs:domain prism-outlet:Outlet ;
+    rdfs:range prism-outlet:ChannelType .
+
+prism-outlet:locatedInAdministrativeRegion a owl:ObjectProperty ;
+    rdfs:label "locatedInAdministrativeRegion"@en,
+        "位于行政区"@zh ;
+    rdfs:domain prism-outlet:Outlet ;
+    rdfs:range prism-outlet:AdministrativeRegion .
+
+prism-outlet:observesOutlet a owl:ObjectProperty ;
+    rdfs:label "observesOutlet"@en,
+        "观测售点"@zh ;
+    rdfs:domain prism-outlet:OutletObservation ;
+    rdfs:range prism-outlet:Outlet ;
+    rdfs:subPropertyOf prism-core:observesEntity .
+
+prism-outlet:operatedAtSite a owl:ObjectProperty ;
+    rdfs:label "operatedAtSite"@en,
+        "经营场所"@zh ;
+    rdfs:domain prism-outlet:Outlet ;
+    rdfs:range prism-outlet:CommercialSite .
+
+prism-outlet:territoryCoversRegion a owl:ObjectProperty ;
+    rdfs:label "territoryCoversRegion"@en,
+        "辖区覆盖行政区"@zh ;
+    rdfs:domain prism-outlet:Territory ;
+    rdfs:range prism-outlet:AdministrativeRegion .
+
+prism-sales: a owl:Ontology ;
+    rdfs:label "TopPrism World Model L2 Sales Visit Boundary Skeleton"@en,
+        "Prism Sales Visit Boundary Ontology"@zh ;
+    rdfs:comment "快消零售 (FMCG) 销售拜访边界本体骨架：定义客户账户、客户角色、服务关系、PJP 线路拜访计划、RED 店内执行打卡与实际拜访事件等边界协同概念。" ;
+    owl:imports prism-core:,
+        prism-outlet: ;
+    owl:versionInfo "0.1.0-rc1" .
+
+prism-sales:ServiceRelationship a owl:Class ;
+    rdfs:label "ServiceRelationship"@en,
+        "销售服务业务关系"@zh ;
+    rdfs:comment "特定销售组织（如装瓶厂/经销商）与售点之间建立的时变业务服务关系（如已服务、未服务、待开发）。" ;
+    rdfs:subClassOf prism-core:Activity .
+
+prism-sales:VisitMode a owl:Class ;
+    rdfs:label "VisitMode"@en,
+        "拜访模式"@zh ;
+    rdfs:comment "拜访实施形式（如线下实地常规拜访、车销直送、电话远程跟进）。" ;
+    rdfs:subClassOf prism-core:InformationObject .
+
+prism-sales:VisitModeConstraint a owl:Class ;
+    rdfs:label "VisitModeConstraint"@en,
+        "拜访模式硬性约束"@zh ;
+    rdfs:comment "对特定业态或商圈施加的拜访频次、作业时长或通行限制。" ;
+    rdfs:subClassOf prism-core:Constraint .
+
+prism-sales:VisitModeEligibility a owl:Class ;
+    rdfs:label "VisitModeEligibility"@en,
+        "拜访准入资格评估"@zh ;
+    rdfs:comment "网点是否满足特定拜访模式准入条件的评估（与最终排程决策严格分离）。" ;
+    rdfs:subClassOf prism-core:Eligibility .
+
+prism-sales:VisitPlan a owl:Class ;
+    rdfs:label "VisitPlan (Permanent Journey Plan)"@en,
+        "销售拜访计划 (PJP)"@zh ;
+    rdfs:comment "为销售人员制定的前瞻性 PJP 线路拜访任务计划（与实际发生的物理拜访事件严格区分）。" ;
+    rdfs:subClassOf prism-core:Plan .
+
+prism-sales:VisitPurpose a owl:Class ;
+    rdfs:label "VisitPurpose"@en,
+        "拜访目的"@zh ;
+    rdfs:comment "拜访活动的业务目标（如新品铺货、生动化陈列、RED 审计、冰柜投放、客情维护）。" ;
+    rdfs:subClassOf prism-core:InformationObject .
+
+prism-sales:accountRealizesRole a owl:ObjectProperty ;
+    rdfs:label "accountRealizesRole"@en,
+        "账户实现角色"@zh ;
+    rdfs:domain prism-sales:CustomerAccount ;
+    rdfs:range prism-sales:CustomerRole .
+
+prism-sales:accountRepresentsOutlet a owl:ObjectProperty ;
+    rdfs:label "accountRepresentsOutlet"@en,
+        "账户代表售点"@zh ;
+    rdfs:domain prism-sales:CustomerAccount ;
+    rdfs:range prism-outlet:Outlet .
+
+prism-sales:outletPlaysCustomerRole a owl:ObjectProperty ;
+    rdfs:label "outletPlaysCustomerRole"@en,
+        "售点承担客户角色"@zh ;
+    rdfs:domain prism-outlet:Outlet ;
+    rdfs:range prism-sales:CustomerRole ;
+    rdfs:subPropertyOf prism-core:playsRole .
+
+prism-sales:recordsVisitEvent a owl:ObjectProperty ;
+    rdfs:label "recordsVisitEvent"@en,
+        "记录拜访事件"@zh ;
+    rdfs:domain prism-sales:VisitRecord ;
+    rdfs:range prism-sales:ActualVisit .
+
+prism-core:Constraint a owl:Class ;
+    rdfs:label "Constraint"@en,
+        "业务约束"@zh ;
+    rdfs:comment "在特定场景下对实体、活动施加的硬性或软性限制条件。" .
+
+prism-core:DerivedEstimate a owl:Class ;
+    rdfs:label "DerivedEstimate"@en,
+        "派生估计"@zh ;
+    rdfs:comment "基于算法模型、统计公式推导的预测或估计属性，严禁直接等同于既成事实。" .
+
+prism-core:Eligibility a owl:Class ;
+    rdfs:label "Eligibility"@en,
+        "准入资格"@zh ;
+    rdfs:comment "实体是否满足参与特定业务活动的准入条件（与实际决策严格区分）。" .
+
+prism-core:Event a owl:Class ;
+    rdfs:label "Event"@en,
+        "历史事件"@zh ;
+    rdfs:comment "在特定时间、空间发生的客观事实事件。" .
+
+prism-core:Evidence a owl:Class ;
+    rdfs:label "Evidence"@en,
+        "数据证据"@zh ;
+    rdfs:comment "支撑分析主张或派生估计的可追溯数据记录与有效样本。" .
+
+prism-core:Plan a owl:Class ;
+    rdfs:label "Plan"@en,
+        "执行计划"@zh ;
+    rdfs:comment "指导未来活动的结构化计划（与实际发生事件严格区分）。" .
+
+prism-core:TimeInterval a owl:Class ;
+    rdfs:label "TimeInterval"@en,
+        "时间区间"@zh ;
+    rdfs:comment "具备开始与结束的双时间态有效时间范围。" .
+
+prism-core:observesEntity a owl:ObjectProperty ;
+    rdfs:label "observesEntity"@en,
+        "观测对象"@zh ;
+    rdfs:domain prism-core:Observation ;
+    rdfs:range prism-core:Entity .
+
+prism-core:playsRole a owl:ObjectProperty ;
+    rdfs:label "playsRole"@en,
+        "承担角色"@zh ;
+    rdfs:domain prism-core:Entity ;
+    rdfs:range prism-core:Role .
+
+prism-insight:ComputationActivity a owl:Class ;
+    rdfs:label "ComputationActivity"@en,
+        "确定性分析计算活动"@zh ;
+    rdfs:comment "根据 AnalysisIntent 与 MetricDefinition 对数据执行的纯数学与统计确定性计算过程。" ;
+    rdfs:subClassOf prism-core:Activity .
+
+prism-insight:InsightPackage a owl:Class ;
+    rdfs:label "InsightPackage"@en,
+        "标准洞察交付包"@zh ;
+    rdfs:comment "标准 8 块结构化洞察交付包（含 3 个信封/治理字段 + 8 个核心洞察块）。" ;
+    rdfs:subClassOf prism-core:InformationObject .
+
+prism-insight:MetricDefinition a owl:Class ;
+    rdfs:label "MetricDefinition"@en,
+        "受管度量定义"@zh ;
+    rdfs:comment "具有明确计算口径（分子、分母、适用有效群体、空间与时间范围）的受管业务指标定义。" ;
+    rdfs:subClassOf prism-core:InformationObject .
+
+prism-outlet: a owl:Ontology ;
+    rdfs:label "TopPrism World Model L2 Outlet Domain Ontology"@en,
+        "Prism Outlet Domain Ontology"@zh ;
+    rdfs:comment "售点领域本体：定义商业售点、连锁品牌、商业场所、行政区划与销售辖区双轨制、业态分类及售点多源观测事实。" ;
+    owl:imports prism-core: ;
+    owl:versionInfo "0.1.0-rc1" .
+
+prism-outlet:Brand a owl:Class ;
+    rdfs:label "Brand"@en,
+        "商业品牌/集团"@zh ;
+    rdfs:comment "商业连锁品牌或集团母公司实体。" ;
+    rdfs:subClassOf prism-core:Entity .
+
+prism-outlet:ChannelType a owl:Class ;
+    rdfs:label "ChannelType"@en,
+        "业态渠道分类"@zh ;
+    rdfs:comment "售点所归属的行业业态分类（餐饮、住宿、食杂、娱乐、教育、旅游等）。" ;
+    rdfs:subClassOf prism-core:InformationObject .
+
+prism-outlet:CommercialSite a owl:Class ;
+    rdfs:label "CommercialSite"@en,
+        "商业经营场所"@zh ;
+    rdfs:comment "商圈、商场、餐饮街、社区或工矿园区等网点聚集场所。" ;
+    rdfs:subClassOf prism-core:Entity .
+
+prism-outlet:OutletObservation a owl:Class ;
+    rdfs:label "OutletObservation"@en,
+        "售点客观观测"@zh ;
+    rdfs:comment "多源外部平台（大众点评、携程、高德等）在特定时间对售点的评分、客流、房间数等客观动态测量事实。" ;
+    rdfs:subClassOf prism-core:Observation .
+
+prism-sales:ActualVisit a owl:Class ;
+    rdfs:label "ActualVisit"@en,
+        "实际拜访物理事件"@zh ;
+    rdfs:comment "销售人员在物理网点实际发生的进店、停留、离店物理事实事件。" ;
+    rdfs:subClassOf prism-core:Event .
+
+prism-sales:VisitRecord a owl:Class ;
+    rdfs:label "VisitRecord"@en,
+        "拜访打卡记录"@zh ;
+    rdfs:comment "移动 SFA 系统记录的打卡时间、GPS 坐标与陈列照片等信息对象（与实际物理事件解耦）。" ;
+    rdfs:subClassOf prism-core:InformationObject .
+
+prism-core:Activity a owl:Class ;
+    rdfs:label "Activity"@en,
+        "业务活动"@zh ;
+    rdfs:comment "由行动主体发起、消耗时间并产生状态变化的业务过程。" ;
+    rdfs:subClassOf prov:Activity .
+
+prism-core:Role a owl:Class ;
+    rdfs:label "Role"@en,
+        "业务角色"@zh ;
+    rdfs:comment "实体在特定业务情境或活动中临时承担的角色，与实体身份严格分离。" .
+
+prism-core:SpatialGeometry a owl:Class ;
+    rdfs:label "SpatialGeometry"@en,
+        "空间几何与区域"@zh ;
+    rdfs:comment "地理空间、多边形或行政区划边界。" .
+
+prism-insight:InsightClaim a owl:Class ;
+    rdfs:label "InsightClaim"@en,
+        "分析主张"@zh ;
+    rdfs:comment "系统基于观测数据与确定性计算输出的分析结论观点（Claim）。严禁直接作为客观既成世界事实，更不得自动回写世界模型。" ;
+    rdfs:subClassOf prism-core:InformationObject .
+
+prism-outlet:AdministrativeRegion a owl:Class ;
+    rdfs:label "AdministrativeRegion"@en,
+        "行政区划区域"@zh ;
+    rdfs:comment "国家法定行政地理区域（省、市、区县、乡镇），具有法定边界与行政编码。" ;
+    rdfs:subClassOf prism-core:SpatialGeometry .
+
+prism-outlet:Territory a owl:Class ;
+    rdfs:label "SalesTerritory"@en,
+        "销售责任辖区"@zh ;
+    rdfs:comment "企业销售组织根据管理需求划定的大区、办事处、配送路线责任空间，严禁与国家法定行政区划混淆。" ;
+    rdfs:subClassOf prism-core:SpatialGeometry .
+
+prism-sales:CustomerAccount a owl:Class ;
+    rdfs:label "CustomerAccount"@en,
+        "企业客户账户"@zh ;
+    rdfs:comment "企业 IT (CRM/ERP/SFA) 系统中建立的客户主数据账户记录，代表物理售点实体。" ;
+    rdfs:subClassOf prism-core:Entity .
+
+prism-sales:CustomerRole a owl:Class ;
+    rdfs:label "CustomerRole"@en,
+        "客户业务角色"@zh ;
+    rdfs:comment "售点在特定销售、履约或服务业务情境下承担的角色。未服务网点尚未激活此角色。" ;
+    rdfs:subClassOf prism-core:Role .
+
+prism-core: a owl:Ontology ;
+    rdfs:label "TopPrism World Model L1 Core Ontology"@en,
+        "Prism Core Meta-Model"@zh ;
+    rdfs:comment "棱镜极世界模型 L1 通用上层元模型：定义现实世界实体、角色、事件、活动、观测与派生估计等通用基类。" ;
+    owl:versionInfo "0.1.0-rc1" .
+
+prism-core:Observation a owl:Class ;
+    rdfs:label "Observation"@en,
+        "客观观测"@zh ;
+    rdfs:comment "外部数据源在特定时间点对实体属性的测量与观测事实，必须携带来源与时间。" ;
+    rdfs:subClassOf sosa:Observation .
+
+prism-outlet:Outlet a owl:Class ;
+    rdfs:label "Commercial Outlet"@en,
+        "商业售点"@zh ;
+    rdfs:comment "现实物理世界中从事零售、餐饮、住宿或服务的商业网点门店实体。无论是否进入 CRM，客观独立存在。" ;
+    rdfs:subClassOf prism-core:Entity .
+
+prism-core:Entity a owl:Class ;
+    rdfs:label "Entity"@en,
+        "客观实体"@zh ;
+    rdfs:comment "物理或概念世界中客观存在、具有独立身份与生命周期的现实对象。" .
+
+prism-core:InformationObject a owl:Class ;
+    rdfs:label "InformationObject"@en,
+        "信息对象"@zh ;
+    rdfs:comment "结构化数据记录、报表、文档或系统账户等数据载体。" .
+
