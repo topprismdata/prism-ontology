@@ -8,7 +8,10 @@ metrics:
   numerator: 特定品牌在指定区域业态下的网点数
   denominator: 区域业态全部网点数
   eligible_population: 全部在册品牌
-  interpretation_boundary: 网点物理覆盖集中度，非实际销售金额市场份额
+  spatial_scope: 指定区域
+  temporal_scope: 当前快照周期
+  missing_value_policy: 排除无牌独立店后计算份额占比
+  interpretation_boundary: 网点物理覆盖集中度，非实际销售金额市场份额；严禁推断反垄断法意义上的垄断
 - uri: prism:metric/Top4ConcentrationRatio
   name: 行业前四集中率 (CR4)
   category: Structure
@@ -16,6 +19,9 @@ metrics:
   numerator: 排名前4位品牌网点数之和
   denominator: 区域业态网点总数
   eligible_population: 全部在册品牌
+  spatial_scope: 指定区域
+  temporal_scope: 当前快照周期
+  missing_value_policy: 剔除无牌独立店
   interpretation_boundary: 用于描述头部聚集度（>0.65 为高集中）
 - uri: prism:metric/Top8ConcentrationRatio
   name: 行业前八集中率 (CR8)
@@ -24,7 +30,10 @@ metrics:
   numerator: 排名前8位品牌网点数之和
   denominator: 区域业态网点总数
   eligible_population: 全部在册品牌
-  interpretation_boundary: 用于描述头部集中度
+  spatial_scope: 指定区域
+  temporal_scope: 当前快照周期
+  missing_value_policy: 剔除无牌独立店
+  interpretation_boundary: 用于描述头部聚集度
 - uri: prism:metric/GiniCoefficient
   name: 基尼系数 (Gini)
   category: Structure
@@ -32,628 +41,449 @@ metrics:
   numerator: 网点规模偏斜累积和
   denominator: 均等分布基准
   eligible_population: 各商圈/大区
+  spatial_scope: 指定大区
+  temporal_scope: 当前快照周期
+  missing_value_policy: 缺失排除
   interpretation_boundary: 衡量网点在空间或品牌维度的分布不均衡程度
-- uri: prism:metric/是否高德扫街榜/状元榜
-  name: 是否高德扫街榜/状元榜
-  category: Observation
-  physical_column: 是否高德扫街榜/状元榜
-  data_source: prism:source/AMap
-  channel_applicability: all
-  eligible_population: 全部在册售点
-  interpretation_boundary: 源自字段「是否高德扫街榜/状元榜」的客观测量或模型估计
-- uri: prism:metric/高德扫街榜/状元榜榜单及排名
-  name: 高德扫街榜/状元榜榜单及排名
-  category: Observation
-  physical_column: 高德扫街榜/状元榜榜单及排名
-  data_source: prism:source/AMap
-  channel_applicability: all
-  eligible_population: 全部在册售点
-  interpretation_boundary: 源自字段「高德扫街榜/状元榜榜单及排名」的客观测量或模型估计
-- uri: prism:metric/月均收入潜力预测(如有协议)
-  name: 月均收入潜力预测(如有协议)
-  category: DerivedEstimate
-  physical_column: 月均收入潜力预测(如有协议)
-  data_source: null
-  channel_applicability: all
-  eligible_population: 符合模型特征要求的网点
-  interpretation_boundary: 源自字段「月均收入潜力预测(如有协议)」的客观测量或模型估计
-- uri: prism:metric/月均收入潜力预测(如有冰柜无协议)
-  name: 月均收入潜力预测(如有冰柜无协议)
-  category: Observation
-  physical_column: 月均收入潜力预测(如有冰柜无协议)
-  data_source: prism:source/FieldExecutionAudit
-  channel_applicability: all
-  eligible_population: 全部在册售点
-  interpretation_boundary: 源自字段「月均收入潜力预测(如有冰柜无协议)」的客观测量或模型估计
-- uri: prism:metric/月均收入潜力预测(无协议无冰柜)
-  name: 月均收入潜力预测(无协议无冰柜)
-  category: Observation
-  physical_column: 月均收入潜力预测(无协议无冰柜)
-  data_source: prism:source/FieldExecutionAudit
-  channel_applicability: all
-  eligible_population: 全部在册售点
-  interpretation_boundary: 源自字段「月均收入潜力预测(无协议无冰柜)」的客观测量或模型估计
-- uri: prism:metric/营业面积
-  name: 营业面积
-  category: DerivedEstimate
-  physical_column: 营业面积
-  data_source: null
-  channel_applicability: all
-  eligible_population: 符合模型特征要求的网点
-  interpretation_boundary: 源自字段「营业面积」的客观测量或模型估计
-- uri: prism:metric/NIQ-是否实际营业面积
-  name: NIQ-是否实际营业面积
-  category: DerivedEstimate
-  physical_column: NIQ-是否实际营业面积
-  data_source: null
-  channel_applicability: all
-  eligible_population: 符合模型特征要求的网点
-  interpretation_boundary: 源自字段「NIQ-是否实际营业面积」的客观测量或模型估计
-- uri: prism:metric/NIQ-NARTD指数
-  name: NIQ-NARTD指数
-  category: DerivedEstimate
-  physical_column: NIQ-NARTD指数
-  data_source: null
-  channel_applicability: all
-  eligible_population: 符合模型特征要求的网点
-  interpretation_boundary: 源自字段「NIQ-NARTD指数」的客观测量或模型估计
-- uri: prism:metric/LINX MT黄金门店
-  name: LINX MT黄金门店
-  category: DerivedEstimate
-  physical_column: LINX MT黄金门店
-  data_source: null
-  channel_applicability: all
-  eligible_population: 符合模型特征要求的网点
-  interpretation_boundary: 源自字段「LINX MT黄金门店」的客观测量或模型估计
-- uri: prism:metric/Ctrip_名称
-  name: 携程-名称
-  category: Observation
-  physical_column: 携程-名称
-  data_source: prism:source/Ctrip
-  channel_applicability: 住宿
-  eligible_population: 全部在册售点
-  interpretation_boundary: 源自字段「携程-名称」的客观测量或模型估计
-- uri: prism:metric/Ctrip_类型
-  name: 携程-类型
-  category: Observation
-  physical_column: 携程-类型
-  data_source: prism:source/Ctrip
-  channel_applicability: 住宿
-  eligible_population: 全部在册售点
-  interpretation_boundary: 源自字段「携程-类型」的客观测量或模型估计
-- uri: prism:metric/Ctrip_酒店/民宿分类
-  name: 携程-酒店/民宿分类
-  category: Observation
-  physical_column: 携程-酒店/民宿分类
-  data_source: prism:source/Ctrip
-  channel_applicability: 住宿
-  eligible_population: 全部在册售点
-  interpretation_boundary: 源自字段「携程-酒店/民宿分类」的客观测量或模型估计
-- uri: prism:metric/Ctrip_品牌
-  name: 携程-品牌
-  category: Observation
-  physical_column: 携程-品牌
-  data_source: prism:source/Ctrip
-  channel_applicability: 住宿
-  eligible_population: 全部在册售点
-  interpretation_boundary: 源自字段「携程-品牌」的客观测量或模型估计
-- uri: prism:metric/Ctrip_集团
-  name: 携程-集团
-  category: Observation
-  physical_column: 携程-集团
-  data_source: prism:source/Ctrip
-  channel_applicability: 住宿
-  eligible_population: 全部在册售点
-  interpretation_boundary: 源自字段「携程-集团」的客观测量或模型估计
-- uri: prism:metric/Ctrip_总部所在地
-  name: 携程-总部所在地
-  category: Observation
-  physical_column: 携程-总部所在地
-  data_source: prism:source/Ctrip
-  channel_applicability: 住宿
-  eligible_population: 全部在册售点
-  interpretation_boundary: 源自字段「携程-总部所在地」的客观测量或模型估计
-- uri: prism:metric/Ctrip_连锁类型
-  name: 携程-连锁类型
-  category: Observation
-  physical_column: 携程-连锁类型
-  data_source: prism:source/Ctrip
-  channel_applicability: 住宿
-  eligible_population: 全部在册售点
-  interpretation_boundary: 源自字段「携程-连锁类型」的客观测量或模型估计
-- uri: prism:metric/Ctrip_星级
-  name: 携程-星级
-  category: Observation
-  physical_column: 携程-星级
-  data_source: prism:source/Ctrip
-  channel_applicability: 住宿
-  eligible_population: 全部在册售点
-  interpretation_boundary: 源自字段「携程-星级」的客观测量或模型估计
-- uri: prism:metric/Ctrip_连锁级别
-  name: 携程-连锁级别
-  category: Observation
-  physical_column: 携程-连锁级别
-  data_source: prism:source/Ctrip
-  channel_applicability: 住宿
-  eligible_population: 全部在册售点
-  interpretation_boundary: 源自字段「携程-连锁级别」的客观测量或模型估计
-- uri: prism:metric/Ctrip_评论数
+- uri: prism:metric/CtripReviewCount
   name: 携程-评论数
-  category: Observation
+  category: ObservationMetric
   physical_column: 携程-评论数
   data_source: prism:source/Ctrip
   channel_applicability: 住宿
-  eligible_population: 全部在册售点
-  interpretation_boundary: 源自字段「携程-评论数」的客观测量或模型估计
-- uri: prism:metric/Ctrip_综合评分
+  numerator: 携程评价条数
+  denominator: N/A
+  eligible_population: 具备该维度有效测量值的售点
+  spatial_scope: 售点所在行政区/商圈
+  temporal_scope: 当前快照周期
+  missing_value_policy: 缺失时保持 null，不填补，在质量评估中报告缺失率
+  interpretation_boundary: 源自字段「携程-评论数」的客观测量数值
+- uri: prism:metric/CtripRating
   name: 携程-综合评分
-  category: Observation
+  category: ObservationMetric
   physical_column: 携程-综合评分
   data_source: prism:source/Ctrip
   channel_applicability: 住宿
-  eligible_population: 全部在册售点
-  interpretation_boundary: 源自字段「携程-综合评分」的客观测量或模型估计
-- uri: prism:metric/Ctrip_开业时间
-  name: 携程-开业时间
-  category: Observation
-  physical_column: 携程-开业时间
-  data_source: prism:source/Ctrip
-  channel_applicability: 住宿
-  eligible_population: 全部在册售点
-  interpretation_boundary: 源自字段「携程-开业时间」的客观测量或模型估计
-- uri: prism:metric/Ctrip_房间数
+  numerator: 携程用户打分总和
+  denominator: 有效打分用户数
+  eligible_population: 具备该维度有效测量值的售点
+  spatial_scope: 售点所在行政区/商圈
+  temporal_scope: 当前快照周期
+  missing_value_policy: 缺失时保持 null，不填补，在质量评估中报告缺失率
+  interpretation_boundary: 源自字段「携程-综合评分」的客观测量数值
+- uri: prism:metric/CtripRoomCount
   name: 携程-房间数
-  category: Observation
+  category: ObservationMetric
   physical_column: 携程-房间数
   data_source: prism:source/Ctrip
   channel_applicability: 住宿
-  eligible_population: 全部在册售点
-  interpretation_boundary: 源自字段「携程-房间数」的客观测量或模型估计
-- uri: prism:metric/大众点评营业时间
-  name: 大众点评营业时间
-  category: Observation
-  physical_column: 大众点评营业时间
-  data_source: prism:source/Dianping
-  channel_applicability: all
-  eligible_population: 全部在册售点
-  interpretation_boundary: 源自字段「大众点评营业时间」的客观测量或模型估计
-- uri: prism:metric/大众点评营业状态
-  name: 大众点评营业状态
-  category: Observation
-  physical_column: 大众点评营业状态
-  data_source: prism:source/Dianping
-  channel_applicability: all
-  eligible_population: 全部在册售点
-  interpretation_boundary: 源自字段「大众点评营业状态」的客观测量或模型估计
-- uri: prism:metric/大众点评菜系
-  name: 大众点评菜系
-  category: Observation
-  physical_column: 大众点评菜系
-  data_source: prism:source/Dianping
-  channel_applicability: 餐饮
-  eligible_population: 全部在册售点
-  interpretation_boundary: 源自字段「大众点评菜系」的客观测量或模型估计
-- uri: prism:metric/大众点评-必吃榜和黑珍珠
-  name: 大众点评-必吃榜和黑珍珠
-  category: Observation
-  physical_column: 大众点评-必吃榜和黑珍珠
-  data_source: prism:source/Dianping
-  channel_applicability: all
-  eligible_population: 全部在册售点
-  interpretation_boundary: 源自字段「大众点评-必吃榜和黑珍珠」的客观测量或模型估计
-- uri: prism:metric/大众点评餐饮用户评论数量
+  numerator: 酒店客房总数
+  denominator: N/A
+  eligible_population: 具备该维度有效测量值的售点
+  spatial_scope: 售点所在行政区/商圈
+  temporal_scope: 当前快照周期
+  missing_value_policy: 缺失时保持 null，不填补，在质量评估中报告缺失率
+  interpretation_boundary: 源自字段「携程-房间数」的客观测量数值
+- uri: prism:metric/DianpingReviewCount
   name: 大众点评餐饮用户评论数量
-  category: Observation
+  category: ObservationMetric
   physical_column: 大众点评餐饮用户评论数量
   data_source: prism:source/Dianping
   channel_applicability: 餐饮
-  eligible_population: 全部在册售点
-  interpretation_boundary: 源自字段「大众点评餐饮用户评论数量」的客观测量或模型估计
-- uri: prism:metric/大众点评餐饮口味评分星级
+  numerator: 评论条数累加
+  denominator: N/A
+  eligible_population: 具备该维度有效测量值的售点
+  spatial_scope: 售点所在行政区/商圈
+  temporal_scope: 当前快照周期
+  missing_value_policy: 缺失时保持 null，不填补，在质量评估中报告缺失率
+  interpretation_boundary: 源自字段「大众点评餐饮用户评论数量」的客观测量数值
+- uri: prism:metric/DianpingTasteScore
   name: 大众点评餐饮口味评分星级
-  category: Observation
+  category: ObservationMetric
   physical_column: 大众点评餐饮口味评分星级
   data_source: prism:source/Dianping
   channel_applicability: 餐饮
-  eligible_population: 全部在册售点
-  interpretation_boundary: 源自字段「大众点评餐饮口味评分星级」的客观测量或模型估计
-- uri: prism:metric/大众点评餐饮环境评分星级
+  numerator: 口味打分总和
+  denominator: 有效打分用户数
+  eligible_population: 具备该维度有效测量值的售点
+  spatial_scope: 售点所在行政区/商圈
+  temporal_scope: 当前快照周期
+  missing_value_policy: 缺失时保持 null，不填补，在质量评估中报告缺失率
+  interpretation_boundary: 源自字段「大众点评餐饮口味评分星级」的客观测量数值
+- uri: prism:metric/DianpingEnvScore
   name: 大众点评餐饮环境评分星级
-  category: Observation
+  category: ObservationMetric
   physical_column: 大众点评餐饮环境评分星级
   data_source: prism:source/Dianping
   channel_applicability: 餐饮
-  eligible_population: 全部在册售点
-  interpretation_boundary: 源自字段「大众点评餐饮环境评分星级」的客观测量或模型估计
-- uri: prism:metric/大众点评餐饮服务评分星级
+  numerator: 环境打分总和
+  denominator: 有效打分用户数
+  eligible_population: 具备该维度有效测量值的售点
+  spatial_scope: 售点所在行政区/商圈
+  temporal_scope: 当前快照周期
+  missing_value_policy: 缺失时保持 null，不填补，在质量评估中报告缺失率
+  interpretation_boundary: 源自字段「大众点评餐饮环境评分星级」的客观测量数值
+- uri: prism:metric/DianpingServiceScore
   name: 大众点评餐饮服务评分星级
-  category: Observation
+  category: ObservationMetric
   physical_column: 大众点评餐饮服务评分星级
   data_source: prism:source/Dianping
   channel_applicability: 餐饮
-  eligible_population: 全部在册售点
-  interpretation_boundary: 源自字段「大众点评餐饮服务评分星级」的客观测量或模型估计
-- uri: prism:metric/大众点评餐饮点评评分星级
+  numerator: 服务打分总和
+  denominator: 有效打分用户数
+  eligible_population: 具备该维度有效测量值的售点
+  spatial_scope: 售点所在行政区/商圈
+  temporal_scope: 当前快照周期
+  missing_value_policy: 缺失时保持 null，不填补，在质量评估中报告缺失率
+  interpretation_boundary: 源自字段「大众点评餐饮服务评分星级」的客观测量数值
+- uri: prism:metric/DianpingRating
   name: 大众点评餐饮点评评分星级
-  category: Observation
+  category: ObservationMetric
   physical_column: 大众点评餐饮点评评分星级
   data_source: prism:source/Dianping
   channel_applicability: 餐饮
-  eligible_population: 全部在册售点
-  interpretation_boundary: 源自字段「大众点评餐饮点评评分星级」的客观测量或模型估计
-- uri: prism:metric/大众点评点评榜单(详细)
-  name: 大众点评点评榜单(详细)
-  category: Observation
-  physical_column: 大众点评点评榜单(详细)
-  data_source: prism:source/Dianping
-  channel_applicability: all
-  eligible_population: 全部在册售点
-  interpretation_boundary: 源自字段「大众点评点评榜单(详细)」的客观测量或模型估计
-- uri: prism:metric/大众点评餐饮人均消费
+  numerator: 用户评分总和
+  denominator: 有效打分用户数
+  eligible_population: 具备该维度有效测量值的售点
+  spatial_scope: 售点所在行政区/商圈
+  temporal_scope: 当前快照周期
+  missing_value_policy: 缺失时保持 null，不填补，在质量评估中报告缺失率
+  interpretation_boundary: 源自字段「大众点评餐饮点评评分星级」的客观测量数值
+- uri: prism:metric/DianpingAvgPrice
   name: 大众点评餐饮人均消费
-  category: Observation
+  category: ObservationMetric
   physical_column: 大众点评餐饮人均消费
   data_source: prism:source/Dianping
   channel_applicability: 餐饮
-  eligible_population: 全部在册售点
-  interpretation_boundary: 源自字段「大众点评餐饮人均消费」的客观测量或模型估计
-- uri: prism:metric/大众点评连锁等级
-  name: 大众点评连锁等级
-  category: Observation
-  physical_column: 大众点评连锁等级
-  data_source: prism:source/Dianping
-  channel_applicability: all
-  eligible_population: 全部在册售点
-  interpretation_boundary: 源自字段「大众点评连锁等级」的客观测量或模型估计
-- uri: prism:metric/大众点评连锁范围
-  name: 大众点评连锁范围
-  category: Observation
-  physical_column: 大众点评连锁范围
-  data_source: prism:source/Dianping
-  channel_applicability: all
-  eligible_population: 全部在册售点
-  interpretation_boundary: 源自字段「大众点评连锁范围」的客观测量或模型估计
-- uri: prism:metric/大众点评是否有点评信息
-  name: 大众点评是否有点评信息
-  category: Observation
-  physical_column: 大众点评是否有点评信息
-  data_source: prism:source/Dianping
-  channel_applicability: all
-  eligible_population: 全部在册售点
-  interpretation_boundary: 源自字段「大众点评是否有点评信息」的客观测量或模型估计
-- uri: prism:metric/是否是O2O门店
-  name: 是否是O2O门店
-  category: Observation
-  physical_column: 是否是O2O门店
-  data_source: prism:source/Dianping
-  channel_applicability: all
-  eligible_population: 全部在册售点
-  interpretation_boundary: 源自字段「是否是O2O门店」的客观测量或模型估计
-- uri: prism:metric/是否商超O2O
-  name: 是否商超O2O
-  category: Observation
-  physical_column: 是否商超O2O
-  data_source: prism:source/Dianping
-  channel_applicability: all
-  eligible_population: 全部在册售点
-  interpretation_boundary: 源自字段「是否商超O2O」的客观测量或模型估计
-- uri: prism:metric/太古乡镇
-  name: 太古乡镇
-  category: Observation
-  physical_column: 太古乡镇
-  data_source: prism:source/SwireTownshipMaster
-  channel_applicability: all
-  eligible_population: 全部在册售点
-  interpretation_boundary: 源自字段「太古乡镇」的客观测量或模型估计
-- uri: prism:metric/系统乡镇
-  name: 系统乡镇
-  category: Observation
-  physical_column: 系统乡镇
-  data_source: prism:source/SwireTownshipMaster
-  channel_applicability: all
-  eligible_population: 全部在册售点
-  interpretation_boundary: 源自字段「系统乡镇」的客观测量或模型估计
-- uri: prism:metric/据DC距离(KM)
+  numerator: 消费总金额
+  denominator: 消费人次
+  eligible_population: 具备该维度有效测量值的售点
+  spatial_scope: 售点所在行政区/商圈
+  temporal_scope: 当前快照周期
+  missing_value_policy: 缺失时保持 null，不填补，在质量评估中报告缺失率
+  interpretation_boundary: 源自字段「大众点评餐饮人均消费」的客观测量数值
+- uri: prism:metric/DistanceToDCKM
   name: 据DC距离(KM)
-  category: Observation
+  category: ObservationMetric
   physical_column: 据DC距离(KM)
   data_source: prism:source/LocationIntelligence
   channel_applicability: all
-  eligible_population: 全部在册售点
-  interpretation_boundary: 源自字段「据DC距离(KM)」的客观测量或模型估计
-- uri: prism:metric/据办事处距离(KM)
+  numerator: 网点至所属配送中心路网距离
+  denominator: N/A
+  eligible_population: 具备该维度有效测量值的售点
+  spatial_scope: 售点所在行政区/商圈
+  temporal_scope: 当前快照周期
+  missing_value_policy: 缺失时保持 null，不填补，在质量评估中报告缺失率
+  interpretation_boundary: 源自字段「据DC距离(KM)」的客观测量数值
+- uri: prism:metric/DistanceToOfficeKM
   name: 据办事处距离(KM)
-  category: Observation
+  category: ObservationMetric
   physical_column: 据办事处距离(KM)
   data_source: prism:source/LocationIntelligence
   channel_applicability: all
-  eligible_population: 全部在册售点
-  interpretation_boundary: 源自字段「据办事处距离(KM)」的客观测量或模型估计
-- uri: prism:metric/市场区隔
-  name: 市场区隔
-  category: Observation
-  physical_column: 市场区隔
-  data_source: prism:source/SwireTownshipMaster
-  channel_applicability: all
-  eligible_population: 全部在册售点
-  interpretation_boundary: 源自字段「市场区隔」的客观测量或模型估计
-- uri: prism:metric/乡镇属性
-  name: 乡镇属性
-  category: Observation
-  physical_column: 乡镇属性
-  data_source: prism:source/SwireTownshipMaster
-  channel_applicability: all
-  eligible_population: 全部在册售点
-  interpretation_boundary: 源自字段「乡镇属性」的客观测量或模型估计
-- uri: prism:metric/赶集日
-  name: 赶集日
-  category: Observation
-  physical_column: 赶集日
-  data_source: prism:source/SwireTownshipMaster
-  channel_applicability: all
-  eligible_population: 全部在册售点
-  interpretation_boundary: 源自字段「赶集日」的客观测量或模型估计
-- uri: prism:metric/是否红镇，默认否
-  name: 是否红镇，默认否
-  category: Observation
-  physical_column: 是否红镇，默认否
-  data_source: prism:source/SwireTownshipMaster
-  channel_applicability: all
-  eligible_population: 全部在册售点
-  interpretation_boundary: 源自字段「是否红镇，默认否」的客观测量或模型估计
-- uri: prism:metric/冰柜门数
+  numerator: 网点至所属办事处直线距离
+  denominator: N/A
+  eligible_population: 具备该维度有效测量值的售点
+  spatial_scope: 售点所在行政区/商圈
+  temporal_scope: 当前快照周期
+  missing_value_policy: 缺失时保持 null，不填补，在质量评估中报告缺失率
+  interpretation_boundary: 源自字段「据办事处距离(KM)」的客观测量数值
+- uri: prism:metric/CoolerDoorCount
   name: 冰柜门数
-  category: Observation
+  category: ObservationMetric
   physical_column: 冰柜门数
   data_source: prism:source/FieldExecutionAudit
   channel_applicability: all
-  eligible_population: 全部在册售点
-  interpretation_boundary: 源自字段「冰柜门数」的客观测量或模型估计
-- uri: prism:metric/TOP
-  name: TOP
-  category: Observation
-  physical_column: TOP
-  data_source: prism:source/FieldExecutionAudit
-  channel_applicability: all
-  eligible_population: 全部在册售点
-  interpretation_boundary: 源自字段「TOP」的客观测量或模型估计
-- uri: prism:metric/配送类型
-  name: 配送类型
-  category: Observation
-  physical_column: 配送类型
-  data_source: prism:source/FieldExecutionAudit
-  channel_applicability: all
-  eligible_population: 全部在册售点
-  interpretation_boundary: 源自字段「配送类型」的客观测量或模型估计
-- uri: prism:metric/滚动12个月销售收入
+  numerator: 店内饮料冰柜门数
+  denominator: N/A
+  eligible_population: 具备该维度有效测量值的售点
+  spatial_scope: 售点所在行政区/商圈
+  temporal_scope: 当前快照周期
+  missing_value_policy: 缺失时保持 null，不填补，在质量评估中报告缺失率
+  interpretation_boundary: 源自字段「冰柜门数」的客观测量数值
+- uri: prism:metric/Rolling12MRevenue
   name: 滚动12个月销售收入
-  category: Observation
+  category: ObservationMetric
   physical_column: 滚动12个月销售收入
   data_source: prism:source/FieldExecutionAudit
   channel_applicability: all
-  eligible_population: 全部在册售点
-  interpretation_boundary: 源自字段「滚动12个月销售收入」的客观测量或模型估计
-- uri: prism:metric/NARTD排面数
+  numerator: 过去12个月饮料采购出库金额
+  denominator: N/A
+  eligible_population: 具备该维度有效测量值的售点
+  spatial_scope: 售点所在行政区/商圈
+  temporal_scope: 当前快照周期
+  missing_value_policy: 缺失时保持 null，不填补，在质量评估中报告缺失率
+  interpretation_boundary: 源自字段「滚动12个月销售收入」的客观测量数值
+- uri: prism:metric/NARTDFacingCount
   name: NARTD排面数
-  category: Observation
+  category: ObservationMetric
   physical_column: NARTD排面数
   data_source: prism:source/FieldExecutionAudit
   channel_applicability: all
-  eligible_population: 全部在册售点
-  interpretation_boundary: 源自字段「NARTD排面数」的客观测量或模型估计
-- uri: prism:metric/SOVI排面占比%
+  numerator: 软饮料排面总个数
+  denominator: N/A
+  eligible_population: 具备该维度有效测量值的售点
+  spatial_scope: 售点所在行政区/商圈
+  temporal_scope: 当前快照周期
+  missing_value_policy: 缺失时保持 null，不填补，在质量评估中报告缺失率
+  interpretation_boundary: 源自字段「NARTD排面数」的客观测量数值
+- uri: prism:metric/SOVIPercentage
   name: SOVI排面占比%
-  category: Observation
+  category: ObservationMetric
   physical_column: SOVI排面占比%
   data_source: prism:source/FieldExecutionAudit
   channel_applicability: all
-  eligible_population: 全部在册售点
-  interpretation_boundary: 源自字段「SOVI排面占比%」的客观测量或模型估计
-- uri: prism:metric/NARTD冰冻排面数
+  numerator: 本品排面数
+  denominator: 全品类排面总数
+  eligible_population: 具备该维度有效测量值的售点
+  spatial_scope: 售点所在行政区/商圈
+  temporal_scope: 当前快照周期
+  missing_value_policy: 缺失时保持 null，不填补，在质量评估中报告缺失率
+  interpretation_boundary: 源自字段「SOVI排面占比%」的客观测量数值
+- uri: prism:metric/NARTDFrozenFacingCount
   name: NARTD冰冻排面数
-  category: Observation
+  category: ObservationMetric
   physical_column: NARTD冰冻排面数
   data_source: prism:source/FieldExecutionAudit
   channel_applicability: all
-  eligible_population: 全部在册售点
-  interpretation_boundary: 源自字段「NARTD冰冻排面数」的客观测量或模型估计
-- uri: prism:metric/SOCI冰冻排面占比%
+  numerator: 冷藏冰冻饮料排面数
+  denominator: N/A
+  eligible_population: 具备该维度有效测量值的售点
+  spatial_scope: 售点所在行政区/商圈
+  temporal_scope: 当前快照周期
+  missing_value_policy: 缺失时保持 null，不填补，在质量评估中报告缺失率
+  interpretation_boundary: 源自字段「NARTD冰冻排面数」的客观测量数值
+- uri: prism:metric/SOCIPercentage
   name: SOCI冰冻排面占比%
-  category: Observation
+  category: ObservationMetric
   physical_column: SOCI冰冻排面占比%
   data_source: prism:source/FieldExecutionAudit
   channel_applicability: all
-  eligible_population: 全部在册售点
-  interpretation_boundary: 源自字段「SOCI冰冻排面占比%」的客观测量或模型估计
-- uri: prism:metric/客资地址质量
+  numerator: 本品冰冻排面数
+  denominator: 冰柜全部排面数
+  eligible_population: 具备该维度有效测量值的售点
+  spatial_scope: 售点所在行政区/商圈
+  temporal_scope: 当前快照周期
+  missing_value_policy: 缺失时保持 null，不填补，在质量评估中报告缺失率
+  interpretation_boundary: 源自字段「SOCI冰冻排面占比%」的客观测量数值
+- uri: prism:metric/AddressQualityScore
   name: 客资地址质量
-  category: Observation
+  category: ObservationMetric
   physical_column: 客资地址质量
   data_source: prism:source/GeocodingAuditService
   channel_applicability: all
-  eligible_population: 全部在册售点
-  interpretation_boundary: 源自字段「客资地址质量」的客观测量或模型估计
-- uri: prism:metric/客资标杆位置与地址解析位置之间的距离（米）
+  numerator: 地址文本要素解析置信度
+  denominator: N/A
+  eligible_population: 具备该维度有效测量值的售点
+  spatial_scope: 售点所在行政区/商圈
+  temporal_scope: 当前快照周期
+  missing_value_policy: 缺失时保持 null，不填补，在质量评估中报告缺失率
+  interpretation_boundary: 源自字段「客资地址质量」的客观测量数值
+- uri: prism:metric/GeocodingDistanceMeters
   name: 客资标杆位置与地址解析位置之间的距离（米）
-  category: Observation
+  category: ObservationMetric
   physical_column: 客资标杆位置与地址解析位置之间的距离（米）
   data_source: prism:source/GeocodingAuditService
   channel_applicability: all
-  eligible_population: 全部在册售点
-  interpretation_boundary: 源自字段「客资标杆位置与地址解析位置之间的距离（米）」的客观测量或模型估计
-- uri: prism:metric/客资标杆位置与匹配腾讯POI位置之间的距离（米）
+  numerator: 客资坐标与文本解析坐标距离
+  denominator: N/A
+  eligible_population: 具备该维度有效测量值的售点
+  spatial_scope: 售点所在行政区/商圈
+  temporal_scope: 当前快照周期
+  missing_value_policy: 缺失时保持 null，不填补，在质量评估中报告缺失率
+  interpretation_boundary: 源自字段「客资标杆位置与地址解析位置之间的距离（米）」的客观测量数值
+- uri: prism:metric/MatchingDistanceMeters
   name: 客资标杆位置与匹配腾讯POI位置之间的距离（米）
-  category: Observation
+  category: ObservationMetric
   physical_column: 客资标杆位置与匹配腾讯POI位置之间的距离（米）
   data_source: prism:source/GeocodingAuditService
   channel_applicability: all
-  eligible_population: 全部在册售点
-  interpretation_boundary: 源自字段「客资标杆位置与匹配腾讯POI位置之间的距离（米）」的客观测量或模型估计
-- uri: prism:metric/居住人口(人)
+  numerator: 客资坐标与腾讯POI匹配距离
+  denominator: N/A
+  eligible_population: 具备该维度有效测量值的售点
+  spatial_scope: 售点所在行政区/商圈
+  temporal_scope: 当前快照周期
+  missing_value_policy: 缺失时保持 null，不填补，在质量评估中报告缺失率
+  interpretation_boundary: 源自字段「客资标杆位置与匹配腾讯POI位置之间的距离（米）」的客观测量数值
+- uri: prism:metric/ResidentPopulation
   name: 居住人口(人)
-  category: Observation
+  category: ObservationMetric
   physical_column: 居住人口(人)
   data_source: prism:source/LocationIntelligence
   channel_applicability: all
-  eligible_population: 全部在册售点
-  interpretation_boundary: 源自字段「居住人口(人)」的客观测量或模型估计
-- uri: prism:metric/办公人口(人)
+  numerator: 网格常住人口统计
+  denominator: N/A
+  eligible_population: 具备该维度有效测量值的售点
+  spatial_scope: 售点所在行政区/商圈
+  temporal_scope: 当前快照周期
+  missing_value_policy: 缺失时保持 null，不填补，在质量评估中报告缺失率
+  interpretation_boundary: 源自字段「居住人口(人)」的客观测量数值
+- uri: prism:metric/WorkingPopulation
   name: 办公人口(人)
-  category: Observation
+  category: ObservationMetric
   physical_column: 办公人口(人)
   data_source: prism:source/LocationIntelligence
   channel_applicability: all
-  eligible_population: 全部在册售点
-  interpretation_boundary: 源自字段「办公人口(人)」的客观测量或模型估计
-- uri: prism:metric/平日均值客流(人)
+  numerator: 网格办公工作人口统计
+  denominator: N/A
+  eligible_population: 具备该维度有效测量值的售点
+  spatial_scope: 售点所在行政区/商圈
+  temporal_scope: 当前快照周期
+  missing_value_policy: 缺失时保持 null，不填补，在质量评估中报告缺失率
+  interpretation_boundary: 源自字段「办公人口(人)」的客观测量数值
+- uri: prism:metric/WeekdayTraffic
   name: 平日均值客流(人)
-  category: Observation
+  category: ObservationMetric
   physical_column: 平日均值客流(人)
   data_source: prism:source/LocationIntelligence
   channel_applicability: all
-  eligible_population: 全部在册售点
-  interpretation_boundary: 源自字段「平日均值客流(人)」的客观测量或模型估计
-- uri: prism:metric/周末均值客流(人)
+  numerator: 工作日五天客流总和
+  denominator: '5'
+  eligible_population: 具备该维度有效测量值的售点
+  spatial_scope: 售点所在行政区/商圈
+  temporal_scope: 当前快照周期
+  missing_value_policy: 缺失时保持 null，不填补，在质量评估中报告缺失率
+  interpretation_boundary: 源自字段「平日均值客流(人)」的客观测量数值
+- uri: prism:metric/WeekendTraffic
   name: 周末均值客流(人)
-  category: Observation
+  category: ObservationMetric
   physical_column: 周末均值客流(人)
   data_source: prism:source/LocationIntelligence
   channel_applicability: all
-  eligible_population: 全部在册售点
-  interpretation_boundary: 源自字段「周末均值客流(人)」的客观测量或模型估计
-- uri: prism:metric/日均客流
+  numerator: 周末两日客流总和
+  denominator: '2'
+  eligible_population: 具备该维度有效测量值的售点
+  spatial_scope: 售点所在行政区/商圈
+  temporal_scope: 当前快照周期
+  missing_value_policy: 缺失时保持 null，不填补，在质量评估中报告缺失率
+  interpretation_boundary: 源自字段「周末均值客流(人)」的客观测量数值
+- uri: prism:metric/DailyTraffic
   name: 日均客流
-  category: Observation
+  category: ObservationMetric
   physical_column: 日均客流
   data_source: prism:source/LocationIntelligence
   channel_applicability: all
-  eligible_population: 全部在册售点
-  interpretation_boundary: 源自字段「日均客流」的客观测量或模型估计
-- uri: prism:metric/消费水平
-  name: 消费水平
-  category: Observation
-  physical_column: 消费水平
-  data_source: prism:source/LocationIntelligence
-  channel_applicability: all
-  eligible_population: 全部在册售点
-  interpretation_boundary: 源自字段「消费水平」的客观测量或模型估计
-- uri: prism:metric/餐饮消费水平
-  name: 餐饮消费水平
-  category: Observation
-  physical_column: 餐饮消费水平
-  data_source: prism:source/LocationIntelligence
-  channel_applicability: all
-  eligible_population: 全部在册售点
-  interpretation_boundary: 源自字段「餐饮消费水平」的客观测量或模型估计
-- uri: prism:metric/居住社区房价等级
+  numerator: 全周客流总和
+  denominator: '7'
+  eligible_population: 具备该维度有效测量值的售点
+  spatial_scope: 售点所在行政区/商圈
+  temporal_scope: 当前快照周期
+  missing_value_policy: 缺失时保持 null，不填补，在质量评估中报告缺失率
+  interpretation_boundary: 源自字段「日均客流」的客观测量数值
+- uri: prism:metric/CommunityHousingPriceLevel
   name: 居住社区房价等级
-  category: Observation
+  category: ObservationMetric
   physical_column: 居住社区房价等级
   data_source: prism:source/LocationIntelligence
   channel_applicability: all
-  eligible_population: 全部在册售点
-  interpretation_boundary: 源自字段「居住社区房价等级」的客观测量或模型估计
-- uri: prism:metric/居住酒店档次
-  name: 居住酒店档次
-  category: Observation
-  physical_column: 居住酒店档次
-  data_source: prism:source/LocationIntelligence
-  channel_applicability: all
-  eligible_population: 全部在册售点
-  interpretation_boundary: 源自字段「居住酒店档次」的客观测量或模型估计
-- uri: prism:metric/女性人口占比%
+  numerator: 房价等级分类指数
+  denominator: N/A
+  eligible_population: 具备该维度有效测量值的售点
+  spatial_scope: 售点所在行政区/商圈
+  temporal_scope: 当前快照周期
+  missing_value_policy: 缺失时保持 null，不填补，在质量评估中报告缺失率
+  interpretation_boundary: 源自字段「居住社区房价等级」的客观测量数值
+- uri: prism:metric/FemalePopulationRatio
   name: 女性人口占比%
-  category: Observation
+  category: ObservationMetric
   physical_column: 女性人口占比%
   data_source: prism:source/LocationIntelligence
   channel_applicability: all
-  eligible_population: 全部在册售点
-  interpretation_boundary: 源自字段「女性人口占比%」的客观测量或模型估计
-- uri: prism:metric/18-60岁人口占比%
+  numerator: 女性常住人口数
+  denominator: 总人口数
+  eligible_population: 具备该维度有效测量值的售点
+  spatial_scope: 售点所在行政区/商圈
+  temporal_scope: 当前快照周期
+  missing_value_policy: 缺失时保持 null，不填补，在质量评估中报告缺失率
+  interpretation_boundary: 源自字段「女性人口占比%」的客观测量数值
+- uri: prism:metric/Age18To60Ratio
   name: 18-60岁人口占比%
-  category: Observation
+  category: ObservationMetric
   physical_column: 18-60岁人口占比%
   data_source: prism:source/LocationIntelligence
   channel_applicability: all
-  eligible_population: 全部在册售点
-  interpretation_boundary: 源自字段「18-60岁人口占比%」的客观测量或模型估计
-- uri: prism:metric/18-40岁人口占比%
+  numerator: 18至60岁劳动力人口数
+  denominator: 总人口数
+  eligible_population: 具备该维度有效测量值的售点
+  spatial_scope: 售点所在行政区/商圈
+  temporal_scope: 当前快照周期
+  missing_value_policy: 缺失时保持 null，不填补，在质量评估中报告缺失率
+  interpretation_boundary: 源自字段「18-60岁人口占比%」的客观测量数值
+- uri: prism:metric/Age18To40Ratio
   name: 18-40岁人口占比%
-  category: Observation
+  category: ObservationMetric
   physical_column: 18-40岁人口占比%
   data_source: prism:source/LocationIntelligence
   channel_applicability: all
-  eligible_population: 全部在册售点
-  interpretation_boundary: 源自字段「18-40岁人口占比%」的客观测量或模型估计
-- uri: prism:metric/大专学历以上人口占比%
+  numerator: 18至40岁青年人口数
+  denominator: 总人口数
+  eligible_population: 具备该维度有效测量值的售点
+  spatial_scope: 售点所在行政区/商圈
+  temporal_scope: 当前快照周期
+  missing_value_policy: 缺失时保持 null，不填补，在质量评估中报告缺失率
+  interpretation_boundary: 源自字段「18-40岁人口占比%」的客观测量数值
+- uri: prism:metric/HigherEducationRatio
   name: 大专学历以上人口占比%
-  category: Observation
+  category: ObservationMetric
   physical_column: 大专学历以上人口占比%
   data_source: prism:source/LocationIntelligence
   channel_applicability: all
-  eligible_population: 全部在册售点
-  interpretation_boundary: 源自字段「大专学历以上人口占比%」的客观测量或模型估计
-- uri: prism:metric/社区居住房价
+  numerator: 大专及以上学历人口数
+  denominator: 总人口数
+  eligible_population: 具备该维度有效测量值的售点
+  spatial_scope: 售点所在行政区/商圈
+  temporal_scope: 当前快照周期
+  missing_value_policy: 缺失时保持 null，不填补，在质量评估中报告缺失率
+  interpretation_boundary: 源自字段「大专学历以上人口占比%」的客观测量数值
+- uri: prism:metric/CommunityHousingPrice
   name: 社区居住房价
-  category: Observation
+  category: ObservationMetric
   physical_column: 社区居住房价
   data_source: prism:source/LocationIntelligence
   channel_applicability: all
-  eligible_population: 全部在册售点
-  interpretation_boundary: 源自字段「社区居住房价」的客观测量或模型估计
-- uri: prism:metric/居住酒店价格
+  numerator: 社区住宅单价均值
+  denominator: N/A
+  eligible_population: 具备该维度有效测量值的售点
+  spatial_scope: 售点所在行政区/商圈
+  temporal_scope: 当前快照周期
+  missing_value_policy: 缺失时保持 null，不填补，在质量评估中报告缺失率
+  interpretation_boundary: 源自字段「社区居住房价」的客观测量数值
+- uri: prism:metric/HotelPrice
   name: 居住酒店价格
-  category: Observation
+  category: ObservationMetric
   physical_column: 居住酒店价格
   data_source: prism:source/LocationIntelligence
   channel_applicability: all
-  eligible_population: 全部在册售点
-  interpretation_boundary: 源自字段「居住酒店价格」的客观测量或模型估计
-- uri: prism:metric/到访偏好
-  name: 到访偏好
-  category: Observation
-  physical_column: 到访偏好
-  data_source: prism:source/LocationIntelligence
-  channel_applicability: all
-  eligible_population: 全部在册售点
-  interpretation_boundary: 源自字段「到访偏好」的客观测量或模型估计
-- uri: prism:metric/职住直线距离
+  numerator: 酒店间夜均价
+  denominator: N/A
+  eligible_population: 具备该维度有效测量值的售点
+  spatial_scope: 售点所在行政区/商圈
+  temporal_scope: 当前快照周期
+  missing_value_policy: 缺失时保持 null，不填补，在质量评估中报告缺失率
+  interpretation_boundary: 源自字段「居住酒店价格」的客观测量数值
+- uri: prism:metric/DirectStraightDistance
   name: 职住直线距离
-  category: Observation
+  category: ObservationMetric
   physical_column: 职住直线距离
   data_source: prism:source/LocationIntelligence
   channel_applicability: all
-  eligible_population: 全部在册售点
-  interpretation_boundary: 源自字段「职住直线距离」的客观测量或模型估计
-- uri: prism:metric/冰柜投放目标客户标签
-  name: 冰柜投放目标客户标签
-  category: Observation
-  physical_column: 冰柜投放目标客户标签
-  data_source: prism:source/FieldExecutionAudit
-  channel_applicability: all
-  eligible_population: 全部在册售点
-  interpretation_boundary: 源自字段「冰柜投放目标客户标签」的客观测量或模型估计
-- uri: prism:metric/非密集区域乡镇客户(200米)
-  name: 非密集区域乡镇客户(200米)
-  category: Observation
-  physical_column: 非密集区域乡镇客户(200米)
-  data_source: prism:source/SwireTownshipMaster
-  channel_applicability: all
-  eligible_population: 全部在册售点
-  interpretation_boundary: 源自字段「非密集区域乡镇客户(200米)」的客观测量或模型估计
-- uri: prism:metric/非密集区域乡镇客户(400米)
-  name: 非密集区域乡镇客户(400米)
-  category: Observation
-  physical_column: 非密集区域乡镇客户(400米)
-  data_source: prism:source/SwireTownshipMaster
-  channel_applicability: all
-  eligible_population: 全部在册售点
-  interpretation_boundary: 源自字段「非密集区域乡镇客户(400米)」的客观测量或模型估计
+  numerator: 职住通勤直线距离
+  denominator: N/A
+  eligible_population: 具备该维度有效测量值的售点
+  spatial_scope: 售点所在行政区/商圈
+  temporal_scope: 当前快照周期
+  missing_value_policy: 缺失时保持 null，不填补，在质量评估中报告缺失率
+  interpretation_boundary: 源自字段「职住直线距离」的客观测量数值
 - uri: prism:metric/ActualSalesCrates
   name: ActualSalesCrates
-  category: Observation
+  category: ObservationMetric
   physical_column: null
   data_source: null
   channel_applicability: all
-  eligible_population: 全部在册售点
-  interpretation_boundary: 源自字段「None」的客观测量或模型估计
+  numerator: 月度实际销售箱数
+  denominator: N/A
+  eligible_population: 具备该维度有效测量值的售点
+  spatial_scope: 售点所在行政区/商圈
+  temporal_scope: 当前快照周期
+  missing_value_policy: 缺失时保持 null，不填补，在质量评估中报告缺失率
+  interpretation_boundary: 源自字段「None」的客观测量数值
