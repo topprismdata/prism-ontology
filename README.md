@@ -191,6 +191,18 @@ prism-ontology 明确不负责：
 
 ---
 
+## TopPrism status
+
+| Field | Value |
+|---|---|
+| Purpose | Business World Model · Semantic Contract |
+| Maturity | Early Release Candidate |
+| Evidence | RDF/OWL-RL/SHACL、Competency Questions、Profile URI 闭包与发行完整性测试 |
+| Boundary | 不代表完整世界模型；不存储业务事实、不执行洞察算法、不生成或执行业务动作 |
+| Related | Operational Profiles and downstream semantic consumers |
+
+---
+
 ## 治理与贡献入口
 
 新增或修改概念前，请先阅读：
