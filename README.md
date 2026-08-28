@@ -4,6 +4,11 @@
 
 # prism-ontology
 
+> **语言 / Language:** 中文为主 · English overview follows。
+>
+> **English overview:** Prism Ontology is a shared semantic contract for reusable concepts, relations, constraints, and operational profiles. It does not store business facts, execute insight algorithms, or modify external systems.
+
+
 棱镜世界模型的共享语义契约与场景 Profile 工程。
 
 prism-ontology 定义棱镜世界模型中可复用的概念、关系、约束和语义边界，并将它们编排为面向具体业务场景的 Operational Profile。
