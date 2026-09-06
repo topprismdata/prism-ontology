@@ -12,8 +12,9 @@ authors = [
     { name = "TopPrism Ontology Engineering Team", email = "ontology@topprism.ai" }
 ]
 dependencies = [
-    "rdflib>=7.0.0",
-    "pyshacl>=0.25.0",
+    "rdflib>=7.6.0",
+    "pyshacl>=0.40.0",
+    "owlrl>=7.6.0",
     "pyyaml>=6.0.0",
     "jsonschema>=4.20.0"
 ]

@@ -4,9 +4,10 @@
   "version": "0.1.0-rc2",
   "status": "release_candidate",
   "release_tag": "outlet-insight-v0.1.0-rc2",
-  "git_commit": "f8fa1d230ca12f1045ce22ecf2c2799a024d904a",
-  "clean_working_tree": true,
+  "git_commit": "d408175cc7648652c67afc07dc72a6cc63d6daf9",
+  "clean_working_tree": false,
   "release_date": "2026-08-25",
+  "build_timestamp": "2026-08-28T22:21:11+08:00",
   "authority": "TopPrism Ontology Engineering Committee",
   "included_files": [
     "outlet-insight.profile.yaml",
@@ -16,7 +17,6 @@
     "concepts.yaml",
     "relations.yaml",
     "sources.yaml",
-    "organizations.yaml",
     "competency-questions.yaml",
     "competency-question-report.md"
   ]

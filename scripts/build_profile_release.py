@@ -94,8 +94,13 @@ for cq in cq_data["competency_questions"]:
 
 with open(cq_report_path, "w", encoding="utf-8") as f:
     f.write("\n".join(cq_md_lines) + "\n")
-
-# 5. 生成发布 Manifest (使用确定性日期)
+# 5. 生成发布 Manifest: release_date 来自 profile.yaml (业务语义, 一次性),
+#    build_timestamp 来自 git commit date (每次构建刷新)
+profile_yaml_path = PROFILE_DIR / "profile.yaml"
+with open(profile_yaml_path, "r", encoding="utf-8") as f:
+    profile_meta = yaml.safe_load(f)
+release_date = profile_meta.get("profile_metadata", {}).get("governance", {}).get(
+    "release_date", git_commit_date[:10])
 manifest = {
     "profile_uri": "prism://ontology/profiles/outlet-insight",
     "profile_name": "outlet-insight",
@@ -104,7 +109,8 @@ manifest = {
     "release_tag": "outlet-insight-v0.1.0-rc2",
     "git_commit": git_commit,
     "clean_working_tree": clean_tree,
-    "release_date": git_commit_date[:10],
+    "release_date": release_date,
+    "build_timestamp": git_commit_date,
     "authority": "TopPrism Ontology Engineering Committee",
     "included_files": [
         "outlet-insight.profile.yaml",
@@ -114,7 +120,6 @@ manifest = {
         "concepts.yaml",
         "relations.yaml",
         "sources.yaml",
-        "organizations.yaml",
         "competency-questions.yaml",
         "competency-question-report.md"
     ]
@@ -122,7 +127,7 @@ manifest = {
 with open(DIST_DIR / "profile-manifest.json", "w", encoding="utf-8") as f:
     json.dump(manifest, f, indent=2, ensure_ascii=False)
 
-# 6. 计算 SHA-256 Checksums
+# 6. 计算 SHA-256 Checksums (覆盖 manifest 自身)
 checksum_lines = []
 for file_name in manifest["included_files"] + ["profile-manifest.json"]:
     file_path = DIST_DIR / file_name
