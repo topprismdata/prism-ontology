@@ -96,17 +96,20 @@ Operational Profiles (场景契约)
 ```text
 prism-ontology/
 ├── ontology/              # Reference Ontology (权威本体源文件)
-│   ├── core/              # L1 通用元模型 (Entity, Role, Event, Observation 等)
+│   ├── core/              # L1 通用元模型 (Entity, Role, Event, Observation, Evidence 等)
 │   ├── outlet/            # L2 售点领域本体 (Outlet, Brand, Region, Territory 等)
-│   ├── insight/           # L2+ 洞察产物扩展 (AnalysisIntent, InsightClaim 等)
-│   └── sales-visit/       # L2 销售拜访边界骨架 (CustomerAccount, ServiceRelationship 等)
+│   ├── insight/           # L2+ 洞察产物扩展 (AnalysisIntent, InsightClaim, Quality 等)
+│   └── sales-visit/       # L2 销售拜访边界骨架 (SalesRep, Route, CustomerAccount, ServiceRelationship 等)
 ├── profiles/              # Operational Profiles (场景运行契约编排)
-│   └── outlet-insight/    # 售点洞察场景 Profile (concepts, relations, metrics, SHACL)
-├── proposals/             # 需求提案及 6 态治理裁定记录
-├── scripts/               # 构建、验证与确定性发行工具
-├── tests/                 # 本体完整性、OWL-RL 推理与 Profile CQ 测试
-├── dist/                  # 已构建的版本化发行物 (不可直接编辑)
-├── GOVERNANCE.md          # 命名空间、提案状态机与治理规则
+│   └── outlet-insight/    # 售点洞察场景 Profile (concepts, relations, field-mapping, prefix-map, metrics, SHACL)
+├── proposals/             # 需求提案与 6 态治理裁定记录 (MS-PROP-001 ~ MS-PROP-022)
+├── docs/                  # 规划设计、外部专家审计报告与领域知识库
+│   ├── plans/             # 阶段性系统重构与修复实施方案
+│   └── reviews/           # 外部专家审计报告 (EXPERT-REVIEW 等) 及销售管理学术文献库 (book-wiki)
+├── scripts/               # 构建、验证与确定性发行工具 (两段式发布流水线)
+├── tests/                 # 本体完整性、OWL-RL 推理、SHACL 反坍塌与 Profile 闭包测试
+├── dist/                  # 已构建的版本化发行物 (受不可变性保护，严禁直接编辑)
+├── GOVERNANCE.md          # 命名空间、两段式发行、不可变铁律与 6 态提案治理章程 (v0.2.0)
 └── pyproject.toml         # 项目依赖与测试配置
 ```
 
@@ -128,10 +131,23 @@ Outlet Insight Profile 是本项目的第一个完整垂直切片。它用于验
 
 ### 作为 Profile 消费端（如数据分析 Agent / 数据集成）
 
-1. 选择目标 Operational Profile（如 `profiles/outlet-insight`）。
-2. 读取上游发行包中的 `profile-manifest.json` 与 `checksums.sha256`。
+1. 选择目标 Operational Profile（如 `profiles/outlet-insight` 或 `dist/outlet-insight/0.1.0-rc3/`）。
+2. 读取上游发行包中的 `profile-manifest.json` 与 `checksums.sha256`，校验 SHA-256 完整性。
 3. 校验 Release Tag 与 Source Commit 的可追溯祖先关系。
-4. 递归校验本地映射引用的所有 URI 是否属于 Profile 受管集合。
+4. 基于机器可读契约 `prefix-map.json` 或 `context.jsonld` 展开与校验 CURIE 标识符：
+   ```python
+   import json
+
+   # 读取发行包中的机器可读前缀映射契约
+   with open("dist/outlet-insight/0.1.0-rc3/prefix-map.json") as f:
+       prefixes = json.load(f)["prefixes"]
+
+   def resolve_curie(curie: str) -> str:
+       for prefix, namespace in prefixes.items():
+           if curie.startswith(prefix):
+               return curie.replace(prefix, namespace)
+       return curie
+   ```
 5. 将版本和各发行文件摘要写入本地锁文件（`profile.lock`）。
 
 > **消费红线**：使用者不得直接依赖未发布的工作区文件，也不得仅通过 URI 前缀猜测概念存在。
@@ -143,20 +159,22 @@ Outlet Insight Profile 是本项目的第一个完整垂直切片。它用于验
 3. 修改对应 Reference Ontology 或 Profile 源文件。
 4. 编写正例图、反例约束及 Competency Question。
 5. 运行 `pytest` 测试套件。
-6. 从干净源码提交构建版本化发行包并打 Tag。
+6. 执行严格的两段式发布流程构建发行包并打 Tag。
 
 ---
 
 ## 验证与测试
 
-当前自动化测试覆盖：
+当前自动化测试覆盖 9 大测试用例：
 
 - **RDF / Turtle 语法解析**：验证所有本体文件符合 W3C 标准语法。
 - **OWL-RL 规则推理烟雾检查**：验证本体在演绎推理闭包下无逻辑矛盾与不可满足类。
-- **SHACL 正向与负向约束**：精确断言 7 处核心概念坍缩与执行类违规被机器拦截。
-- **Profile URI 注册闭包**：验证映射引用的概念、属性与度量 100% 存在于受管注册表。
-- **Competency Question 行为级验证**：通过正例 RDF 事实图与 SPARQL 查询验证 10 条 Golden CQ 的语义可表达性。
-- **发行文件完整性与版本溯源**：校验 SHA-256 校验和与 Git 提交祖先链条。
+- **SHACL 正向与负向约束**：精确断言核心概念坍缩与执行类违规被机器拦截，覆盖销售代表、线路与拜访计划良构检查。
+- **Profile URI 注册闭包**：验证映射引用的概念、属性、度量及洞察产物 100% 存在于受管注册表。
+- **宽表物理映射纯洁性**：验证未治理宽表物理列（如含清洗参数列）100% 隔离于 `field-mapping.yaml`，严禁污染 `relations.yaml`。
+- **发行目录白名单盘点**：自动化盘点 `dist/` 下各目录，确保零无 Tag、无溯源的孤儿发行包。
+- **Competency Question 行为级验证**：通过正例 RDF 事实图与 SPARQL 查询验证 11 条 Golden CQ（CQ-001 ~ CQ-011）的语义可表达性与可回答性。
+- **两段式发行文件完整性与版本溯源**：校验 SHA-256 校验和与 Git 提交祖先链条，确保真实签署 `clean_working_tree: true`。
 
 > **边界认知**：
 > - OWL-RL 测试不等于完整的描述逻辑（DL）一致性证明；
@@ -167,7 +185,7 @@ Outlet Insight Profile 是本项目的第一个完整垂直切片。它用于验
 
 ## 发布模型
 
-每个 Profile 采用独立版本化发布。
+每个 Profile 采用独立版本化发布，严格遵循**两段式发布流程**与**发行包不可变性（Artifact Immutability）铁律**。
 
 一个有效发行包（`dist/<profile>/<version>/`）必须包含：
 
@@ -175,13 +193,28 @@ Outlet Insight Profile 是本项目的第一个完整垂直切片。它用于验
 - `outlet-insight.owl.ttl`（合并后的 OWL 本体图）
 - `outlet-insight.shacl.ttl`（合并后的 SHACL 形状图）
 - `concepts.yaml` 与 `relations.yaml`（受管概念与关系清单）
+- `field-mapping.yaml`（宽表物理列降级映射层）
+- `prefix-map.json` 与 `context.jsonld`（机器可读 CURIE 前缀契约）
 - `metric-definitions.yaml`（受管度量定义与语义前提）
 - `sources.yaml` 与 `organizations.yaml`（数据源与组织实例）
 - `competency-questions.yaml` 与 `competency-question-report.md`（能力验证报告）
 - `checksums.sha256`（发行文件哈希清单）
 
 **发布链路规范**：
-$$\text{Source Commit} \longrightarrow \text{Distribution Commit} \longrightarrow \text{Annotated Release Tag}$$
+$$\text{Source Commit (Clean Tree)} \longrightarrow \text{Distribution Build \& Stamp} \longrightarrow \text{Annotated Release Tag}$$
+
+---
+
+## 外部同行评审与领域知识库 (Peer Review & Knowledge Base)
+
+本项目秉承开源开放、同行评审与高标准工程治理原则，沉淀了系统的外部专家审计报告与权威学术知识库：
+
+1. **专家审计报告**：
+   - [`docs/reviews/prism-ontology-EXPERT-REVIEW.md`](./docs/reviews/prism-ontology-EXPERT-REVIEW.md)：销售管理领域视角与本体工程方法论专家级审计报告（涵盖 10 大维度，并提供按 ROI 排序的演进路线）。
+   - [`docs/reviews/prism-ontology-DEEPDIVE.md`](./docs/reviews/prism-ontology-DEEPDIVE.md)：测试套件、发行构建链路与复现性深度审计。
+   - [`docs/reviews/prism-ontology-BUSINESS-REVIEW.md`](./docs/reviews/prism-ontology-BUSINESS-REVIEW.md)：快消行业与某饮料企业系统（NARTD/PJP/INE/DSD）业务口径审计。
+2. **销售管理学术知识库 ([`book-wiki/`](./docs/reviews/book-wiki/))**：
+   - 收录包括 Zoltners (1983, *Management Science*)、Johnston & Marshall (*Sales Force Management* 12e)、Farris (*Marketing Metrics* 2e) 等 21 篇顶级文献精读卡片与 12 个领域概念页，全部带页码锚点，为世界模型提供学术级概念源头支撑。
 
 ---
 
