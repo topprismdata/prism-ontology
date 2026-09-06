@@ -1,0 +1,7 @@
+version: 1.0.0
+profile: prism://ontology/profiles/outlet-insight
+organizations:
+- uri: prism:org/示范饮料集团
+  name: 某饮料装瓶集团
+  category: EnterpriseBottler
+  role: ServiceRelationshipSubject
