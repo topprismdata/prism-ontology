@@ -4,7 +4,7 @@
   "version": "0.1.0-rc4",
   "status": "release_candidate",
   "release_tag": "outlet-insight-v0.1.0-rc4",
-  "git_commit": "9825c72618122e90ecaba8969bad7b159805cf7d",
+  "git_commit": "58fe5deb1d7e59f7f61b92691163c5984609e8a2",
   "clean_working_tree": true,
   "release_date": "2026-08-25",
   "build_timestamp": "2026-09-06T15:47:06+08:00",
