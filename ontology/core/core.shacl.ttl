@@ -17,9 +17,9 @@ prism-core:ObservationShape a sh:NodeShape ;
         sh:message "客观观测必须显式指定被观测实体 (observesEntity)"@zh ;
     ] ;
     sh:property [
-        sh:path prism-core:observedValue ;
+        sh:path prism-core:hasResultValue ;
         sh:minCount 1 ;
-        sh:message "客观观测必须包含观测测量值 (observedValue)"@zh ;
+        sh:message "客观观测必须包含观测测量值 (hasResultValue)"@zh ;
     ] .
 
 # 2. 派生估计必须包含推导依据，严禁伪装为既成事实

@@ -1,0 +1,16 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "TopPrism CURIE Prefix Mapping Contract",
+  "description": "Formal machine-readable mapping between CURIE compact URI prefixes and canonical RDF namespace URIs for TopPrism World Model",
+  "prefixes": {
+    "prism:core/": "prism://ontology/core/",
+    "prism:outlet/": "prism://ontology/outlet/",
+    "prism:sales/": "prism://ontology/sales-visit/",
+    "prism:insight/": "prism://ontology/insight/",
+    "prism:quality/": "prism://ontology/quality/",
+    "prism:lifecycle/": "prism://ontology/lifecycle/",
+    "prism:metric/": "prism://ontology/metric/",
+    "prism:source/": "prism://ontology/source/",
+    "prism:profile/": "prism://ontology/profiles/"
+  }
+}

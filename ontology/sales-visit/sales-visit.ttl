@@ -10,7 +10,7 @@
 
 <prism://ontology/sales-visit/> a owl:Ontology ;
     rdfs:label "Prism Sales Visit Boundary Ontology"@zh , "TopPrism World Model L2 Sales Visit Boundary Skeleton"@en ;
-    owl:versionInfo "0.1.0-rc1" ;
+    owl:versionInfo "0.1.0-rc3" ;
     owl:imports <prism://ontology/core/> , <prism://ontology/outlet/> ;
     rdfs:comment "快消零售 (FMCG) 销售拜访边界本体骨架：定义客户账户、客户角色、服务关系、PJP 线路拜访计划、RED 店内执行打卡与实际拜访事件等边界协同概念。" .
 

@@ -39,3 +39,29 @@ prism-sales:EligibilityVsDecisionShape a sh:NodeShape ;
         sh:class prism-core:Decision ;
     ] ;
     sh:message "拜访准入资格评估 (VisitModeEligibility) 严禁直接断言为最终排程决策 (Decision)"@zh .
+
+# 5. 销售代表实体防混淆
+prism-sales:SalesRepVsAccountShape a sh:NodeShape ;
+    sh:targetClass prism-sales:SalesRep ;
+    sh:not [
+        sh:class prism-sales:CustomerAccount ;
+    ] ;
+    sh:message "销售代表业务员 (SalesRep) 严禁与客户账户 (CustomerAccount) 混淆声明"@zh .
+
+# 6. 拜访线路与拜访计划实体防混淆
+prism-sales:RouteVsPlanShape a sh:NodeShape ;
+    sh:targetClass prism-sales:Route ;
+    sh:not [
+        sh:class prism-sales:VisitPlan ;
+    ] ;
+    sh:message "拜访固定排线 (Route) 严禁与具体执行拜访计划 (VisitPlan) 折叠混淆"@zh .
+
+# 7. 线路与排线良构约束
+prism-sales:RouteStructureShape a sh:NodeShape ;
+    sh:targetClass prism-sales:Route ;
+    sh:property [
+        sh:path prism-sales:routeBelongsToTerritory ;
+        sh:class prism-core:Entity ;
+        sh:message "线路归属辖区必须指向合法的责任组织实体"@zh ;
+    ] .
+

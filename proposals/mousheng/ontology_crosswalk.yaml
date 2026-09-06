@@ -91,12 +91,15 @@ crosswalk:
   # ----------------------------------------------------------------------------
   - legacy_dsl_type: "B"
     legacy_description: "分布探索"
-    ontology_insight_type: "prism:insight/DistributionInsight"
+    ontology_insight_type: "prism:insight/InsightClaim"
+    legacy_intent_tag: "DistributionInsight"
 
   - legacy_dsl_type: "C"
     legacy_description: "自定义规则排行"
-    ontology_insight_type: "prism:insight/RuleEvaluationInsight"
+    ontology_insight_type: "prism:insight/InsightClaim"
+    legacy_intent_tag: "RuleEvaluationInsight"
 
   - legacy_dsl_type: "A"
     legacy_description: "明确条件清单"
-    ontology_insight_type: "prism:insight/PointInsight"
+    ontology_insight_type: "prism:insight/InsightClaim"
+    legacy_intent_tag: "PointInsight"

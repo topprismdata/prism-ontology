@@ -13,17 +13,13 @@ import yaml
 from pathlib import Path
 from rdflib import Graph, URIRef, RDF, RDFS, OWL
 
-PROJECT_ROOT = Path(__file__).resolve().parent.parent
+import json
 
-PREFIX_MAP = {
-    "prism:core/": "prism://ontology/core/",
-    "prism:outlet/": "prism://ontology/outlet/",
-    "prism:insight/": "prism://ontology/insight/",
-    "prism:sales/": "prism://ontology/sales-visit/",
-    "prism:quality/": "prism://ontology/quality/",
-    "prism:lifecycle/": "prism://ontology/lifecycle/",
-    "prism:metric/": "prism://ontology/metric/",
-}
+PROJECT_ROOT = Path(__file__).resolve().parent.parent
+PREFIX_MAP_FILE = PROJECT_ROOT / "profiles" / "outlet-insight" / "prefix-map.json"
+
+with open(PREFIX_MAP_FILE, "r", encoding="utf-8") as f:
+    PREFIX_MAP = json.load(f)["prefixes"]
 
 def expand_uri(curie: str) -> URIRef:
     for prefix, full in PREFIX_MAP.items():
@@ -114,6 +110,9 @@ def test_crosswalk_integrity(ontology_graph):
         if "metric_concept_uri" in entry:
             m_curie = entry["metric_concept_uri"]
             assert m_curie in managed_metrics, f"Crosswalk references unregistered metric: {m_curie}"
+        if "ontology_insight_type" in entry:
+            i_uri = expand_uri(entry["ontology_insight_type"])
+            assert (i_uri, RDF.type, None) in ontology_graph, f"Crosswalk references undefined insight type: {entry['ontology_insight_type']}"
 
 
 def test_metric_definitions_no_literal_none():
@@ -128,3 +127,19 @@ def test_metric_definitions_no_literal_none():
     for m in data["metrics"]:
         assert m.get("interpretation_boundary") is not None, f"Metric {m['uri']} missing interpretation_boundary"
         assert "None" not in m["interpretation_boundary"], f"Metric {m['uri']} interpretation_boundary contains 'None'"
+
+
+def test_dist_directories_validity():
+    """校验 dist/outlet-insight/ 下不存在孤儿目录，每个发行目录均具备完整 manifest 与 sha256 校验和。"""
+    dist_root = PROJECT_ROOT / "dist" / "outlet-insight"
+    if not dist_root.exists():
+        return
+    valid_dirs = {"0.1.0-rc1", "0.1.0-rc2", "0.1.0-rc3"}
+    actual_dirs = {d.name for d in dist_root.iterdir() if d.is_dir()}
+    unexpected = actual_dirs - valid_dirs
+    assert not unexpected, f"Found unregistered orphaned distribution directories in dist/outlet-insight: {unexpected}"
+    for d_name in actual_dirs:
+        d_path = dist_root / d_name
+        assert (d_path / "profile-manifest.json").exists(), f"Dist package {d_name} missing profile-manifest.json"
+        assert (d_path / "checksums.sha256").exists(), f"Dist package {d_name} missing checksums.sha256"
+

@@ -66,7 +66,7 @@ def test_anti_collapse_shacl_rejection_per_node():
 
     # 违规 3: 观测未指定观测网点
     <urn:bad:orphan_observation> a prism-outlet:OutletObservation ;
-        prism-core:observedValue "4.5" .
+        prism-core:hasResultValue "4.5" .
 
     # 违规 4: 拜访事件与打卡记录折叠
     <urn:bad:visit_record_collapse> a prism-sales:ActualVisit , prism-sales:VisitRecord .

@@ -84,6 +84,8 @@ shutil.copy(PROFILE_DIR / "relations.yaml", DIST_DIR / "relations.yaml")
 shutil.copy(PROFILE_DIR / "sources.yaml", DIST_DIR / "sources.yaml")
 shutil.copy(PROFILE_DIR / "organizations.yaml", DIST_DIR / "organizations.yaml")
 shutil.copy(PROFILE_DIR / "field-mapping.yaml", DIST_DIR / "field-mapping.yaml")
+shutil.copy(PROFILE_DIR / "prefix-map.json", DIST_DIR / "prefix-map.json")
+shutil.copy(PROFILE_DIR / "context.jsonld", DIST_DIR / "context.jsonld")
 shutil.copy(PROFILE_DIR / "competency-questions.yaml", DIST_DIR / "competency-questions.yaml")
 
 # 4. 生成 CQ 报告 Markdown (使用确定性 Git 提交日期)
@@ -126,6 +128,8 @@ manifest = {
         "concepts.yaml",
         "relations.yaml",
         "field-mapping.yaml",
+        "prefix-map.json",
+        "context.jsonld",
         "sources.yaml",
         "organizations.yaml",
         "competency-questions.yaml",
