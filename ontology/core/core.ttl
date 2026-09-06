@@ -8,6 +8,7 @@
 @prefix dqv: <http://www.w3.org/ns/dqv#> .
 @prefix schema: <http://schema.org/> .
 @prefix prism-core: <prism://ontology/core/> .
+@prefix prism-lifecycle: <prism://ontology/lifecycle/> .
 
 <prism://ontology/core/> a owl:Ontology ;
     rdfs:label "Prism Core Meta-Model"@zh , "TopPrism World Model L1 Core Ontology"@en ;
@@ -98,6 +99,12 @@ prism-core:hasName a owl:DatatypeProperty ;
     rdfs:range xsd:string ;
     rdfs:label "名称"@zh , "hasName"@en .
 
+prism-core:hasPhysicalAddress a owl:DatatypeProperty ;
+    rdfs:domain prism-core:Entity ;
+    rdfs:range xsd:string ;
+    rdfs:label "物理地址"@zh , "hasPhysicalAddress"@en ;
+    rdfs:comment "实体的物理实际地理地址或门牌号描述。" .
+
 prism-core:playsRole a owl:ObjectProperty ;
     rdfs:domain prism-core:Entity ;
     rdfs:range prism-core:Role ;
@@ -118,3 +125,48 @@ prism-core:hasEvidence a owl:ObjectProperty ;
 prism-core:validDuring a owl:ObjectProperty ;
     rdfs:range prism-core:TimeInterval ;
     rdfs:label "有效时间段"@zh , "validDuring"@en .
+
+prism-core:observedAt a owl:DatatypeProperty ;
+    rdfs:domain prism-core:Observation ;
+    rdfs:range xsd:dateTime ;
+    rdfs:label "观测时间"@zh , "observedAt"@en ;
+    rdfs:comment "外部数据源进行测量与观测的时间点。" .
+
+prism-core:hasSource a owl:ObjectProperty ;
+    rdfs:domain prism-core:Observation ;
+    rdfs:label "数据来源"@zh , "hasSource"@en ;
+    rdfs:comment "提供观测数据的事实来源或平台标识。" .
+
+prism-core:hasResultValue a owl:DatatypeProperty ;
+    rdfs:domain prism-core:Observation ;
+    rdfs:label "测量结果值"@zh , "hasResultValue"@en ;
+    rdfs:comment "观测事实所承载的数值或文本测量结果。" .
+
+prism-core:evidenceSource a owl:ObjectProperty ;
+    rdfs:domain prism-core:Evidence ;
+    rdfs:label "证据来源"@zh , "evidenceSource"@en ;
+    rdfs:comment "支撑分析主张的数据来源。" .
+
+prism-core:sampleCount a owl:DatatypeProperty ;
+    rdfs:domain prism-core:Evidence ;
+    rdfs:range xsd:integer ;
+    rdfs:label "样本量"@zh , "sampleCount"@en ;
+    rdfs:comment "证据所包含的样本记录数量。" .
+
+prism-core:capturedAt a owl:DatatypeProperty ;
+    rdfs:domain prism-core:Evidence ;
+    rdfs:range xsd:dateTime ;
+    rdfs:label "捕获时间"@zh , "capturedAt"@en ;
+    rdfs:comment "证据快照生成或记录的时间戳。" .
+
+prism-lifecycle:EntityOnlineTime a owl:DatatypeProperty ;
+    rdfs:domain prism-core:Entity ;
+    rdfs:range xsd:dateTime ;
+    rdfs:label "网点上线时间"@zh , "EntityOnlineTime"@en ;
+    rdfs:comment "实体在数字平台或现实中的首次上线营业时间。" .
+
+prism-lifecycle:RecordCreationTime a owl:DatatypeProperty ;
+    rdfs:domain prism-core:Entity ;
+    rdfs:range xsd:dateTime ;
+    rdfs:label "账户建档时间"@zh , "RecordCreationTime"@en ;
+    rdfs:comment "业务主体在信息系统或 CRM 中的建档记录时间。" .

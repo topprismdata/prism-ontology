@@ -3,6 +3,7 @@
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 @prefix prov: <http://www.w3.org/ns/prov#> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
 @prefix prism-core: <prism://ontology/core/> .
 @prefix prism-outlet: <prism://ontology/outlet/> .
 @prefix prism-sales: <prism://ontology/sales-visit/> .
@@ -33,14 +34,24 @@ prism-sales:ServiceRelationship a owl:Class ;
     rdfs:comment "特定销售组织（如装瓶厂/经销商）与售点之间建立的时变业务服务关系（如已服务、未服务、待开发）。" .
 
 prism-sales:VisitPurpose a owl:Class ;
-    rdfs:subClassOf prism-core:InformationObject ;
+    rdfs:subClassOf skos:Concept ;
     rdfs:label "拜访目的"@zh , "VisitPurpose"@en ;
-    rdfs:comment "拜访活动的业务目标（如新品铺货、生动化陈列、RED 审计、冰柜投放、客情维护）。" .
+    rdfs:comment "拜访活动的业务目标（如新品铺货、生动化陈列、RED 审计、冰柜投放、客情维护），对齐 W3C SKOS Concept。" .
 
 prism-sales:VisitMode a owl:Class ;
-    rdfs:subClassOf prism-core:InformationObject ;
+    rdfs:subClassOf skos:Concept ;
     rdfs:label "拜访模式"@zh , "VisitMode"@en ;
-    rdfs:comment "拜访实施形式（如线下实地常规拜访、车销直送、电话远程跟进）。" .
+    rdfs:comment "拜访实施形式（如线下实地常规拜访、车销直送、电话远程跟进），对齐 W3C SKOS Concept。" .
+
+prism-sales:SalesRep a owl:Class ;
+    rdfs:subClassOf prism-core:Entity ;
+    rdfs:label "业务代表/销售员"@zh , "SalesRep"@en ;
+    rdfs:comment "快消企业一线销售人员（业务员/DSR/客户经理），负责特定线路的网点拜访与客户服务。" .
+
+prism-sales:Route a owl:Class ;
+    rdfs:subClassOf prism-core:Entity ;
+    rdfs:label "销售拜访责任线路"@zh , "SalesRoute"@en ;
+    rdfs:comment "销售责任辖区 (Territory) 下细分的固定拜访路线 (Route/Line)，承载特定的网点拜访序列。" .
 
 prism-sales:VisitModeConstraint a owl:Class ;
     rdfs:subClassOf prism-core:Constraint ;
@@ -91,3 +102,50 @@ prism-sales:recordsVisitEvent a owl:ObjectProperty ;
     rdfs:domain prism-sales:VisitRecord ;
     rdfs:range prism-sales:ActualVisit ;
     rdfs:label "记录拜访事件"@zh , "recordsVisitEvent"@en .
+
+prism-sales:hasServiceProvider a owl:ObjectProperty ;
+    rdfs:domain prism-sales:ServiceRelationship ;
+    rdfs:label "服务提供组织"@zh , "hasServiceProvider"@en ;
+    rdfs:comment "承担售点销售履约、拜访或分销责任的企业销售组织。" .
+
+prism-sales:assignedTo a owl:ObjectProperty ;
+    rdfs:domain prism-sales:VisitPlan ;
+    rdfs:range prism-sales:SalesRep ;
+    rdfs:label "分配业务代表"@zh , "assignedTo"@en ;
+    rdfs:comment "PJP 拜访计划所分配的责任销售人员。" .
+
+prism-sales:onRoute a owl:ObjectProperty ;
+    rdfs:domain prism-sales:VisitPlan ;
+    rdfs:range prism-sales:Route ;
+    rdfs:label "所属拜访线路"@zh , "onRoute"@en ;
+    rdfs:comment "PJP 拜访计划所依托的销售责任路线。" .
+
+prism-sales:routeBelongsToTerritory a owl:ObjectProperty ;
+    rdfs:domain prism-sales:Route ;
+    rdfs:range prism-outlet:Territory ;
+    rdfs:label "路线归属辖区"@zh , "routeBelongsToTerritory"@en ;
+    rdfs:comment "销售路线所属的管理辖区或办事处责任空间。" .
+
+prism-sales:coversOutlet a owl:ObjectProperty ;
+    rdfs:domain prism-sales:VisitPlan ;
+    rdfs:range prism-outlet:Outlet ;
+    rdfs:label "计划覆盖网点"@zh , "coversOutlet"@en ;
+    rdfs:comment "PJP 拜访计划中预定覆盖拜访的售点实体。" .
+
+prism-sales:cadence a owl:DatatypeProperty ;
+    rdfs:domain prism-sales:VisitPlan ;
+    rdfs:range xsd:string ;
+    rdfs:label "拜访频次标准"@zh , "cadence"@en ;
+    rdfs:comment "PJP 计划的执行周期频次（如每周一次 F1、双周一次 F2、每周三次 F3）。" .
+
+prism-sales:visitedBy a owl:ObjectProperty ;
+    rdfs:domain prism-sales:ActualVisit ;
+    rdfs:range prism-sales:SalesRep ;
+    rdfs:label "执行拜访人"@zh , "visitedBy"@en ;
+    rdfs:comment "实际发生物理进店事件的销售人员。" .
+
+prism-sales:visitOutcome a owl:DatatypeProperty ;
+    rdfs:domain prism-sales:ActualVisit ;
+    rdfs:range xsd:string ;
+    rdfs:label "拜访业务结果"@zh , "visitOutcome"@en ;
+    rdfs:comment "物理拜访取得的业务结果简述（如达成订货、生动化陈列合格、闭门未访）。" .

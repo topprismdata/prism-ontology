@@ -4,6 +4,7 @@
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 @prefix prism-core: <prism://ontology/core/> .
 @prefix prism-insight: <prism://ontology/insight/> .
+@prefix prism-quality: <prism://ontology/quality/> .
 
 <prism://ontology/insight/> a owl:Ontology ;
     rdfs:label "Prism Insight Artifact Ontology"@zh , "TopPrism World Model L2+ Insight Artifact Extension"@en ;
@@ -39,6 +40,16 @@ prism-insight:QualityAssessment a owl:Class ;
     rdfs:subClassOf prism-core:Observation ;
     rdfs:label "数据质量与适用性评估"@zh , "QualityAssessment"@en ;
     rdfs:comment "对样本完整度、维度覆盖率及适用边界的测量评估事实。" .
+
+prism-quality:EntityResolutionAssessment a owl:Class ;
+    rdfs:subClassOf prism-insight:QualityAssessment ;
+    rdfs:label "实体解析与匹配评估"@zh , "EntityResolutionAssessment"@en ;
+    rdfs:comment "地理编码地址解析质量与 POI 坐标匹配距离的实体解析评估测量事实。" .
+
+prism-quality:MatchPairAssessment a owl:Class ;
+    rdfs:subClassOf prism-insight:QualityAssessment ;
+    rdfs:label "匹配对质量评估"@zh , "MatchPairAssessment"@en ;
+    rdfs:comment "外部多源实体匹配置信度与对齐质量评估测量事实。" .
 
 prism-insight:InsightPackage a owl:Class ;
     rdfs:subClassOf prism-core:InformationObject ;

@@ -41,13 +41,13 @@ crosswalk:
   - legacy_alias_group: ["省", "省份", "市", "城市", "区", "县", "区县"]
     canonical_physical_field: "城市"
     ontology_concept_uri: "prism:outlet/AdministrativeRegion"
-    ontology_property: "prism:outlet/locatedInRegion"
+    ontology_property: "prism:outlet/locatedInAdministrativeRegion"
     concept_layer: "L2"
 
   - legacy_alias_group: ["大区", "规划大区", "责任区", "销售区"]
     canonical_physical_field: "规划大区"
     ontology_concept_uri: "prism:outlet/Territory"
-    ontology_property: "prism:outlet/belongsToTerritory"
+    ontology_property: "prism:outlet/coveredBySalesTerritory"
     concept_layer: "L2"
 
   # ----------------------------------------------------------------------------
@@ -77,14 +77,14 @@ crosswalk:
     legacy_alias_group: ["客房数", "房型数", "酒店规模"]
     canonical_physical_field: "携程-房间数"
     ontology_concept_uri: "prism:outlet/OutletObservation"
-    metric_concept_uri: "prism:metric/RoomCount"
+    metric_concept_uri: "prism:metric/CtripRoomCount"
     applicable_channel: "住宿"
 
   - legacy_measure_name: "收入潜力"
     legacy_alias_group: ["潜力", "预测潜力", "收入预测"]
     canonical_physical_field: "月均收入潜力预测(无协议无冰柜)"
-    ontology_concept_uri: "prism:outlet/DerivedPotentialEstimate"
-    metric_concept_uri: "prism:metric/RevenuePotential"
+    ontology_concept_uri: "prism:core/DerivedEstimate"
+    metric_concept_uri: "prism:metric/RevenuePotentialNoAgreementNoCooler"
 
   # ----------------------------------------------------------------------------
   # 分析产物与洞察映射 (Insight Artifact Crosswalk)

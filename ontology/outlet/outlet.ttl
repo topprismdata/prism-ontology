@@ -2,6 +2,7 @@
 @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
 @prefix prism-core: <prism://ontology/core/> .
 @prefix prism-outlet: <prism://ontology/outlet/> .
 
@@ -36,19 +37,39 @@ prism-outlet:AdministrativeRegion a owl:Class ;
     rdfs:comment "国家法定行政地理区域（省、市、区县、乡镇），具有法定边界与行政编码。" .
 
 prism-outlet:Territory a owl:Class ;
-    rdfs:subClassOf prism-core:SpatialGeometry ;
+    rdfs:subClassOf prism-core:Entity ;
     rdfs:label "销售责任辖区"@zh , "SalesTerritory"@en ;
-    rdfs:comment "企业销售组织根据管理需求划定的大区、办事处、配送路线责任空间，严禁与国家法定行政区划混淆。" .
+    rdfs:comment "企业销售组织根据管理需求划定的大区、办事处、配送路线管理责任单元，通过覆盖关系关联地理空间，严禁与国家法定行政区划混淆。" .
 
 prism-outlet:ChannelType a owl:Class ;
-    rdfs:subClassOf prism-core:InformationObject ;
+    rdfs:subClassOf skos:Concept ;
     rdfs:label "业态渠道分类"@zh , "ChannelType"@en ;
-    rdfs:comment "售点所归属的行业业态分类（餐饮、住宿、食杂、娱乐、教育、旅游等）。" .
+    rdfs:comment "售点所归属的行业业态分类（餐饮、住宿、食杂、娱乐、教育、旅游等），对齐 W3C SKOS Concept 分类体系。" .
 
 prism-outlet:OutletObservation a owl:Class ;
     rdfs:subClassOf prism-core:Observation ;
     rdfs:label "售点客观观测"@zh , "OutletObservation"@en ;
     rdfs:comment "多源外部平台（大众点评、携程、高德等）在特定时间对售点的评分、客流、房间数等客观动态测量事实。" .
+
+prism-outlet:DemographicObservation a owl:Class ;
+    rdfs:subClassOf prism-core:Observation ;
+    rdfs:label "人口客流画像观测"@zh , "DemographicObservation"@en ;
+    rdfs:comment "商圈人口统计、客流画像与到访偏好等动态观测事实。" .
+
+prism-outlet:AssetAndDisplayObservation a owl:Class ;
+    rdfs:subClassOf prism-core:Observation ;
+    rdfs:label "店内设备陈列观测"@zh , "AssetAndDisplayObservation"@en ;
+    rdfs:comment "网点内冰柜设备、排面占比与陈列资源的客观观测事实。" .
+
+prism-outlet:TownshipContext a owl:Class ;
+    rdfs:subClassOf prism-core:Observation ;
+    rdfs:label "下沉乡镇市场上下文"@zh , "TownshipContext"@en ;
+    rdfs:comment "赶集日、红镇、距离配送中心等特定下沉市场环境观测事实与上下文。" .
+
+prism-outlet:CompetitorSalesVolume a owl:Class ;
+    rdfs:subClassOf prism-core:Observation ;
+    rdfs:label "竞品销量观测"@zh , "CompetitorSalesVolume"@en ;
+    rdfs:comment "外部竞品在途销量与 POS 数据观测（当前物理数据源缺失）。" .
 
 # =============================================================================
 # 2. 售点核心关系与属性 (Outlet Relations & Properties)
