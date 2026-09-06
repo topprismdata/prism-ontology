@@ -64,9 +64,6 @@ concepts:
 - uri: prism:quality/MatchPairAssessment
   name: 匹配对质量评估
   category: Quality
-- uri: prism:provenance/DataEngineeringContext
-  name: 数据工程上下文
-  category: Provenance
 - uri: prism:sales/CustomerAccount
   name: 企业客户账户
   category: Sales
@@ -75,6 +72,12 @@ concepts:
   category: Sales
 - uri: prism:sales/ServiceRelationship
   name: 销售服务关系
+  category: Sales
+- uri: prism:sales/SalesRep
+  name: 业务代表/销售员
+  category: Sales
+- uri: prism:sales/Route
+  name: 销售拜访责任线路
   category: Sales
 - uri: prism:insight/AnalysisIntent
   name: 业务分析意图

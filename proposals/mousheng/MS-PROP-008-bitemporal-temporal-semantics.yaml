@@ -1,0 +1,44 @@
+# ==============================================================================
+# MS-PROP-008-bitemporal-temporal-semantics.yaml
+# 提案：双时间轴（Bitemporal）与指标受管时间粒度枚举体系
+# 对应 Issue #6: 【提案建议】Product/品类维度与时间语义缺失，建议按 6 态流程立项
+# ==============================================================================
+
+proposal_id: "MS-PROP-008"
+title: "世界模型双时间轴 (Bitemporal) 语义模式与受管时间粒度体系"
+initiator: "TopPrism Ontology Engineering Committee"
+date: "2026-09-06"
+status: "proposed"
+lifecycle_phase: "governance_review"
+
+motivation: |
+  当前 38 个指标的 temporal_scope 全部采用自由文本“当前快照周期”，无法精确支持历史版本回溯与趋势分析。
+  在销售拜访打卡、店内审计与多源动态观测场景中，天然要求双时间轴分离：
+  1. 业务有效时间 (Valid Time / Occurrence Time)：现实事实实际发生或业务有效的时段；
+  2. 系统记录时间 (Transaction Time / Recorded Time)：数据工程事实被系统记录、捕获落库的时间。
+
+proposed_concepts:
+  - uri: "prism:time/TemporalGranularity"
+    name: "时间粒度枚举"
+    parent: "skos:Concept"
+    description: "受管时间统计粒度：Day, Week, PJP_Cycle(周期), Month, Quarter, Year, Snapshot"
+  
+  - uri: "prism:time/BitemporalInterval"
+    name: "双时间轴区间"
+    parent: "prism-core:TimeInterval"
+    description: "具备有效时间 (validDuring) 与系统记录时间 (recordedAt) 的时态实体"
+
+proposed_properties:
+  - uri: "prism:time/validDuring"
+    name: "业务有效区间"
+    domain: "prism-core:Entity"
+    range: "prism-core:TimeInterval"
+  
+  - uri: "prism:time/recordedAt"
+    name: "系统记录时间戳"
+    domain: "prism-core:Entity"
+    range: "xsd:dateTime"
+
+governance_assessment:
+  five_questions_verdict: "通过：时间语义属于世界模型最底层不可或缺的基石，能够消除多源异动裁决歧义"
+  recommended_decision: "accepted (作为 L1 core 扩展与受管时间度量标准)"

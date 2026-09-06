@@ -29,7 +29,7 @@ def test_all_10_competency_questions_sparql_behavior():
         metrics_data = yaml.safe_load(f)
 
     cqs = cq_data["competency_questions"]
-    assert len(cqs) == 10, f"Expected 10 CQs, got {len(cqs)}"
+    assert len(cqs) >= 10, f"Expected at least 10 CQs, got {len(cqs)}"
 
     profile_concept_uris = set(c["uri"] for c in concepts_data["concepts"])
     profile_relation_uris = set(r["uri"] for r in relations_data["relations"])
@@ -159,6 +159,16 @@ def test_all_10_competency_questions_sparql_behavior():
         prism-outlet:observesOutlet <urn:outlet:inn_01> ;
         <prism://ontology/metric/CtripRoomCount> 18 .
 
+    # CQ-011 冲突背离网点: 大众点评高评分 (4.8) 但客流极低 (500)
+    <urn:outlet:sh_conflict_01> a prism-outlet:Outlet ;
+        prism-core:hasName "冷门高评私房菜" ;
+        prism-outlet:locatedInAdministrativeRegion <urn:region:shanghai> ;
+        prism-outlet:hasChannelType <urn:channel:catering> .
+    <urn:obs:conflict_01> a prism-outlet:OutletObservation ;
+        prism-outlet:observesOutlet <urn:outlet:sh_conflict_01> ;
+        <prism://ontology/metric/DianpingRating> 4.8 ;
+        <prism://ontology/metric/WeekendTraffic> 500 .
+
     # 洞察包交付物
     <urn:insight:pkg_01> a prism-insight:InsightPackage ;
         prism-insight:hasAnalysisId "ANALYSIS-CQ-010" ;
@@ -209,7 +219,7 @@ def test_all_10_competency_questions_sparql_behavior():
     assert len(r6) == 1 and str(r6[0][0]) == "异动网红快餐店", "CQ-006 指标冲突背离异动网点识别失败"
 
     # CQ-007: 数据稀疏度质检 (验证房间数存在但星级缺失)
-    q7 = prefix_block + "SELECT ?name ?rooms WHERE { ?o a prism-outlet:Outlet ; prism-core:hasName ?name ; prism-outlet:operatedAtSite ?s . ?s prism-core:hasName '西湖景区外50米' . ?obs a prism-outlet:OutletObservation ; prism-outlet:observesOutlet ?o ; <prism://ontology/metric/CtripRoomCount> ?rooms . FILTER NOT EXISTS { ?obs <prism://ontology/observed/Ctrip_星级> ?star } }"
+    q7 = prefix_block + "SELECT ?name ?rooms WHERE { ?o a prism-outlet:Outlet ; prism-core:hasName ?name ; prism-outlet:operatedAtSite ?s . ?s prism-core:hasName '西湖景区外50米' . ?obs a prism-outlet:OutletObservation ; prism-outlet:observesOutlet ?o ; <prism://ontology/metric/CtripRoomCount> ?rooms . FILTER NOT EXISTS { ?obs <prism://ontology/metric/CtripStarRating> ?star } }"
     r7 = list(g.query(q7))
     assert len(r7) == 1 and str(r7[0][0]) == "西湖静心客栈", "CQ-007 数据稀疏度星级缺失检测失败"
 
@@ -228,4 +238,9 @@ def test_all_10_competency_questions_sparql_behavior():
     r10 = list(g.query(q10))
     assert len(r10) == 1 and str(r10[0][0]) == "ANALYSIS-CQ-010", "CQ-010 洞察包与分析主张绑定验证失败"
 
-    print("\nAll 10 Golden CQs expressibility & SPARQL behavioral reasoning 100% verified.")
+    # CQ-011: 多源指标冲突与异动诊断 (高评分 >= 4.5 且客流 <= 1000)
+    q11 = prefix_block + "SELECT ?name ?rating ?traffic WHERE { ?o a prism-outlet:Outlet ; prism-core:hasName ?name ; prism-outlet:hasChannelType ?c . ?c prism-core:hasName '餐饮' . ?obs a prism-outlet:OutletObservation ; prism-outlet:observesOutlet ?o ; <prism://ontology/metric/DianpingRating> ?rating ; <prism://ontology/metric/WeekendTraffic> ?traffic . FILTER(?rating >= 4.5 && ?traffic <= 1000) }"
+    r11 = list(g.query(q11))
+    assert len(r11) == 1 and str(r11[0][0]) == "冷门高评私房菜", "CQ-011 多源指标冲突与异动网点识别失败"
+
+    print("\nAll Golden CQs expressibility & SPARQL behavioral reasoning 100% verified.")

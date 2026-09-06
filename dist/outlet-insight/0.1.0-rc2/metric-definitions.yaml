@@ -84,6 +84,19 @@ metrics:
   temporal_scope: 当前快照周期
   missing_value_policy: 缺失时保持 null，不填补，在质量评估中报告缺失率
   interpretation_boundary: 源自字段「携程-房间数」的客观测量数值
+- uri: prism:metric/CtripStarRating
+  name: 携程-星级
+  category: ObservationMetric
+  physical_column: 携程-星级
+  data_source: prism:source/Ctrip
+  channel_applicability: 住宿
+  numerator: 携程平台认证挂牌或评定星级
+  denominator: N/A
+  eligible_population: 具备携程星级认证信息的住宿售点
+  spatial_scope: 售点所在行政区/商圈
+  temporal_scope: 当前快照周期
+  missing_value_policy: 缺失时保持 null，不填补，在质量评估中报告缺失率
+  interpretation_boundary: 源自字段「携程-星级」的客观测量数值
 - uri: prism:metric/DianpingReviewCount
   name: 大众点评餐饮用户评论数量
   category: ObservationMetric
@@ -477,8 +490,8 @@ metrics:
 - uri: prism:metric/ActualSalesCrates
   name: ActualSalesCrates
   category: ObservationMetric
-  physical_column: null
-  data_source: null
+  physical_column: 物理宽表未收录(数据缺失)
+  data_source: prism:source/FieldExecutionAudit
   channel_applicability: all
   numerator: 月度实际销售箱数
   denominator: N/A
@@ -486,4 +499,65 @@ metrics:
   spatial_scope: 售点所在行政区/商圈
   temporal_scope: 当前快照周期
   missing_value_policy: 缺失时保持 null，不填补，在质量评估中报告缺失率
-  interpretation_boundary: 源自字段「None」的客观测量数值
+  interpretation_boundary: 物理宽表未收录该字段，系统显式拒绝计算并报告能力限制声明
+- uri: prism:metric/RevenuePotentialWithAgreement
+  name: 月均收入潜力预测(如有协议)
+  category: EstimateMetric
+  physical_column: 月均收入潜力预测(如有协议)
+  data_source: prism:source/LocationIntelligence
+  channel_applicability: all
+  numerator: 算法模型推导的月均收入潜力预测值(有协议情景)
+  denominator: N/A
+  eligible_population: 具备基础特征数据的售点
+  spatial_scope: 售点所在行政区/商圈
+  temporal_scope: 当前快照周期
+  missing_value_policy: 缺失时保持 null，不填补，在质量评估中报告缺失率
+  interpretation_boundary: 属于算法推导估计数值，严禁直接作为客观既成财务收入事实
+- uri: prism:metric/RevenuePotentialWithCoolerNoAgreement
+  name: 月均收入潜力预测(如有冰柜无协议)
+  category: EstimateMetric
+  physical_column: 月均收入潜力预测(如有冰柜无协议)
+  data_source: prism:source/LocationIntelligence
+  channel_applicability: all
+  numerator: 算法模型推导的月均收入潜力预测值(有冰柜无协议情景)
+  denominator: N/A
+  eligible_population: 具备基础特征数据的售点
+  spatial_scope: 售点所在行政区/商圈
+  temporal_scope: 当前快照周期
+  missing_value_policy: 缺失时保持 null，不填补，在质量评估中报告缺失率
+  interpretation_boundary: 属于算法推导估计数值，严禁直接作为客观既成财务收入事实
+- uri: prism:metric/RevenuePotentialNoAgreementNoCooler
+  name: 月均收入潜力预测(无协议无冰柜)
+  category: EstimateMetric
+  physical_column: 月均收入潜力预测(无协议无冰柜)
+  data_source: prism:source/LocationIntelligence
+  channel_applicability: all
+  numerator: 算法模型推导的月均收入潜力预测值(无协议无冰柜情景)
+  denominator: N/A
+  eligible_population: 具备基础特征数据的售点
+  spatial_scope: 售点所在行政区/商圈
+  temporal_scope: 当前快照周期
+  missing_value_policy: 缺失时保持 null，不填补，在质量评估中报告缺失率
+  interpretation_boundary: 属于算法推导估计数值，严禁直接作为客观既成财务收入事实
+- uri: prism:metric/PJPCoverageRate
+  name: PJP拜访线路计划达成率
+  category: Structure
+  formula: PJPCoverageRate = count(ActualVisitsMatchingPJP) / count(PlannedVisitsInPJP)
+  numerator: 周期内按PJP计划完成实地拜访的网点数量
+  denominator: 周期内PJP计划预定拜访的网点总数
+  eligible_population: 纳管于有效PJP路线的全部网点
+  spatial_scope: 销售责任辖区 (Territory) 或路线 (Route)
+  temporal_scope: 当前快照周期
+  missing_value_policy: 缺失打卡记录时按未达成处理
+  interpretation_boundary: 衡量销售拜访执行符合度与路线覆盖率的核心指标
+- uri: prism:metric/VisitFrequencyCompliance
+  name: 拜访频次标准符合度
+  category: Structure
+  formula: VisitFrequencyCompliance = count(OutletsMeetingCadence) / count(ActiveOutlets)
+  numerator: 周期内实际拜访次数达到预设频次标准(cadence)的网点数
+  denominator: 辖区内全部活跃服务网点数
+  eligible_population: 已分配服务频次标准的在册网点
+  spatial_scope: 销售责任辖区 (Territory)
+  temporal_scope: 当前快照周期
+  missing_value_policy: 缺失时标记为频次未达标
+  interpretation_boundary: 衡量客户服务质量与拜访密度是否符合服务协议标准

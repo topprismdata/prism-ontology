@@ -1,0 +1,50 @@
+# ==============================================================================
+# MS-PROP-007-product-category-taxonomy.yaml
+# 提案：受管品类树（Category Hierarchy）与产品维度建模
+# 对应 Issue #6: 【提案建议】Product/品类维度与时间语义缺失，建议按 6 态流程立项
+# ==============================================================================
+
+proposal_id: "MS-PROP-007"
+title: "快消零售受管品类树 (Category Taxonomy) 与产品维度立项"
+initiator: "TopPrism Ontology Engineering Committee"
+date: "2026-09-06"
+status: "proposed"
+lifecycle_phase: "governance_review"
+
+motivation: |
+  当前本体仅包含 Brand 概念，缺乏商品/品类（Category）维度。
+  但在快消售点审计与洞察场景中，排面数（Facings）、SOVI/SOCI（排面份额与店内能见度份额）
+  等关键指标均要求明确的品类边界（如 NARTD 即饮无酒精饮料、碳酸饮料、即饮茶、包装水等）。
+  目前只能通过硬编码指标名称解决，缺乏统一推理与多级汇总能力。
+
+proposed_concepts:
+  - uri: "prism:product/Category"
+    name: "商品品类"
+    parent: "skos:Concept"
+    description: "按照行业标准划分的商品层级分类（对齐 GS1 GPC Segment/Family/Class/Brick 体系）"
+    external_alignment:
+      - "skos:Concept"
+      - "gs1:GPC"
+  
+  - uri: "prism:product/Product"
+    name: "商品品规/SKU"
+    parent: "prism-core:Entity"
+    description: "具有条码、规格、包装形式的具体流通消费品（后置推进）"
+    external_alignment:
+      - "gs1:TradeItem"
+      - "schema:Product"
+
+proposed_properties:
+  - uri: "prism:product/belongsToCategory"
+    domain: "prism:outlet/AssetAndDisplayObservation"
+    range: "prism:product/Category"
+    name: "归属品类"
+  
+  - uri: "prism:product/parentCategory"
+    domain: "prism:product/Category"
+    range: "prism:product/Category"
+    name: "上级品类"
+
+governance_assessment:
+  five_questions_verdict: "通过：品类对象客观稳定、跨厂商统一、具备强烈跨域推理与层级汇总需求"
+  recommended_decision: "accepted (受管品类树阶段) / profile_local (具体SKU级后置)"

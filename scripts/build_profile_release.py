@@ -6,6 +6,7 @@ build_profile_release.py
 产出 dist/outlet-insight/0.1.0-rc2/ 包含 OWL 本体、SHACL 形状、度量定义、数据源、组织实体、Manifest 与 SHA-256 校验和。
 具备完全的幂等性与可复现性（基于 Git Commit 状态）。
 """
+import datetime
 import hashlib
 import json
 import shutil
@@ -18,7 +19,14 @@ PROJECT_ROOT = Path(__file__).resolve().parent.parent
 PROFILE_DIR = PROJECT_ROOT / "profiles" / "outlet-insight"
 DIST_DIR = PROJECT_ROOT / "dist" / "outlet-insight" / "0.1.0-rc2"
 
-# 获取当前 Git Commit、Tag 与提交日期
+# 固化签署发布日期与动态构建时间戳
+with open(PROFILE_DIR / "profile.yaml", "r", encoding="utf-8") as f:
+    profile_data = yaml.safe_load(f)
+profile_meta = profile_data.get("profile_metadata", {})
+release_date = profile_meta.get("governance", {}).get("release_date", "2026-08-25")
+build_timestamp = datetime.datetime.now(datetime.timezone.utc).isoformat()
+
+# 获取当前 Git Commit 与提交状态
 try:
     git_commit = subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=PROJECT_ROOT).decode("utf-8").strip()
     git_commit_date = subprocess.check_output(["git", "log", "-1", "--format=%cI"], cwd=PROJECT_ROOT).decode("utf-8").strip()
@@ -73,6 +81,7 @@ shutil.copy(PROFILE_DIR / "concepts.yaml", DIST_DIR / "concepts.yaml")
 shutil.copy(PROFILE_DIR / "relations.yaml", DIST_DIR / "relations.yaml")
 shutil.copy(PROFILE_DIR / "sources.yaml", DIST_DIR / "sources.yaml")
 shutil.copy(PROFILE_DIR / "organizations.yaml", DIST_DIR / "organizations.yaml")
+shutil.copy(PROFILE_DIR / "field-mapping.yaml", DIST_DIR / "field-mapping.yaml")
 shutil.copy(PROFILE_DIR / "competency-questions.yaml", DIST_DIR / "competency-questions.yaml")
 
 # 4. 生成 CQ 报告 Markdown (使用确定性 Git 提交日期)
@@ -104,7 +113,8 @@ manifest = {
     "release_tag": "outlet-insight-v0.1.0-rc2",
     "git_commit": git_commit,
     "clean_working_tree": clean_tree,
-    "release_date": git_commit_date[:10],
+    "release_date": release_date,
+    "build_timestamp": build_timestamp,
     "authority": "TopPrism Ontology Engineering Committee",
     "included_files": [
         "outlet-insight.profile.yaml",
@@ -113,6 +123,7 @@ manifest = {
         "metric-definitions.yaml",
         "concepts.yaml",
         "relations.yaml",
+        "field-mapping.yaml",
         "sources.yaml",
         "organizations.yaml",
         "competency-questions.yaml",

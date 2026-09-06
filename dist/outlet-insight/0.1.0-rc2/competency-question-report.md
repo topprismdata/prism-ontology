@@ -1,7 +1,7 @@
 # Outlet Insight Profile v0.1.0-rc2 Competency Question Verification Report
-Generated at: 2026-08-25T13:12:11+08:00
+Generated at: 2026-08-28T22:21:11+08:00
 Profile URI: prism://ontology/profiles/outlet-insight
-Git Commit: 9f35d2d6dd9cf5b697c22f5822cfab14d7d3e486
+Git Commit: d408175cc7648652c67afc07dc72a6cc63d6daf9
 
 | CQ ID | 场景 | 自然语言提问 | 语义可表达性 | 数据可回答性 | 阻断限制原因 |
 |---|---|---|---|---|---|
@@ -15,3 +15,4 @@ Git Commit: 9f35d2d6dd9cf5b697c22f5822cfab14d7d3e486
 | CQ-008 | 外部竞品销量份额 (拒绝计算) | 可口可乐 vs 百事可乐在华东食杂店的真实销售箱数份额 | pass | none | 物理宽表缺失竞品在途销量 POS 数据，系统显式拒绝计算并输出限制 |
 | CQ-009 | 统计到明细下钻 | 看排第一的瑞幸咖啡在上海城区的具体门店清单 | pass | full | 无 |
 | CQ-010 | 视觉证据生成 | 生成上海市餐饮连锁品牌 TOP20 的门店数与评分双轴图 | pass | full | 无 |
+| CQ-011 | 多源指标冲突与异动诊断 | 大众点评评分>=4.5星但客流处于后20%的餐饮门店清单 | pass | full | 无 |
