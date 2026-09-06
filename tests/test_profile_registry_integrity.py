@@ -14,6 +14,7 @@ from pathlib import Path
 from rdflib import Graph, URIRef, RDF, RDFS, OWL
 
 import json
+import subprocess
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 PREFIX_MAP_FILE = PROJECT_ROOT / "profiles" / "outlet-insight" / "prefix-map.json"
@@ -130,11 +131,11 @@ def test_metric_definitions_no_literal_none():
 
 
 def test_dist_directories_validity():
-    """校验 dist/outlet-insight/ 下不存在孤儿目录，每个发行目录均具备完整 manifest 与 sha256 校验和。"""
+    """校验 dist/outlet-insight/ 下不存在孤儿目录，每个发行目录均具备完整 manifest 与 sha256 校验和，且若已签署 tag 则目录与 tag 提交逐字节一致。"""
     dist_root = PROJECT_ROOT / "dist" / "outlet-insight"
     if not dist_root.exists():
         return
-    valid_dirs = {"0.1.0-rc1", "0.1.0-rc2", "0.1.0-rc3"}
+    valid_dirs = {"0.1.0-rc1", "0.1.0-rc2", "0.1.0-rc3", "0.1.0-rc4"}
     actual_dirs = {d.name for d in dist_root.iterdir() if d.is_dir()}
     unexpected = actual_dirs - valid_dirs
     assert not unexpected, f"Found unregistered orphaned distribution directories in dist/outlet-insight: {unexpected}"
@@ -142,4 +143,24 @@ def test_dist_directories_validity():
         d_path = dist_root / d_name
         assert (d_path / "profile-manifest.json").exists(), f"Dist package {d_name} missing profile-manifest.json"
         assert (d_path / "checksums.sha256").exists(), f"Dist package {d_name} missing checksums.sha256"
+
+        # 校验已签署 Git Tag 的历史发行目录绝对不可变（与 tag commit 树逐字节无差异）
+        tag_name = f"outlet-insight-v{d_name}"
+        tag_check = subprocess.run(
+            ["git", "rev-parse", "--verify", f"refs/tags/{tag_name}"],
+            cwd=PROJECT_ROOT,
+            capture_output=True,
+            text=True
+        )
+        if tag_check.returncode == 0:
+            diff_res = subprocess.run(
+                ["git", "diff", f"{tag_name}^{{commit}}", "--", f"dist/outlet-insight/{d_name}"],
+                cwd=PROJECT_ROOT,
+                capture_output=True,
+                text=True
+            )
+            assert diff_res.returncode == 0 and not diff_res.stdout.strip(), (
+                f"Immutability Violation: Release directory dist/outlet-insight/{d_name} has drifted from its signed tag {tag_name}!\n"
+                f"Diff:\n{diff_res.stdout[:1000]}"
+            )
 

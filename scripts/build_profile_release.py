@@ -18,13 +18,14 @@ from rdflib import Graph
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 PROFILE_DIR = PROJECT_ROOT / "profiles" / "outlet-insight"
 
-# 固化签署发布日期与动态构建时间戳
+import os
+
+# 固化签署发布日期与确定性构建时间戳
 with open(PROFILE_DIR / "profile.yaml", "r", encoding="utf-8") as f:
     profile_data = yaml.safe_load(f)
 profile_meta = profile_data.get("profile_metadata", {})
-release_version = profile_meta.get("version", "0.1.0-rc3")
+release_version = profile_meta.get("version", "0.1.0-rc4")
 release_date = profile_meta.get("governance", {}).get("release_date", "2026-08-25")
-build_timestamp = datetime.datetime.now(datetime.timezone.utc).isoformat()
 
 DIST_DIR = PROJECT_ROOT / "dist" / "outlet-insight" / release_version
 
@@ -40,9 +41,24 @@ except Exception:
     git_commit_date = "2026-08-25T00:00:00Z"
     clean_tree = False
 
-# 清理并重建目标目录
-if DIST_DIR.exists():
-    shutil.rmtree(DIST_DIR)
+# 确定性时间戳：优先使用环境变量 SOURCE_DATE_EPOCH 或 Git Commit 提交日期，确保同一提交重构建哈希绝对可复现
+build_timestamp = os.environ.get("SOURCE_DATE_EPOCH", git_commit_date if git_commit_date else datetime.datetime.now(datetime.timezone.utc).isoformat())
+
+# 严格门禁 1：源内容完备提交检验 (Stage 1 clean tree requirement)
+if not clean_tree:
+    raise RuntimeError(
+        f"Governance Release Gate Error: Working tree is dirty! "
+        f"According to GOVERNANCE.md v0.2.0 §两阶段发行协议, Stage 1 commit must be completed before building dist.\n"
+        f"Dirty files:\n" + "\n".join(status_lines)
+    )
+
+# 严格门禁 2：遵守 GOVERNANCE.md v0.2.0 发行不可变性铁律：已签署或已发布的发行目录严禁原地覆写
+if DIST_DIR.exists() and any(DIST_DIR.iterdir()):
+    raise RuntimeError(
+        f"Governance Release Gate Error: Release directory {DIST_DIR} already exists and is non-empty! "
+        f"According to GOVERNANCE.md v0.2.0 §发行条款, historical release candidates are immutable. "
+        f"To release fixes or updates, please bump the version in profile.yaml first."
+    )
 DIST_DIR.mkdir(parents=True, exist_ok=True)
 
 # 1. 确定性合并 Turtle 本体为单一发行版 OWL

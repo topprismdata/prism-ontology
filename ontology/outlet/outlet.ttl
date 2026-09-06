@@ -8,7 +8,7 @@
 
 <prism://ontology/outlet/> a owl:Ontology ;
     rdfs:label "Prism Outlet Domain Ontology"@zh , "TopPrism World Model L2 Outlet Domain Ontology"@en ;
-    owl:versionInfo "0.1.0-rc3" ;
+    owl:versionInfo "0.1.0-rc4" ;
     owl:imports <prism://ontology/core/> ;
     rdfs:comment "售点领域本体：定义商业售点、连锁品牌、商业场所、行政区划与销售辖区双轨制、业态分类及售点多源观测事实。" .
 

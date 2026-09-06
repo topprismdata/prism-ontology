@@ -8,7 +8,7 @@
 
 <prism://ontology/insight/> a owl:Ontology ;
     rdfs:label "Prism Insight Artifact Ontology"@zh , "TopPrism World Model L2+ Insight Artifact Extension"@en ;
-    owl:versionInfo "0.1.0-rc3" ;
+    owl:versionInfo "0.1.0-rc4" ;
     owl:imports <prism://ontology/core/> ;
     rdfs:comment "洞察产物本体扩展：定义第一棱镜业务分析意图、受管度量、计算活动、分析主张、数据质量评估、标准洞察包以及被动提升候选物。" .
 

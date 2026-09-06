@@ -6,7 +6,7 @@ metrics:
   category: Structure
   formula: HHI = sum((s_i * 100)^2)
   numerator: 特定品牌在指定区域业态下的网点数
-  denominator: 区域业态全部网点数
+  denominator: 区域业态全部在册品牌网点总数（剔除无牌独立店）
   eligible_population: 全部在册品牌
   spatial_scope: 指定区域
   temporal_scope: 当前快照周期
@@ -17,7 +17,7 @@ metrics:
   category: Structure
   formula: CR4 = sum(s_1..s_4)
   numerator: 排名前4位品牌网点数之和
-  denominator: 区域业态网点总数
+  denominator: 区域业态全部在册品牌网点总数（剔除无牌独立店）
   eligible_population: 全部在册品牌
   spatial_scope: 指定区域
   temporal_scope: 当前快照周期
@@ -28,7 +28,7 @@ metrics:
   category: Structure
   formula: CR8 = sum(s_1..s_8)
   numerator: 排名前8位品牌网点数之和
-  denominator: 区域业态网点总数
+  denominator: 区域业态全部在册品牌网点总数（剔除无牌独立店）
   eligible_population: 全部在册品牌
   spatial_scope: 指定区域
   temporal_scope: 当前快照周期

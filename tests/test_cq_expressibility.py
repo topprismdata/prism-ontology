@@ -51,6 +51,7 @@ def test_all_10_competency_questions_sparql_behavior():
 
     fixture_turtle = """
     @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+    @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
     @prefix prism-core: <prism://ontology/core/> .
     @prefix prism-outlet: <prism://ontology/outlet/> .
     @prefix prism-insight: <prism://ontology/insight/> .
@@ -86,6 +87,9 @@ def test_all_10_competency_questions_sparql_behavior():
         prism-outlet:hasChannelType <urn:channel:grocery> .
     <urn:obs:traffic_puxi> a prism-outlet:OutletObservation ;
         prism-outlet:observesOutlet <urn:outlet:myj_01> ;
+        prism-core:hasResultValue 1200 ;
+        prism-core:observedAt "2026-08-01T10:00:00Z"^^xsd:dateTime ;
+        prism-core:hasSource <prism://ontology/source/MobilityData> ;
         <prism://ontology/metric/WeekendTraffic> 1200 .
 
     <urn:outlet:myj_pudong> a prism-outlet:Outlet ;
@@ -96,6 +100,9 @@ def test_all_10_competency_questions_sparql_behavior():
         prism-outlet:hasChannelType <urn:channel:grocery> .
     <urn:obs:traffic_pudong> a prism-outlet:OutletObservation ;
         prism-outlet:observesOutlet <urn:outlet:myj_pudong> ;
+        prism-core:hasResultValue 800 ;
+        prism-core:observedAt "2026-08-01T10:00:00Z"^^xsd:dateTime ;
+        prism-core:hasSource <prism://ontology/source/MobilityData> ;
         <prism://ontology/metric/WeekendTraffic> 800 .
 
     <urn:outlet:js_food_01> a prism-outlet:Outlet ;
@@ -114,6 +121,9 @@ def test_all_10_competency_questions_sparql_behavior():
         prism-outlet:hasChannelType <urn:channel:catering> .
     <urn:obs:luckin_01> a prism-outlet:OutletObservation ;
         prism-outlet:observesOutlet <urn:outlet:sh_luckin_01> ;
+        prism-core:hasResultValue 4.2 ;
+        prism-core:observedAt "2026-08-01T10:00:00Z"^^xsd:dateTime ;
+        prism-core:hasSource <prism://ontology/source/Dianping> ;
         <prism://ontology/metric/DianpingRating> 4.2 ;
         <prism://ontology/metric/WeekendTraffic> 3500 .
 
@@ -125,6 +135,9 @@ def test_all_10_competency_questions_sparql_behavior():
         prism-outlet:hasChannelType <urn:channel:catering> .
     <urn:obs:luckin_02> a prism-outlet:OutletObservation ;
         prism-outlet:observesOutlet <urn:outlet:sh_luckin_02> ;
+        prism-core:hasResultValue 4.5 ;
+        prism-core:observedAt "2026-08-01T10:00:00Z"^^xsd:dateTime ;
+        prism-core:hasSource <prism://ontology/source/Dianping> ;
         <prism://ontology/metric/DianpingRating> 4.5 ;
         <prism://ontology/metric/WeekendTraffic> 4200 .
 
@@ -136,6 +149,9 @@ def test_all_10_competency_questions_sparql_behavior():
         prism-outlet:hasChannelType <urn:channel:catering> .
     <urn:obs:sbux_01> a prism-outlet:OutletObservation ;
         prism-outlet:observesOutlet <urn:outlet:sh_sbux_01> ;
+        prism-core:hasResultValue 4.6 ;
+        prism-core:observedAt "2026-08-01T10:00:00Z"^^xsd:dateTime ;
+        prism-core:hasSource <prism://ontology/source/Dianping> ;
         <prism://ontology/metric/DianpingRating> 4.6 ;
         <prism://ontology/metric/WeekendTraffic> 5000 .
 
@@ -147,6 +163,9 @@ def test_all_10_competency_questions_sparql_behavior():
         prism-outlet:hasChannelType <urn:channel:catering> .
     <urn:obs:discrepancy> a prism-outlet:OutletObservation ;
         prism-outlet:observesOutlet <urn:outlet:sh_discrepancy_01> ;
+        prism-core:hasResultValue 2.8 ;
+        prism-core:observedAt "2026-08-01T10:00:00Z"^^xsd:dateTime ;
+        prism-core:hasSource <prism://ontology/source/Dianping> ;
         <prism://ontology/metric/DianpingRating> 2.8 ;
         <prism://ontology/metric/WeekendTraffic> 6000 .
 
@@ -157,6 +176,9 @@ def test_all_10_competency_questions_sparql_behavior():
         prism-outlet:hasChannelType <urn:channel:lodging> .
     <urn:obs:inn_room> a prism-outlet:OutletObservation ;
         prism-outlet:observesOutlet <urn:outlet:inn_01> ;
+        prism-core:hasResultValue 18 ;
+        prism-core:observedAt "2026-08-01T10:00:00Z"^^xsd:dateTime ;
+        prism-core:hasSource <prism://ontology/source/Ctrip> ;
         <prism://ontology/metric/CtripRoomCount> 18 .
 
     # CQ-011 冲突背离网点: 大众点评高评分 (4.8) 但客流极低 (500)
@@ -166,6 +188,9 @@ def test_all_10_competency_questions_sparql_behavior():
         prism-outlet:hasChannelType <urn:channel:catering> .
     <urn:obs:conflict_01> a prism-outlet:OutletObservation ;
         prism-outlet:observesOutlet <urn:outlet:sh_conflict_01> ;
+        prism-core:hasResultValue 4.8 ;
+        prism-core:observedAt "2026-08-01T10:00:00Z"^^xsd:dateTime ;
+        prism-core:hasSource <prism://ontology/source/Dianping> ;
         <prism://ontology/metric/DianpingRating> 4.8 ;
         <prism://ontology/metric/WeekendTraffic> 500 .
 
@@ -178,7 +203,28 @@ def test_all_10_competency_questions_sparql_behavior():
     """
     g.parse(data=fixture_turtle, format="turtle")
 
-    # 逐条执行全部 10 条 CQ 的忠实 SPARQL 查询断言
+    # 3. 前置 SHACL 强约束自校验：金样例图必须 100% 遵守本体与 Profile 的全部 SHACL 形状契约
+    import pyshacl
+    shacl_g = Graph()
+    for shacl_rel_path in [
+        "core/core.shacl.ttl",
+        "outlet/outlet.shacl.ttl",
+        "insight/insight-artifact.shacl.ttl",
+        "sales-visit/sales-visit.shacl.ttl",
+    ]:
+        shacl_g.parse(str(PROJECT_ROOT / "ontology" / shacl_rel_path), format="turtle")
+    shacl_g.parse(str(PROJECT_ROOT / "profiles" / "outlet-insight" / "constraints.shacl.ttl"), format="turtle")
+
+    conforms, report_g, report_text = pyshacl.validate(
+        data_graph=g,
+        shacl_graph=shacl_g,
+        ont_graph=g,
+        inference="rdfs",
+        abort_on_first=False
+    )
+    assert conforms, f"CQ golden fixture graph fails SHACL self-conformance validation:\n{report_text}"
+
+    # 4. 逐条执行全部 10 条 CQ 的忠实 SPARQL 查询断言
     prefix_block = """
     PREFIX prism-outlet: <prism://ontology/outlet/>
     PREFIX prism-core: <prism://ontology/core/>

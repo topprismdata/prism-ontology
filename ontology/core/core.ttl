@@ -12,7 +12,7 @@
 
 <prism://ontology/core/> a owl:Ontology ;
     rdfs:label "Prism Core Meta-Model"@zh , "TopPrism World Model L1 Core Ontology"@en ;
-    owl:versionInfo "0.1.0-rc3" ;
+    owl:versionInfo "0.1.0-rc4" ;
     rdfs:comment "棱镜极世界模型 L1 通用上层元模型：定义现实世界实体、角色、事件、活动、观测与派生估计等通用基类。" .
 
 # =============================================================================

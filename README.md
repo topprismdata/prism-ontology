@@ -23,7 +23,7 @@ prism-ontology 定义棱镜世界模型中可复用的概念、关系、约束�
 
 首个 Operational Profile：
 
-- **Outlet Insight Profile** `0.1.0-rc3`
+- **Outlet Insight Profile** `0.1.0-rc4`
 - **状态**：可用于受控集成（Release Candidate）
 - **范围**：售点结构、空间关系、观测事实、指标口径、派生估计、洞察主张、质量限制及非执行边界
 
@@ -121,7 +121,7 @@ prism-ontology/
 
 | Profile | 版本 | 状态 | 用途 |
 |---|---:|---|---|
-| **Outlet Insight** | `0.1.0-rc3` | Release Candidate | 售点结构、差异、异常、质量限制与分析洞察表达 |
+| **Outlet Insight** | `0.1.0-rc4` | Release Candidate | 售点结构、差异、异常、质量限制与分析洞察表达 |
 
 Outlet Insight Profile 是本项目的第一个完整垂直切片。它用于验证 Reference Ontology、Profile 编排、SHACL 约束、确定性发行和下游语义契约消费的全链路。
 
@@ -131,7 +131,7 @@ Outlet Insight Profile 是本项目的第一个完整垂直切片。它用于验
 
 ### 作为 Profile 消费端（如数据分析 Agent / 数据集成）
 
-1. 选择目标 Operational Profile（如 `profiles/outlet-insight` 或 `dist/outlet-insight/0.1.0-rc3/`）。
+1. 选择目标 Operational Profile（如 `profiles/outlet-insight` 或 `dist/outlet-insight/0.1.0-rc4/`）。
 2. 读取上游发行包中的 `profile-manifest.json` 与 `checksums.sha256`，校验 SHA-256 完整性。
 3. 校验 Release Tag 与 Source Commit 的可追溯祖先关系。
 4. 基于机器可读契约 `prefix-map.json` 或 `context.jsonld` 展开与校验 CURIE 标识符：
@@ -139,7 +139,7 @@ Outlet Insight Profile 是本项目的第一个完整垂直切片。它用于验
    import json
 
    # 读取发行包中的机器可读前缀映射契约
-   with open("dist/outlet-insight/0.1.0-rc3/prefix-map.json") as f:
+   with open("dist/outlet-insight/0.1.0-rc4/prefix-map.json") as f:
        prefixes = json.load(f)["prefixes"]
 
    def resolve_curie(curie: str) -> str:

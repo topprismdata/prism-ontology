@@ -103,7 +103,7 @@ prism-insight: a owl:Ontology ;
         "Prism Insight Artifact Ontology"@zh ;
     rdfs:comment "洞察产物本体扩展：定义第一棱镜业务分析意图、受管度量、计算活动、分析主张、数据质量评估、标准洞察包以及被动提升候选物。" ;
     owl:imports prism-core: ;
-    owl:versionInfo "0.1.0-rc3" .
+    owl:versionInfo "0.1.0-rc1" .
 
 prism-insight:AnalysisIntent a owl:Class ;
     rdfs:label "AnalysisIntent"@en,
@@ -234,7 +234,7 @@ prism-sales: a owl:Ontology ;
     rdfs:comment "快消零售 (FMCG) 销售拜访边界本体骨架：定义客户账户、客户角色、服务关系、PJP 线路拜访计划、RED 店内执行打卡与实际拜访事件等边界协同概念。" ;
     owl:imports prism-core:,
         prism-outlet: ;
-    owl:versionInfo "0.1.0-rc3" .
+    owl:versionInfo "0.1.0-rc1" .
 
 prism-sales:VisitMode a owl:Class ;
     rdfs:label "VisitMode"@en,
@@ -410,7 +410,7 @@ prism-outlet: a owl:Ontology ;
         "Prism Outlet Domain Ontology"@zh ;
     rdfs:comment "售点领域本体：定义商业售点、连锁品牌、商业场所、行政区划与销售辖区双轨制、业态分类及售点多源观测事实。" ;
     owl:imports prism-core: ;
-    owl:versionInfo "0.1.0-rc3" .
+    owl:versionInfo "0.1.0-rc1" .
 
 prism-outlet:Brand a owl:Class ;
     rdfs:label "Brand"@en,
@@ -505,7 +505,7 @@ prism-core: a owl:Ontology ;
     rdfs:label "TopPrism World Model L1 Core Ontology"@en,
         "Prism Core Meta-Model"@zh ;
     rdfs:comment "棱镜极世界模型 L1 通用上层元模型：定义现实世界实体、角色、事件、活动、观测与派生估计等通用基类。" ;
-    owl:versionInfo "0.1.0-rc3" .
+    owl:versionInfo "0.1.0-rc1" .
 
 prism-outlet:Territory a owl:Class ;
     rdfs:label "SalesTerritory"@en,
