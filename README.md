@@ -23,7 +23,7 @@ prism-ontology 定义棱镜世界模型中可复用的概念、关系、约束�
 
 首个 Operational Profile：
 
-- **Outlet Insight Profile** `0.1.0-rc2`
+- **Outlet Insight Profile** `0.1.0-rc3`
 - **状态**：可用于受控集成（Release Candidate）
 - **范围**：售点结构、空间关系、观测事实、指标口径、派生估计、洞察主张、质量限制及非执行边界
 
@@ -118,7 +118,7 @@ prism-ontology/
 
 | Profile | 版本 | 状态 | 用途 |
 |---|---:|---|---|
-| **Outlet Insight** | `0.1.0-rc2` | Release Candidate | 售点结构、差异、异常、质量限制与分析洞察表达 |
+| **Outlet Insight** | `0.1.0-rc3` | Release Candidate | 售点结构、差异、异常、质量限制与分析洞察表达 |
 
 Outlet Insight Profile 是本项目的第一个完整垂直切片。它用于验证 Reference Ontology、Profile 编排、SHACL 约束、确定性发行和下游语义契约消费的全链路。
 

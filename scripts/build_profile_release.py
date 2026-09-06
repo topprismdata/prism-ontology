@@ -17,21 +17,23 @@ from rdflib import Graph
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 PROFILE_DIR = PROJECT_ROOT / "profiles" / "outlet-insight"
-DIST_DIR = PROJECT_ROOT / "dist" / "outlet-insight" / "0.1.0-rc2"
 
 # 固化签署发布日期与动态构建时间戳
 with open(PROFILE_DIR / "profile.yaml", "r", encoding="utf-8") as f:
     profile_data = yaml.safe_load(f)
 profile_meta = profile_data.get("profile_metadata", {})
+release_version = profile_meta.get("version", "0.1.0-rc3")
 release_date = profile_meta.get("governance", {}).get("release_date", "2026-08-25")
 build_timestamp = datetime.datetime.now(datetime.timezone.utc).isoformat()
+
+DIST_DIR = PROJECT_ROOT / "dist" / "outlet-insight" / release_version
 
 # 获取当前 Git Commit 与提交状态
 try:
     git_commit = subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=PROJECT_ROOT).decode("utf-8").strip()
     git_commit_date = subprocess.check_output(["git", "log", "-1", "--format=%cI"], cwd=PROJECT_ROOT).decode("utf-8").strip()
     git_status = subprocess.check_output(["git", "status", "--porcelain"], cwd=PROJECT_ROOT).decode("utf-8").strip()
-    status_lines = [l for l in git_status.splitlines() if not l.strip().endswith("dist/outlet-insight/0.1.0-rc2") and "dist/" not in l]
+    status_lines = [l for l in git_status.splitlines() if not l.strip().endswith(f"dist/outlet-insight/{release_version}") and f"dist/outlet-insight/{release_version}" not in l]
     clean_tree = (len(status_lines) == 0)
 except Exception:
     git_commit = "unversioned"
@@ -90,7 +92,7 @@ with open(PROFILE_DIR / "competency-questions.yaml", "r", encoding="utf-8") as f
     cq_data = yaml.safe_load(f)
 
 cq_md_lines = [
-    "# Outlet Insight Profile v0.1.0-rc2 Competency Question Verification Report",
+    f"# Outlet Insight Profile v{release_version} Competency Question Verification Report",
     f"Generated at: {git_commit_date}",
     f"Profile URI: prism://ontology/profiles/outlet-insight",
     f"Git Commit: {git_commit}",
@@ -108,9 +110,9 @@ with open(cq_report_path, "w", encoding="utf-8") as f:
 manifest = {
     "profile_uri": "prism://ontology/profiles/outlet-insight",
     "profile_name": "outlet-insight",
-    "version": "0.1.0-rc2",
+    "version": release_version,
     "status": "release_candidate",
-    "release_tag": "outlet-insight-v0.1.0-rc2",
+    "release_tag": f"outlet-insight-v{release_version}",
     "git_commit": git_commit,
     "clean_working_tree": clean_tree,
     "release_date": release_date,

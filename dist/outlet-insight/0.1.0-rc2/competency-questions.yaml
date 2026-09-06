@@ -90,7 +90,7 @@ competency_questions:
       target_entity: "prism:outlet/Outlet"
       channel_scope: "prism:outlet/ChannelType:住宿"
       site_scope: "prism:outlet/TradeAreaBuffer:景区周边"
-      metrics: ["prism:metric/CtripRoomCount", "prism:metric/CtripStarRating"]
+      metrics: ["prism:metric/CtripRoomCount", "prism:metric/Ctrip_星级"]
     semantic_expressibility: "pass"
     data_answerability: "partial"
     blocking_reason: "部分小微客栈缺少携程星级数据，触发质量限制提示并降级置信度"
@@ -126,16 +126,5 @@ competency_questions:
       target_entity: "prism:outlet/Brand"
       geo_scope: "prism:outlet/AdministrativeRegion:上海城区"
       visual_spec: "ComboChart(x=Brand, y1=OutletCount, y2=AvgRating)"
-    semantic_expressibility: "pass"
-    data_answerability: "full"
-
-  - id: "CQ-011"
-    scenario: "多源指标冲突与异动诊断"
-    question: "大众点评评分>=4.5星但客流处于后20%的餐饮门店清单"
-    formal_expression:
-      target_entity: "prism:outlet/Outlet"
-      channel_scope: "prism:outlet/ChannelType:餐饮"
-      conflict_rule: "DianpingRating >= 4.5 AND WeekendTraffic <= P20"
-      anomaly_type: "MetricDiscrepancy"
     semantic_expressibility: "pass"
     data_answerability: "full"

@@ -7,10 +7,14 @@ stamp_release_commit.py
 import hashlib
 import json
 import subprocess
+import yaml
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
-DIST = ROOT / "dist" / "outlet-insight" / "0.1.0-rc2"
+with open(ROOT / "profiles" / "outlet-insight" / "profile.yaml", "r", encoding="utf-8") as f:
+    pdata = yaml.safe_load(f)
+version = pdata.get("profile_metadata", {}).get("version", "0.1.0-rc3")
+DIST = ROOT / "dist" / "outlet-insight" / version
 
 commit = subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=ROOT).decode("utf-8").strip()
 

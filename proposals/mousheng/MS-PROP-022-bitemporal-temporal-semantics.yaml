@@ -1,10 +1,10 @@
 # ==============================================================================
-# MS-PROP-008-bitemporal-temporal-semantics.yaml
+# MS-PROP-022-bitemporal-temporal-semantics.yaml
 # 提案：双时间轴（Bitemporal）与指标受管时间粒度枚举体系
 # 对应 Issue #6: 【提案建议】Product/品类维度与时间语义缺失，建议按 6 态流程立项
 # ==============================================================================
 
-proposal_id: "MS-PROP-008"
+proposal_id: "MS-PROP-022"
 title: "世界模型双时间轴 (Bitemporal) 语义模式与受管时间粒度体系"
 initiator: "TopPrism Ontology Engineering Committee"
 date: "2026-09-06"

@@ -7,7 +7,7 @@ profile_metadata:
   profile_uri: "prism://ontology/profiles/outlet-insight"
   profile_name: "outlet-insight"
   display_name: "谋圣·售点洞察场景运行 Profile"
-  version: "0.1.0-rc2"
+  version: "0.1.0-rc3"
   status: "release_candidate"
   target_audience: "Mousheng Outlet Insight Analysis Engine"
   governance:

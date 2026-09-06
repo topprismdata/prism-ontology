@@ -149,9 +149,9 @@
 ### Task 7: 6 态治理提案归档与全新发布包编译 (对应 Issue #6 及发布)
 
 **涉及文件**：
-- 新增：`proposals/mousheng/MS-PROP-007-product-category-taxonomy.yaml`
-- 新增：`proposals/mousheng/MS-PROP-008-bitemporal-temporal-semantics.yaml`
-- 产出：`dist/outlet-insight/0.1.0-rc2/`
+- 新增：`proposals/mousheng/MS-PROP-021-product-category-taxonomy.yaml`
+- 新增：`proposals/mousheng/MS-PROP-022-bitemporal-temporal-semantics.yaml`
+- 产出：`dist/outlet-insight/0.1.0-rc3/`
 - 脚本执行：`python scripts/build_profile_release.py`
 
 - [ ] **Step 1: 编写提案立项文件**
