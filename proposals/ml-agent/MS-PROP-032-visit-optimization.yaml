@@ -1,0 +1,65 @@
+# ==============================================================================
+# MS-PROP-032-visit-optimization.yaml
+# 提案：拜访优化求解 (VisitOptimization) —— 生成/重排拜访路线与排班的求解活动
+# 批次：ml-sales-batch-002（SRP 销售拜访规划净新增概念批次，共 7 项，见 README.md）
+# 提案编号来源：GOVERNANCE.md §2 单调递增（本批次自 MS-PROP-031 起）
+# ==============================================================================
+
+proposal_id: "MS-PROP-032"
+title: "拜访优化求解 (VisitOptimization)：以服务包与班次约束为输入、产出拜访计划的可追溯求解活动"
+initiator: "TopPrism ML Agent Program（达能潜店雷达 SRP 需求回流）"
+date: "2026-10-09"
+status: "proposed"
+lifecycle_phase: "governance_review"
+
+motivation: |
+  SRP 的排班生成（FR-13：月/周/日三级）与路径求解（FR-14）是引擎主场，但
+  本体中只有求解的"产物"（prism-sales:VisitPlan，core:Plan 子类）与"决策"
+  （core:Decision），没有求解"过程"本身。跨域陈述"这份计划是哪次求解、以
+  什么方法、消费了哪些约束产生的"目前无处安放，排班不可解释即不可审计。
+  Salesforce Maps 官方机制明确把优化作为独立可触发活动：管理员点击
+  Plan Visits、一线点击 Plan My Visits，或以全局方法
+  StartAdvancedOptimizationForVisitPlan / StartAdvancedOptimizationForUsers
+  程序化触发；优化方法三分（Shortest Distance / Fastest Shift Completion /
+  Least Windshield Time），方法切换后必须重新优化并保存才生效。故申请在
+  L2 sales-visit 增设 VisitOptimization（core:Activity 子类），使"一次排班
+  求解"成为可溯源（PROV-O Activity）、可比对（方法+输入指纹）、可重放的公共语义。
+
+proposed_concepts:
+  - uri: "prism:sales/VisitOptimization"
+    name: "拜访优化求解"
+    parent: "prism-core:Activity"
+    description: "由行动主体（人或程序）发起、消耗输入（候选网点集、服务包、班次约束、优化方法）并产生状态变化（生成或重排 VisitPlan 路线/排班）的业务求解过程。携带所用的优化方法与触发方式，是计划产物的前因，可溯源、可重放。"
+
+manual_evidence:
+  - file: "/tmp/sf_pages/visit_plans_create.txt"
+    url: "https://help.salesforce.com/s/articleView?id=sales.salesforce_maps_setup_visit_plans_create.htm"
+    quote: "To generate routes, open the active visit plan and click Plan Visits. Field users generate their route by clicking Plan My Visits. … use the StartAdvancedOptimizationForVisitPlan or StartAdvancedOptimizationForUsers global method"
+  - file: "/tmp/sf_pages/optimization_methods.txt"
+    url: "https://help.salesforce.com/s/articleView?id=000391884"
+    quote: "Salesforce Maps' is powered by an internal optimization engine designed to handle a variety of problems. … Salesforce Maps provides several travel optimization methods"
+  - file: "/tmp/sf_pages/routes_vs_schedule.txt"
+    url: "https://help.salesforce.com/s/articleView?id=000381117"
+    quote: "Schedule allows users to optimize up to a week of appointments at a time, while Routes allows users to optimize up to a day of appointments at a time."
+
+external_alignment:
+  - "prov:Activity：core:Activity 已 subClassOf prov:Activity，VisitOptimization 天然继承——求解过程即 PROV-O 活动，输入（候选集/服务包/班次约束）为其 used，产出的 VisitPlan 为其 generated 实体（W3C PROV-O，GOVERNANCE.md §2.4 血缘溯源对齐）。"
+
+five_questions:
+  objective_stability: "稳定。一次求解活动有明确触发者、输入、方法与产物，完成后即成为不可篡改的历史过程事实（何时、何法、何输入）；重跑是新活动而非改写旧活动。"
+  vendor_independence: "成立。Salesforce 以 Plan Visits/全局方法触发、以三种命名方法求解；SRP 以 Step D 逐日重排求解。'一次以某方法对某输入集的求解'不依赖任何平台专有接口语义。"
+  cross_project_inference: "需要。排班审计（谁在何时用什么方法生成了该线路）、效果归因（方法切换前后指标对比）、可复现性（同输入同方法重放）都要求把求解作为一等活动陈述；只有产物（VisitPlan）则上述陈述全部失焦。"
+  definitional_clarity: "明确。定义以'发起 + 消耗输入 + 产生计划状态变化'给出 Activity 可判定边界，并与产物（Plan）、授权选择（Decision）严格区分；越界（把审批行为算作求解）可直接判违。"
+  anti_concept_inflation: "不膨胀。不携带引擎专有字段（求解器版本号等留各引擎特化层）；不申请新增属性；与既有 Plan/Decision/Activity 逐一划界。"
+
+relation_to_existing:
+  prism_core_activity: "子类主张：VisitOptimization 是'由行动主体发起、消耗时间并产生状态变化的业务过程'的精确实例化——生成/重排计划即状态变化；与 core 的 prov:Activity 对齐一脉相承。"
+  prism_sales_visitplan: "产物关系：一次 VisitOptimization generated（PROV-O 语义）一份或一组 VisitPlan；计划是产物，求解是过程，职责分离（对应 SRP 排班生成与计划发布的解耦）。"
+  prism_core_decision: "正交：Decision 是'基于资格与规则做出的业务选择'（如线路审批/发布授权）；求解是机械计算，审批是人的授权，二者在 SRP 中分属 FR-14 与 FR-15/16，不得混淆。"
+  prism_sales_servicepackage: "输入关系：服务包的频次/时长/时段作为求解的硬约束被消费（official：fixed appointment times, shift durations 即优化输入因子）。"
+  prism_sales_shiftconstraint: "输入关系：班次窗口、休息、固定不可用时段作为求解的时间边界被消费（见 MS-PROP-033）。"
+
+source:
+  requirement: "达能潜店雷达 SRP 需求书 FR-13 月/周排班生成 + FR-14 路径求解/拜访顺序生成；功能点映射矩阵 #27-31"
+  manual: "/tmp/sf_pages/visit_plans_create.txt + /tmp/sf_pages/optimization_methods.txt + /tmp/sf_pages/routes_vs_schedule.txt（URL 见 manual_evidence）"
+  ontology_basis: "prism-ontology ontology/core/core.ttl（Activity → prov:Activity）；ontology/sales-visit/sales-visit.ttl（VisitPlan 为产物）"
