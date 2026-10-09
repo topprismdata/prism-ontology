@@ -1,0 +1,53 @@
+# ==============================================================================
+# MS-PROP-023-world-state-ref.yaml
+# 提案：世界状态引用 (WorldStateRef) —— 实验/决策所见的只读初始状态指称
+# 批次：ml-core-batch-001（ML 共享核心净新增概念批次，共 8 项，见 README.md）
+# 提案编号来源：GOVERNANCE.md §2 单调递增（上一编号 MS-PROP-022）
+# ==============================================================================
+
+proposal_id: "MS-PROP-023"
+title: "世界状态引用 (WorldStateRef)：跨域可引用的只读冻结状态指称"
+initiator: "TopPrism ML Agent Program (cultivating-ml-agent)"
+date: "2026-10-09"
+status: "proposed"
+lifecycle_phase: "governance_review"
+
+motivation: |
+  ML 实验链路（ExperimentIR）目前以 content_hash 字段指称实验所见的初始状态
+  （数据快照、环境与前置事实的冻结视图），该指称只是 ML 局部命名空间的字段约定，
+  无法跨域陈述"两次实验/两次求解往返面对的是同一冻结初始状态"。
+  跨域求解往返（PJP/仓储适配器，SPEC-006 JSON 信封）与受控比较（arena）都需要
+  以同一只读状态指称作为所有候选面对的公共起点。故申请在 L1 增设只读状态引用类，
+  使"初始状态同一性"成为跨供应商、跨项目可机器复验的公共语义。
+
+proposed_concepts:
+  - uri: "prism:core/WorldStateRef"
+    name: "世界状态引用"
+    parent: "prism:core/InformationObject"
+    description: "对决策/实验所见初始世界状态的只读引用：以指纹（内容哈希）指称数据快照、环境与前置事实的冻结视图，本身不携带也不允许任何对世界状态的写入效应。"
+
+# proposed_properties：本批次不申请新增属性（防概念膨胀，GOVERNANCE.md §2 裁定原则 2；
+# 指纹与冻结点以现有 core 属性 hasIdentifier / validDuring 语义覆盖，属性面细节
+# 留接受后由上游 SHACL NodeShape 补充约束）。
+
+external_alignment:
+  - "prov:Entity：冻结视图作为可溯源实体（W3C PROV-O，GOVERNANCE.md §2.4 血缘溯源对齐）；指纹即实体标识，冻结点即实体生成边界"
+  - "prov:specializationOf：同一冻结点在不同运行/往返中的引用对应特化指称关系"
+
+five_questions:
+  objective_stability: "稳定。指称对象是冻结视图的指纹与冻结点，不是可变业务对象；内容哈希是确定性函数，双跑同哈希可机器复验（ cultivating-ml-agent tests/test_replay_reproducibility.py::test_double_run_identical）。"
+  vendor_independence: "成立。不以任何平台专有 ID 为前提；任何供应商的数据快照与环境前置事实均可按同一指纹规则进入受控比较。"
+  cross_project_inference: "需要。ExperimentIR（ML）与 PJP/仓储跨域适配（SPEC-006 信封）都要陈述'同一初始状态'；无统一类则该陈述只能停留在 ML 局部命名空间，跨项目无法统一推理。"
+  definitional_clarity: "明确。定义以'只读 + 指纹 + 冻结视图'给出可判定边界，并显式禁止任何写入效应；越界行为（改写世界状态）可直接判违。"
+  anti_concept_inflation: "不膨胀。不携带任何临时实验字段或平台专有 ID；ExperimentIR 的 world_state 段特有字段留 ML 特化层，本类只保留跨域最小语义。"
+
+relation_to_existing:
+  prism_core_informationobject: "子类主张：WorldStateRef 是'关于状态的陈述'（指纹 + 冻结点），不是状态本身；InformationObject（信息对象）语义精确匹配不可变声明，与既有映射先例（prism:ml/DatasetSnapshot → InformationObject）同构。"
+  prism_core_entity: "正交（拒绝父类）：实体化会引入可写语义；WorldStateRef 是陈述不是事物，写入即越界。core.ttl 不实体化本概念。"
+  prism_core_observation: "正交：Observation 是带测量结果的观测事实（SOSA 对齐）；WorldStateRef 不产生测量，只指称冻结视图。"
+  prism_insight_insightpackage: "正交：InsightPackage 是洞察交付包；二者同为 InformationObject 特化，互不重叠。"
+
+source:
+  spec: "cultivating-ml-agent docs/specs/SPEC-001-experiment-ir.md（ExperimentIR world_state 段与 content_hash 指纹）"
+  adr: "cultivating-ml-agent docs/adr/ADR-001-cross-repo-responsibilities.md §决策.3（净新增判定与提案批次路径）"
+  envelope_evidence: "cultivating-ml-agent framework/src/ir/experiment_ir.py content_hash 字段；framework/tests/test_replay_reproducibility.py 双跑同哈希把守；tests/test_cross_domain_report.py 跨域往返事实回查"

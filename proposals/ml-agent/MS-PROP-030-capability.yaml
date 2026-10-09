@@ -1,0 +1,55 @@
+# ==============================================================================
+# MS-PROP-030-capability.yaml
+# 提案：能力 (Capability) —— 可复用能力的受管登记
+# 批次：ml-core-batch-001（ML 共享核心净新增概念批次，共 8 项，见 README.md）
+# 提案编号来源：GOVERNANCE.md §2 单调递增（上一编号 MS-PROP-022）
+# ==============================================================================
+
+proposal_id: "MS-PROP-030"
+title: "能力 (Capability)：流转与激活由授权方人为动作决定的受管能力登记"
+initiator: "TopPrism ML Agent Program (cultivating-ml-agent)"
+date: "2026-10-09"
+status: "proposed"
+lifecycle_phase: "governance_review"
+
+motivation: |
+  能力治理（agent-nurture-framework 的 capability-record schema）已有成熟的
+  记录面：lifecycle_status（draft/active/refining/stable/disputed/deprecated）、
+  risk_level、scope、provenance_chain_id。但概念面在 L1 缺位：能力治理要跨域
+  陈述"某能力候选在哪些任务家族上验证过、有无负例与争议、在声明 scope 内可否
+  复用"，且"登记的流转与激活永远由授权方人为动作决定、接口只产出 draft 与建议"
+  这条授权边界必须进入本体语义。故申请在 L1 增设 Capability，定义显式对齐
+  上述记录面 schema，不另造互斥定义。
+
+proposed_concepts:
+  - uri: "prism:core/Capability"
+    name: "能力"
+    parent: "prism:core/InformationObject"
+    description: "可复用能力的受管登记：描述某主体在特定 scope 下可复用的能力及其证据与生命周期；登记的流转与激活永远由授权方（policy authority）的人为动作决定，接口只产出 draft 与建议。"
+
+# proposed_properties：本批次不申请新增属性（防概念膨胀；lifecycle_status、
+# risk_level、scope、provenance_chain_id 属 ANF capability-record 记录面 schema，
+# 本类是概念面，字段面由记录面 schema 与上游 SHACL NodeShape 承接）。
+
+external_alignment:
+  - "无直接 W3C 标准同位类：能力登记属治理受管语义；语义锚定 agent-nurture-framework@33f444b 的 capability-record schema（lifecycle_status: draft/active/refining/stable/disputed/deprecated，无候选/晋升态；risk_level、scope、provenance_chain_id），定义显式对齐、不另造互斥定义"
+  - "prov:Entity：经父类 InformationObject 继承的可溯源语义；provenance_chain_id 对应溯源链（W3C PROV-O 血缘对齐）"
+
+five_questions:
+  objective_stability: "稳定。能力登记及其生命周期状态是受管事实，状态机封闭（六态、无自动晋升）；一次成功不触发任何状态翻转。"
+  vendor_independence: "成立。能力与 scope 是组织治理语言，不以任何平台专有 ID 为前提。"
+  cross_project_inference: "需要。跨项目要统一回答'该能力在声明的 scope 内可否复用、证据是否过期、有无争议'；无统一类则能力复用资格查询无法跨域。"
+  definitional_clarity: "明确。定义给出登记边界（证据与生命周期）与授权边界（流转与激活由 policy authority 人为动作决定，接口只产出 draft 与建议），自动晋升可直接判违。"
+  anti_concept_inflation: "不膨胀。本类是概念面，不复制记录面字段；与 ANF capability-record 显式对齐而非并行造类（ADR-001 备选方案 3 否决以 ANF schema 承担本体职能，本类即概念面归位）。"
+
+relation_to_existing:
+  prism_core_informationobject: "子类主张：能力登记是关于可复用资产的受管陈述。"
+  prism_core_role: "正交（拒绝父类）：Role 是业务角色的承担关系（售点情境下的角色语义）；能力是可复用资产的登记，二者领域不同。"
+  prism_core_policy: "关联：登记流转与激活由授权方（policy authority）人为动作决定；Policy 是授权规则的宿主类，Capability 登记受其约束而非承载规则本身。"
+  prism_core_decision: "正交：激活是 A2 权限的人为动作（一次决策）；登记本身不自动晋升，验证结论只作为门禁证据输入。"
+  anf_capability_record: "概念面与记录面对齐：记录面权威是 agent-nurture-framework@33f444b 的 capability-record schema；本类定义显式对齐该 schema 语义，不做互斥定义。skill-tester 禁区 5：测试结果不直接改写本体。"
+
+source:
+  spec: "cultivating-ml-agent docs/specs/SPEC-007-governance-gates.md（治理门禁与授权边界）；agent-nurture-framework@33f444b capability-record schema（记录面权威）"
+  adr: "cultivating-ml-agent docs/adr/ADR-001-cross-repo-responsibilities.md §决策.3（净新增判定与提案批次路径）；禁区 5（skill-tester 测试结果不直接改写本体）"
+  envelope_evidence: "agent-nurture-framework@33f444b capability-record schema（lifecycle_status 六态、risk_level、scope、provenance_chain_id）；ANF policy-record（authority 约束：Not promotion）"

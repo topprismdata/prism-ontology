@@ -1,0 +1,51 @@
+# ==============================================================================
+# MS-PROP-024-task.yaml
+# 提案：任务 (Task) —— 跨域通用的声明式任务指派对象
+# 批次：ml-core-batch-001（ML 共享核心净新增概念批次，共 8 项，见 README.md）
+# 提案编号来源：GOVERNANCE.md §2 单调递增（上一编号 MS-PROP-022）
+# ==============================================================================
+
+proposal_id: "MS-PROP-024"
+title: "任务 (Task)：只圈定问题边界、不携带执行状态的声明式指派"
+initiator: "TopPrism ML Agent Program (cultivating-ml-agent)"
+date: "2026-10-09"
+status: "proposed"
+lifecycle_phase: "governance_review"
+
+motivation: |
+  组织内 ML 任务登记（prism:ml/MLTask）目前直接映射 prism-core:Activity，但
+  "声明式任务指派（只圈定目标、约束、数据与度量选型边界，不携带执行状态）"
+  这一层语义在 L1 缺位：outlet-insight 场景将 execution/Task 列为禁用执行概念
+  （指派不得触发执行），ML 场景同样要求指派与执行分离。没有 L1 Task 类，
+  "指派归 Task、簿记归 Execution"的分离只能靠场景约定，跨域无法统一推理。
+
+proposed_concepts:
+  - uri: "prism:core/Task"
+    name: "任务"
+    parent: "prism:core/Activity"
+    description: "跨域通用的声明式任务指派对象：只圈定问题边界（目标、约束、数据与度量选型），不携带任何执行状态；执行状态唯一归属 Execution。"
+
+# proposed_properties：本批次不申请新增属性（防概念膨胀；圈定关系经其引用的
+# Goal / Constraint / 度量选型表达，属性面留接受后由上游 SHACL NodeShape 补充）。
+
+external_alignment:
+  - "prov:Activity：任务是有时间边界、有意图产出的活动（W3C PROV-O 对齐，与 mappings.yaml MLTask→Activity 理由一致）"
+  - "prov:Plan：声明式指派作为可引用规格的侧面；本类取活动语义，规格面由其圈定的 Goal / Constraint 承载，二者互补"
+
+five_questions:
+  objective_stability: "稳定。任务指派是组织治理事实（登记了什么问题边界），不随运行态波动；执行状态被定义显式排除。"
+  vendor_independence: "成立。任务边界（目标、约束、数据与度量选型）是业务语言，不依赖任何平台专有 ID。"
+  cross_project_inference: "需要。ML（MLTask）与 outlet-insight（execution/Task 禁用执行概念）都要陈述'指派了什么'；需要统一的声明式指派语义才能跨项目审计指派-执行分离。"
+  definitional_clarity: "明确。定义以'只圈定边界 + 不携带执行状态 + 执行状态唯一归属 Execution'给出可判定边界。"
+  anti_concept_inflation: "不膨胀。core Task 只保留声明式指派最小语义；ML 特有字段（验证协议、预算硬门等）留 prism:ml/MLTask 特化层。"
+
+relation_to_existing:
+  prism_core_activity: "子类主张：Task 是有时间边界、有意图产出的指派活动，Activity 语义完备；接受后映射链 MLTask → Task → Activity 以新版本（supersedes）传递成立，非静默改写。"
+  prism_core_informationobject: "正交（拒绝父类）：把意图物化成文档；mappings.yaml 对 MLTask 的裁定明确落 Activity 而非 InformationObject。"
+  prism_core_plan: "并列：Plan（执行计划）描述'怎么做'的过程编排；Task 圈定'做什么'的问题边界。二者关联（Execution 消耗 Plan/Task 指称）但互不包含。"
+  prism_core_event: "正交：Event 是时点事实；Task 不携带执行状态，不与时点事实混同。"
+
+source:
+  spec: "cultivating-ml-agent docs/specs/SPEC-002-ml-profile.md（MLTask 受管概念与映射）"
+  adr: "cultivating-ml-agent docs/adr/ADR-001-cross-repo-responsibilities.md §决策.3（净新增判定与提案批次路径）"
+  envelope_evidence: "cultivating-ml-agent docs/ontology/ml-profile/0.1.0/mappings.yaml concept_mappings MLTask→Activity（rationale：任务是有时间边界、有意图产出的活动）；ExperimentIR 任务段（framework/src/ir/experiment_ir.py）"

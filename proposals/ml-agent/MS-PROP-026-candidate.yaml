@@ -1,0 +1,51 @@
+# ==============================================================================
+# MS-PROP-026-candidate.yaml
+# 提案：候选 (Candidate) —— 受控比较的可选项登记
+# 批次：ml-core-batch-001（ML 共享核心净新增概念批次，共 8 项，见 README.md）
+# 提案编号来源：GOVERNANCE.md §2 单调递增（上一编号 MS-PROP-022）
+# ==============================================================================
+
+proposal_id: "MS-PROP-026"
+title: "候选 (Candidate)：与 Claim、Outcome 分离的可比选项声明性规格"
+initiator: "TopPrism ML Agent Program (cultivating-ml-agent)"
+date: "2026-10-09"
+status: "proposed"
+lifecycle_phase: "governance_review"
+
+motivation: |
+  受控比较（arena）是 ML 实验与跨域求解往返共用的评审形态：候选（模型/特征/
+  参数/解）先登记、后入赛、结果与评判分离。目前候选集以 ExperimentIR candidates
+  段承载（含 baseline_same_protocol、budget_bounds 等硬门字段），没有本体类。
+  "候选是被比较对象的声明性规格，与 Claim、Outcome 分离以避免自证"这一最小
+  语义需要 L1 载体，跨域才能统一审计入赛合规性（同协议、预算边界）。
+
+proposed_concepts:
+  - uri: "prism:core/Candidate"
+    name: "候选"
+    parent: "prism:core/InformationObject"
+    description: "进入受控比较的可选项登记（模型 / 特征 / 参数 / 解）：候选是被比较对象的声明性规格，与 Claim、Outcome 分离，避免自证。"
+
+# proposed_properties：本批次不申请新增属性（防概念膨胀；baseline_same_protocol、
+# budget_bounds 等硬门字段属 ML 特化层，core 只保留'进入受控比较'的最小语义）。
+
+external_alignment:
+  - "prov:Entity：经父类 InformationObject 继承的可溯源指称语义；候选是关于被比较物的声明性规格，不是被比较物本身"
+  - "无直接 W3C 标准同位类：受控比较登记属治理受管语义；sosa:Sample（面向观测的抽样）语义不同型，不作等同主张"
+
+five_questions:
+  objective_stability: "稳定。候选登记是先于比较固化的声明性规格（入赛即冻结），不随比赛结果漂移。"
+  vendor_independence: "成立。候选规格是业务/技术语言（模型、特征、参数、解），不依赖任何平台专有 ID。"
+  cross_project_inference: "需要。ML 候选入赛合规（六硬门之 G4_BUDGET_BOUNDS / G5_BASELINE_SAME_PROTOCOL）与跨域求解往返的解候选都需统一审计'谁进了受控比较、与基线是否同协议'。"
+  definitional_clarity: "明确。定义以'登记 + 声明性规格 + 与 Claim、Outcome 分离'给出可判定边界，禁止候选自证可直接判违。"
+  anti_concept_inflation: "不膨胀。硬门字段（family 一致校验、缺失拒绝、预算边界）留 ML 特化层（tests/test_decide.py 把守）；core 只保留最小语义。"
+
+relation_to_existing:
+  prism_core_informationobject: "子类主张：候选登记是声明性规格（关于被比较物的陈述），非被比较物本身。"
+  prism_core_entity: "正交（拒绝父类）：实体化会把'比较对象的登记'与'被比较物本身'混淆；候选可以是任何事物的指称，不实体化。"
+  prism_insight_elevationcandidate: "并列：insight Profile 的 ElevationCandidate（提升事实候选物，强制 unreviewed、不直接写入世界状态）是洞察场景特化；core Candidate 是跨域通用最小语义。若委员会接受，ElevationCandidate 可在后续版本化中细化为 Candidate 特化——本批次不修改 insight Profile。"
+  prism_core_decision: "正交：胜出判定归属 Decision（DecisionTrace 状态机 + 四眼）；Candidate 只是入赛登记，不产生判定。"
+
+source:
+  spec: "cultivating-ml-agent docs/specs/SPEC-005-candidate-decision-and-mlflow.md（候选决策与 MLflow 边界）"
+  adr: "cultivating-ml-agent docs/adr/ADR-001-cross-repo-responsibilities.md §决策.3（净新增判定与提案批次路径）"
+  envelope_evidence: "cultivating-ml-agent framework/src/ir/experiment_ir.py candidates 段（baseline_same_protocol、budget_bounds 硬门字段）；framework/tests/test_decide.py::test_family_mismatch_raises（候选入赛合规把守）"

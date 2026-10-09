@@ -1,0 +1,53 @@
+# ==============================================================================
+# MS-PROP-027-execution.yaml
+# 提案：执行 (Execution) —— 受控执行的纯函数式簿记
+# 批次：ml-core-batch-001（ML 共享核心净新增概念批次，共 8 项，见 README.md）
+# 提案编号来源：GOVERNANCE.md §2 单调递增（上一编号 MS-PROP-022）
+# ==============================================================================
+
+proposal_id: "MS-PROP-027"
+title: "执行 (Execution)：有起止、有输入输出指纹、零求解器依赖的活动簿记"
+initiator: "TopPrism ML Agent Program (cultivating-ml-agent)"
+date: "2026-10-09"
+status: "proposed"
+lifecycle_phase: "governance_review"
+
+motivation: |
+  "一次受控执行"是可复现性的最小单位：确定性复演（双跑同哈希）、跨域求解往返
+  （SPEC-006 JSON 信封）都以"消耗声明、产出工件与记录、有起止、有输入输出指纹"
+  描述执行簿记。ML 局部的 ExperimentRun 直接映射 prism-core:Activity，但
+  "执行簿记"这一层通用语义（与 Event 的时点事实相对、与 Plan 的规格相对）
+  在 L1 缺位，跨域无法统一审计执行可复现性。
+
+proposed_concepts:
+  - uri: "prism:core/Execution"
+    name: "执行"
+    parent: "prism:core/Activity"
+    description: "一次受控执行的纯函数式簿记：消耗声明（Plan/Task 指称）、产出工件与记录；有起止、有输入输出指纹，零求解器依赖。"
+
+# proposed_properties：本批次不申请新增属性（防概念膨胀；起止时间与输入输出
+# 指纹经 PROV-O 对齐属性语义表达，属性面留接受后由上游 SHACL NodeShape 补充）。
+
+external_alignment:
+  - "prov:Activity：执行实例与起止时间（startedAtTime/endedAtTime），W3C PROV-O 强对齐（GOVERNANCE.md §2.4）"
+  - "prov:Usage / prov:Generation：输入输出指纹的溯源语义对照（消耗声明、产出工件与记录）"
+  - "sosa:Procedure 规格侧对照：SOSA 将过程定义为执行规格；本类是其执行实例的簿记化，规格-实例分离与 PROV 计划-活动分离同构"
+
+five_questions:
+  objective_stability: "稳定。执行簿记是既成事实（有起止、有指纹），确定性函数产出，双跑同哈希可机器复验。"
+  vendor_independence: "成立。MLflow 只是执行事实来源之一而非本体注册表（ADR-001 禁区 3），本类不以任何平台专有 ID 为前提。"
+  cross_project_inference: "需要。ML（ExperimentRun：确定性复演、OOF 帧、模型工件）与 PJP/仓储适配器求解往返（SPEC-006 信封）都要统一陈述'某计划被确定性执行了几次、每次输入输出是什么'。"
+  definitional_clarity: "明确。定义给出簿记边界（消耗声明、产出工件与记录）与禁区（零求解器依赖；执行不得做计划外决策），可判违。"
+  anti_concept_inflation: "不膨胀。确定性复演、OOF 帧、模型工件等 ML 特有面留 prism:ml/ExperimentRun 特化层；core 只保留跨域簿记最小语义。"
+
+relation_to_existing:
+  prism_core_activity: "子类主张：Execution 是受控执行的簿记化活动实例，Activity 语义完备（有起止、有输入产出的活动）。"
+  prism_core_event: "正交（拒绝父类）：Event 是时点事实；Execution 是有输入产出的活动实例，二者在时间粒度与结构上不同型。"
+  prism_core_plan: "关联：Execution 消耗 Plan/Task 指称（纯函数式：声明进、工件记录出）；Plan 是规格，Execution 是实例。"
+  prism_insight_computationactivity: "并列：insight Profile 的 ComputationActivity（确定性分析计算活动）同为 Activity 特化；core Execution 是跨域通用簿记，ComputationActivity 可在后续版本化中细化为其特化——本批次不修改 insight Profile。"
+  prism_ml_experimentrun: "并列/特化待批：ExperimentRun 是本类的 ML 特化（现映射 prism-core:Activity）；批次接受后 mappings.yaml 以新版本（supersedes）改为 ExperimentRun → Execution → Activity 传递链。"
+
+source:
+  spec: "cultivating-ml-agent docs/specs/SPEC-003-replay-and-evidence.md（确定性复演与证据）；docs/specs/SPEC-006-cross-domain-estimate-exchange.md（跨域求解往返信封）"
+  adr: "cultivating-ml-agent docs/adr/ADR-001-cross-repo-responsibilities.md §决策.3（净新增判定与提案批次路径）；禁区 3（MLflow 非本体注册表）"
+  envelope_evidence: "cultivating-ml-agent framework/tests/test_replay_reproducibility.py（双跑同哈希 + golden 回归）；framework/src/ir/runner.py 执行簿记"
