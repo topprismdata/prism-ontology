@@ -1,0 +1,53 @@
+# ==============================================================================
+# MS-PROP-029-outcome.yaml
+# 提案：结果 (Outcome) —— 执行后的事实记录
+# 批次：ml-core-batch-001（ML 共享核心净新增概念批次，共 8 项，见 README.md）
+# 提案编号来源：GOVERNANCE.md §2 单调递增（上一编号 MS-PROP-022）
+# ==============================================================================
+
+proposal_id: "MS-PROP-029"
+title: "结果 (Outcome)：只记录事实、不做好坏评价的受控比较观测结果"
+initiator: "TopPrism ML Agent Program (cultivating-ml-agent)"
+date: "2026-10-09"
+status: "proposed"
+lifecycle_phase: "governance_review"
+
+motivation: |
+  受控比较产生的事实结果（含负例）目前没有 L1 承载：ADR-002 已显式裁定
+  '评估结果'不设实体（ML 局部以 ProhibitEvaluationResultShape 禁止实例化，
+  度量数字一律落 ANF evidence-envelope），但跨域消费的"发生了什么"事实陈述
+  仍需要一个世界事实类。四列分列报告（空格渲染为 NA 而非 0）正是'只报事实、
+  不报评价'的跨域口径。故申请在 L1 增设 Outcome，与该决议互补而非冲突。
+
+proposed_concepts:
+  - uri: "prism:core/Outcome"
+    name: "结果"
+    parent: "prism:core/Observation"
+    description: "执行后的事实记录：受控比较产生的客观观测结果（含负例），只记录发生了什么，不做好坏评价；主张由独立证据评判。"
+
+# proposed_properties：本批次不申请新增属性（防概念膨胀；观测语义复用
+# prism-core:observedAt / hasResultValue 等既有属性，属性面留接受后由上游
+# SHACL NodeShape 补充）。
+
+external_alignment:
+  - "sosa:Observation：客观观测语义（父类 prism-core:Observation 已按 GOVERNANCE.md §2.4 对齐 W3C SOSA/SSN，本类继承该对齐）"
+  - "sosa:Result：观测/执行产生的结果语义对照；Outcome 是以观测记录形态存在的结果事实"
+
+five_questions:
+  objective_stability: "稳定。结果是既成事实记录（含负例），确定性产出、可回查；'只记录发生了什么'排除评价漂移。"
+  vendor_independence: "成立。事实记录（哪些字段有值、哪些为空）不依赖任何平台专有 ID；MLflow 等执行事实源只是其上游之一。"
+  cross_project_inference: "需要。ML（四列分列报告、负例结果）与 PJP/仓储求解往返都要统一回查'事实结果是什么'；无统一类则事实陈述滞留 ML 局部命名空间。"
+  definitional_clarity: "明确。定义给出事实边界（只记录发生了什么、不做好坏评价）与合法性边界（负例同样是合法 Outcome），可判违。"
+  anti_concept_inflation: "不膨胀。不新建'评估结果'类（ADR-002 显式不设）；度量数字仍走 evidence-envelope，本类只承载跨域事实陈述。"
+
+relation_to_existing:
+  prism_core_observation: "子类主张：Outcome 是受控比较产生的客观观测结果记录，Observation（客观观测）语义精确匹配。"
+  prism_core_event: "正交（拒绝父类）：结果是观测记录而非时点事实。"
+  prism_insight_qualityassessment: "并列：QualityAssessment 同为 Observation 特化（质量评估面）；Outcome 是执行后事实面，二者兄弟正交。"
+  新建评估结果类: "正交且显式不设（ADR-002 决议）：ML 的评估结果一律落 ANF evidence-envelope（agent-nurture-framework@33f444b），完整决策保真唯一归属 DecisionTrace；ML 局部以 ProhibitEvaluationResultShape 禁止实例化。Outcome 是跨域世界事实记录，与该决议互补而非冲突。"
+  prism_core_decision: "正交：胜出判定属于 Decision（DecisionTrace 状态机 + 四眼）；负例结果是合法 Outcome——晋级门禁 require_negative_case（预注册阈值）依赖'负例是合法记录'这一边界。"
+
+source:
+  spec: "cultivating-ml-agent docs/specs/SPEC-006-cross-domain-estimate-exchange.md（四列分列跨域报告信封）"
+  adr: "cultivating-ml-agent docs/adr/ADR-002-decision-trace-boundary.md（评估结果显式不设实体）；docs/adr/ADR-001-cross-repo-responsibilities.md §决策.3（净新增判定与提案批次路径）"
+  envelope_evidence: "cultivating-ml-agent framework/tests/test_cross_domain_report.py::test_report_has_exactly_four_columns / test_null_cells_render_as_na_not_zero（只报事实不报评价的跨域口径）；ANF evidence-envelope（agent-nurture-framework@33f444b）承接度量数字"

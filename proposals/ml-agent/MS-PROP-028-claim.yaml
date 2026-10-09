@@ -1,0 +1,52 @@
+# ==============================================================================
+# MS-PROP-028-claim.yaml
+# 提案：主张 (Claim) —— 可证伪主张的通用载体
+# 批次：ml-core-batch-001（ML 共享核心净新增概念批次，共 8 项，见 README.md）
+# 提案编号来源：GOVERNANCE.md §2 单调递增（上一编号 MS-PROP-022）
+# ==============================================================================
+
+proposal_id: "MS-PROP-028"
+title: "主张 (Claim)：只能被独立证据支持或证伪、不能证真的可审计主张节点"
+initiator: "TopPrism ML Agent Program (cultivating-ml-agent)"
+date: "2026-10-09"
+status: "proposed"
+lifecycle_phase: "governance_review"
+
+motivation: |
+  "某改动会改善某度量"式主张是实验治理的核心对象：ML 局部的 Hypothesis
+  已声明父类 Claim 为 proposed_local（父类尚未发布，见 ml-profile/0.1.0/
+  concepts.yaml 特殊处置 1），insight Profile 的 InsightClaim 也内含主张语义。
+  L1 缺少通用 Claim 类，则'哪些主张被独立证据证伪、各引用了什么证据'无法跨域
+  统一陈述与审计。故申请在 L1 增设可证伪主张的通用载体。
+
+proposed_concepts:
+  - uri: "prism:core/Claim"
+    name: "主张"
+    parent: "prism:core/InformationObject"
+    description: "可证伪主张的通用载体：陈述某关系或效应成立，只能被独立证据支持或证伪，不能证真。"
+
+# proposed_properties：本批次不申请新增属性（防概念膨胀；主张与证据的关联
+# 复用 prism-core:hasEvidence 既有属性语义，属性面留接受后由上游 SHACL NodeShape 补充）。
+
+external_alignment:
+  - "schema:Claim：可真可假、可被核查的主张陈述（与 MS-PROP-001..005 使用 schema.org 对照类同为上游先例口径）"
+  - "prov:Entity：经父类 InformationObject 继承的可溯源语义；主张节点作为被独立证据评判的可引用对象"
+
+five_questions:
+  objective_stability: "稳定。主张是被记录的可证伪陈述节点（谁主张了什么），其证伪状态由独立证据链把守，不随叙事漂移。"
+  vendor_independence: "成立。主张-证据结构是治理语言，不依赖任何平台专有 ID。"
+  cross_project_inference: "需要。ML（Hypothesis、拒绝与负例链）与洞察（InsightClaim）都要统一陈述'什么主张被什么证据证伪/支持'；无统一类则证伪审计无法跨项目。"
+  definitional_clarity: "明确。定义给出证据关系（只能被独立证据支持或证伪）与方向性边界（不能证真），主张永不自证可直接判违。"
+  anti_concept_inflation: "不膨胀。Claim 是通用载体，不携带实验字段；ML 的 Hypothesis 与洞察的 InsightClaim 均为其特化候选，不在 core 重复造类。"
+
+relation_to_existing:
+  prism_core_informationobject: "子类主张：Claim 是可审计可反驳的主张节点（信息对象）。"
+  prism_core_decision: "正交（拒绝父类）：Decision 是授权选择记录（DecisionTrace 四眼链已占用该已发布类语义）；Claim 是待评陈述，二者在决策链上位置不同。"
+  prism_core_evidence: "关联：Claim 的评判必须引用独立 Evidence（prism-core:hasEvidence 属性语义）；主张永不自证。"
+  prism_insight_insightclaim: "子类关系（非正交）：建议 InsightClaim 细化为 Claim 的特化（InsightClaim rdfs:subClassOf prism:core/Claim）。理由：InsightClaim 现有定义（'分析结论观点，严禁直接作为客观既成世界事实，不得自动回写世界模型'）已内含 Claim 的不可自证/可证伪语义；差异仅是产出方式——InsightClaim 是洞察产物实例（由确定性计算产出），Claim 是可审计可反驳的主张节点（待评、可证伪）。二者不是正交重复概念，而是泛化-特化。本批次不修改 insight-artifact.ttl；若委员会接受父子关系，由 insight Profile 以新版本（supersedes）完成父类细化。"
+  prism_ml_hypothesis: "特化（ML 局部）：Hypothesis 现为 proposed_local（父类 Claim 尚未发布）；本类发布后其 governance_status 随父类翻转，定义不变。"
+
+source:
+  spec: "cultivating-ml-agent docs/specs/SPEC-004-decision-trace.md（决策链与主张评判）；docs/ontology/ml-profile/0.1.0/concepts.yaml（Hypothesis 特殊处置 1）"
+  adr: "cultivating-ml-agent docs/adr/ADR-001-cross-repo-responsibilities.md §决策.3（净新增判定与提案批次路径）；禁区 6（topprismwiki 不直接发布实验日志，主张须经核验）"
+  envelope_evidence: "cultivating-ml-agent framework/tests/test_decision_trace.py::test_alternate_rejection_path_approved_then_rejected（拒绝链）；framework/tests/test_decide.py::test_worse_than_baseline_rejects_everything（证伪把守）"

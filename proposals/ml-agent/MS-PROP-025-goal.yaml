@@ -1,0 +1,51 @@
+# ==============================================================================
+# MS-PROP-025-goal.yaml
+# 提案：目标 (Goal) —— 可判定、只能证伪的达成条件声明
+# 批次：ml-core-batch-001（ML 共享核心净新增概念批次，共 8 项，见 README.md）
+# 提案编号来源：GOVERNANCE.md §2 单调递增（上一编号 MS-PROP-022）
+# ==============================================================================
+
+proposal_id: "MS-PROP-025"
+title: "目标 (Goal)：供快筛分层与硬门禁使用的可判定达成条件"
+initiator: "TopPrism ML Agent Program (cultivating-ml-agent)"
+date: "2026-10-09"
+status: "proposed"
+lifecycle_phase: "governance_review"
+
+motivation: |
+  达成条件目前散落在 ExperimentIR 硬门与门禁阈值实现（validate.py）中，
+  没有本体类承载，"给定证据后机械判定通过/证伪、只能证伪不能证真"这一
+  治理语义无法跨域复用。outlet-insight 与 ML 场景都需要对'声明了什么达成条件、
+  当前证据支持通过还是证伪'做统一陈述与审计，故申请在 L1 增设 Goal 类。
+
+proposed_concepts:
+  - uri: "prism:core/Goal"
+    name: "目标"
+    parent: "prism:core/InformationObject"
+    description: "可判定的达成条件声明：给定证据后能够机械判定『通过 / 证伪』，供快筛分层与硬门禁判断使用；只能证伪，不能证真。"
+
+# proposed_properties：本批次不申请新增属性（防概念膨胀；阈值与判定口径属
+# Profile/实现层，本类只承载'可判定达成条件声明'的最小语义）。
+
+external_alignment:
+  - "prov:Entity：经父类 InformationObject 继承的可溯源信息实体语义（W3C PROV-O）；达成条件作为可被证据引用的声明实体"
+  - "无直接 W3C 标准同位类：'可判定、只能证伪'的达成条件为治理受管语义；ODRL Rule / dqv 阈值语义仅作评审对照，本提案不作等同主张"
+
+five_questions:
+  objective_stability: "稳定。达成条件是预注册的声明（判定口径先于证据固定），不随后续结果漂移；这正是'只能证伪'边界的治理价值。"
+  vendor_independence: "成立。达成条件是业务/治理语言，判定不依赖任何平台专有 ID。"
+  cross_project_inference: "需要。ML 硬门（validate.py）与 VisitIR 家法快筛分层都要机械判定通过/证伪；无统一类则'可判定性'只能在各场景内部实现，无法跨项目审计。"
+  definitional_clarity: "明确。定义给出判定规则（给定证据机械判定）与方向性边界（只能证伪，不能证真），可判违。"
+  anti_concept_inflation: "不膨胀。Goal 不是硬性准入约束的别名（Constraint 语义保持独立），也不承载阈值字段；实现细节留 Profile 层。"
+
+relation_to_existing:
+  prism_core_informationobject: "子类主张：Goal 是关于达成条件的可引用声明；由外部证据驱动判定，不自动改变世界。"
+  prism_core_constraint: "正交/关联（拒绝父类）：Constraint 是硬性准入约束（已发布类，门禁语义）；Goal 是达成条件，二者可关联但不可混同。"
+  prism_core_eligibility: "正交：Eligibility 是准入资格语义；Goal 的通过/证伪不授予任何资格。"
+  prism_core_decision: "正交：Decision 是授权选择记录；Goal 判定结果是决策链的输入证据之一，而非决策本身。"
+  prism_core_observation: "关联：Goal 判定由 Observation 类证据驱动（定义'给定证据'即指客观观测与记录）。"
+
+source:
+  spec: "cultivating-ml-agent docs/specs/SPEC-001-experiment-ir.md（ExperimentIR 硬门）；docs/specs/SPEC-007-governance-gates.md（治理门禁口径）"
+  adr: "cultivating-ml-agent docs/adr/ADR-001-cross-repo-responsibilities.md §决策.3（净新增判定与提案批次路径）"
+  envelope_evidence: "cultivating-ml-agent framework/src/pipeline/validate.py 门禁阈值实现（只能证伪不能证真的机械判定）"
