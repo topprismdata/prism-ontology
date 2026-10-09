@@ -1,0 +1,66 @@
+# ==============================================================================
+# MS-PROP-037-territory-model.yaml
+# 提案：辖区规划模型 (TerritoryModel) —— 规划态演练、激活生效的辖区设计工件
+# 批次：ml-sales-batch-002（SRP 销售拜访规划净新增概念批次，共 7 项，见 README.md）
+# 提案编号来源：GOVERNANCE.md §2 单调递增（本批次自 MS-PROP-031 起）
+# ==============================================================================
+
+proposal_id: "MS-PROP-037"
+title: "辖区规划模型 (TerritoryModel)：以规划态→激活生命周期治理辖区结构与分配规则的设计工件"
+initiator: "TopPrism ML Agent Program（达能潜店雷达 SRP 需求回流）"
+date: "2026-10-09"
+status: "proposed"
+lifecycle_phase: "governance_review"
+
+motivation: |
+  SRP Phase 1（FR-01 规划批次管理、FR-04/05 围栏生成与人工调整、FR-08/09
+  岗位/人员分配、围栏审批与版本发布）的核心治理语义是：在隔离的"规划态"
+  里演练一套辖区/围栏结构与分配规则，审批通过后"激活"才影响生产。Salesforce
+  官方机制精确同构：Sales Territories (ETM) 的操作序列是"建辖区类型 →
+  建模型（model）→ 加并测试账户分配规则 → 满意后激活（activate）"，且官方
+  明示"Keep your model in the planning state"；ETM 对照 TM1.0 的独有特性
+  恰是治理要件：Territory Models（多模型）、Separation of Rule Execution vs
+  Deployment（规则执行与部署分离）、Audit Trail、Metadata API。核对既有
+  本体：outlet:Territory 是"销售责任辖区"区域本身，sales-visit:Route 经
+  routeBelongsToTerritory 指向它——均是被模型安排的"结果"，不是"设计与
+  演练过程"的工件。故申请在 L2 sales-visit 增设 TerritoryModel（core:Plan
+  子类），使"批次草稿→审批→激活→生效版本"成为可统一推理的公共语义。
+
+proposed_concepts:
+  - uri: "prism:sales/TerritoryModel"
+    name: "辖区规划模型"
+    parent: "prism-core:Plan"
+    description: "对辖区（及围栏式片区）结构与分配规则的完整设计工件：包含层级结构、覆盖关系与分配规则草案，处于规划态（planning）供演练与测试，经审批激活后成为生效版本并驱动实际归属。它与辖区本体（Territory，被安排的区域）严格二分：模型是设计计划，辖区是设计结果。"
+
+manual_evidence:
+  - file: "/tmp/sf_pages/sales_territories_intro.txt"
+    url: "https://help.salesforce.com/s/articleView?id=sales.tm2_intro.htm"
+    quote: "Create territory types, build a model, and then add and test your account assignment rules. When you're satisfied with your model, activate it, then assign accounts, leads, and users. … Keep your model in the planning state as you perform key tasks that involve defining your territory model."
+  - file: "/tmp/sf_pages/tm1_vs_etm.txt"
+    url: "https://help.salesforce.com/s/articleView?id=000387747"
+    quote: "Territory Models: No (TM 1.0) / Yes (ETM) … Separation of Rule Execution vs Deployment: No (TM 1.0) / Yes (ETM) … Audit Trail: No (TM 1.0) / Yes (ETM)"
+  - file: "/tmp/sf_pages/territory_planning.txt"
+    url: "https://help.salesforce.com/s/articleView?id=sales.territory_planning.htm"
+    quote: "Maintain sales and service territories between regularly scheduled updates and compelling events. For example, reflect staffing changes and fine-tune unit assignments so that every territory operates the way you intend."
+
+external_alignment:
+  - "prov:Plan（soft alignment）：PROV-O 将 prov:Plan 归为 Entity（'指导一组动作或目标的实体'）；TerritoryModel 作为指导分配部署的设计工件与此语义相合。core:Plan 在本仓库未声明 prov:Plan 父类，故此对齐为概念面对照而非继承主张（W3C PROV-O，GOVERNANCE.md §2.4）。"
+
+five_questions:
+  objective_stability: "稳定。模型是受管工件：结构草案、规则、状态（规划/激活）与版本客观存在；激活前的反复演练产生的是模型修订，激活是状态迁移而非工件重建。"
+  vendor_independence: "成立。Salesforce 以 Territory Models + planning state + activate 表达，SRP 以规划批次+围栏版本发布表达，TerritoryIR 以双向编译的分配工件表达；'设计态工件→审批→生效版本'是辖区治理的公共形态。"
+  cross_project_inference: "需要。围栏审批（复用候选审批）、版本发布（复用版本/回执/回滚）、规则执行与部署分离，都要统一陈述'哪个批次/哪个版本在何时被谁激活'；无统一类则各产品线各造批次表，跨项目无法互认审计链。"
+  definitional_clarity: "明确。定义以'设计工件 + 规划态/激活生命周期 + 与辖区结果二分'给出可判定边界；越界（把生效中的 Territory 本身称作模型）可直接判违。"
+  anti_concept_inflation: "不膨胀。不复制 Territory（区域）也不新建围栏几何类（围栏几何以 core:SpatialGeometry 承载，经查证 14 篇手册无独立围栏机制、证据不足宁缺毋滥，见 README §7）；不申请新增属性；生命周期状态留约束层。"
+
+relation_to_existing:
+  prism_core_plan: "子类主张：TerritoryModel 是'指导未来活动的结构化计划（与实际发生事件严格区分）'的精确实例化——它指导辖区结构与分配的部署，规划态即'未生效计划'，激活即计划开始指导现实。"
+  prism_outlet_territory: "设计↔结果划界：Territory 是被安排的销售责任辖区（区域实体，Route 经 routeBelongsToTerritory 指向它）；TerritoryModel 是产生/调整这些辖区的批次设计工件。一个模型激活后影响多个辖区，一个辖区可被多个历史模型的迭代所塑造。"
+  prism_sales_route: "下游关系：模型中的分配规则决定 Route→Territory 归属与 Route 的网点构成；线路是模型生效后的执行承载体。"
+  prism_core_spatialgeometry: "值域衔接：围栏/片区几何以 SpatialGeometry 表达并被模型引用（模型不另立几何类）；几何连续性校验（FR-06）作用于几何，审批作用于模型版本。"
+  prism_core_decision: "协同：模型的激活是 Decision（授权选择）作用于 TerritoryModel 状态迁移；模型不是决策本身，决策记录激活事件与授权人（对应官方 Audit Trail 语义）。"
+
+source:
+  requirement: "达能潜店雷达 SRP 需求书 FR-01 规划批次管理、FR-04/05 围栏自动生成与人工调整、围栏审批与版本发布（功能点映射矩阵 #1、#4-5、#11-12）；Phase 1 治理语义与讨论稿'复用候选审批/版本回执'路线互证"
+  manual: "/tmp/sf_pages/sales_territories_intro.txt + /tmp/sf_pages/tm1_vs_etm.txt + /tmp/sf_pages/territory_planning.txt（URL 见 manual_evidence）"
+  ontology_basis: "prism-ontology ontology/outlet/outlet.ttl（Territory 为结果区域）；ontology/sales-visit/sales-visit.ttl（Route.routeBelongsToTerritory）；ontology/core/core.ttl（Plan、Decision、SpatialGeometry）"

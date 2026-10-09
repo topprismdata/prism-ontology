@@ -1,0 +1,63 @@
+# ==============================================================================
+# MS-PROP-035-visit-disposition.yaml
+# 提案：拜访处置表单 (VisitDisposition) —— 离店结单时结构化业务处置的规范与结果
+# 批次：ml-sales-batch-002（SRP 销售拜访规划净新增概念批次，共 7 项，见 README.md）
+# 提案编号来源：GOVERNANCE.md §2 单调递增（本批次自 MS-PROP-031 起）
+# ==============================================================================
+
+proposal_id: "MS-PROP-035"
+title: "拜访处置表单 (VisitDisposition)：Check Out 结单时按配置字段集提交的结构化业务处置内容"
+initiator: "TopPrism ML Agent Program（达能潜店雷达 SRP 需求回流）"
+date: "2026-10-09"
+status: "proposed"
+lifecycle_phase: "governance_review"
+
+motivation: |
+  SRP 执行闭环（FR-16/17）要求执行结果"结构化回收、失败不静默丢弃"：不止
+  打卡时间与坐标，还要"这次拜访达成了什么"（订货/陈列/闭门/需复访）以受控
+  字段回传。Salesforce Maps 官方机制：组织可配置 Custom Disposition 字段集
+  （Task 对象上的 Field Set），Check Out 时强制弹表单，一线填写一组 Activity
+  字段后 Finish 结单；且官方明示约束（不可用于依赖挑选列表、Check In 与
+  Check Out 的必填强制可不同）。核对既有本体：prism-sales:VisitRecord 是
+  "打卡时间、GPS 坐标与陈列照片"的机制性记录（信息对象）；ActualVisit 的
+  visitOutcome 只是自由字符串属性。结构化处置的"表单规范 + 填答结果"无处
+  安放。注意：本提案刻意不提 CheckInActivity——打卡活动已被
+  ActualVisit（物理事件）+ VisitRecord（系统记录）二分覆盖，再立活动类
+  将触发 aligned_to_ 裁定。故仅净增设 VisitDisposition（InformationObject
+  子类），补齐结构化处置语义。
+
+proposed_concepts:
+  - uri: "prism:sales/VisitDisposition"
+    name: "拜访处置表单"
+    parent: "prism-core:InformationObject"
+    description: "拜访结单（Check Out）阶段提交的结构化业务处置内容：由受管字段集（处置模板）定义应采集字段（如会谈纪要、订货结果、陈列状态、闭门原因），由一线按模板填答产生实例。它使'拜访业务结果'成为可校验、可统计的结构化对象，而非自由文本。"
+
+manual_evidence:
+  - file: "/tmp/sf_pages/checkin_checkout.txt"
+    url: "https://help.salesforce.com/s/articleView?id=000380164"
+    quote: "If your organization has configured a Custom Disposition for Salesforce Maps, you will see a form asking you to complete a list of Salesforce Activity fields. Complete the form to log information about your visit, and tap Finish to complete the Check Out process."
+  - file: "/tmp/sf_pages/activity_logging.txt"
+    url: "https://help.salesforce.com/s/articleView?id=sf.salesforce_maps_setup_check_in_manage.htm"
+    quote: "Add the fields that users complete when they check in, for example meeting comments, to the Salesforce Maps Custom Disposition field set. … You can't use a custom disposition with a dependent picklist, and required-field enforcement can differ between Check In and Check Out."
+
+external_alignment:
+  - "prov:Entity：处置表单实例是携带溯源的实体（谁在哪个结单动作中、按哪个模板版本填写），可经 prov:wasGeneratedBy 关联到结单活动、经 prov:wasAttributedTo 关联到填答人（W3C PROV-O，GOVERNANCE.md §2.4 血缘溯源对齐）。"
+
+five_questions:
+  objective_stability: "稳定。处置模板是受管配置（字段集定义），处置实例是已提交的结构化事实；二者一经存在即可版本追溯，不因 SFA 平台更换而失去'按模板填答的业务结果'语义。"
+  vendor_independence: "成立。Salesforce 以 Task 对象 Field Set + Custom Disposition 表达，SRP 以回收结构化执行结果表达；'模板定义字段+填答产生实例'是任何执行闭环系统的公共形态，不以平台专有 API 为前提。"
+  cross_project_inference: "需要。SRP 的执行结果回收（FR-17）、KPI 看板（FR-20：拜访达成率/陈列合格率）、异常工作台（失败不静默丢弃）都要对'结构化处置'统一计数与校验；只有自由字符串 visitOutcome 则跨项目不可聚合。"
+  definitional_clarity: "明确。定义以'受管字段集规范 + 结单填答实例'给出可判定边界；与机制性打卡记录（VisitRecord：时间/GPS/照片）和物理事件（ActualVisit）严格三分；越界（把 GPS 打卡数据塞入处置）可直接判违。"
+  anti_concept_inflation: "不膨胀。不携带 Salesforce 专有字段名（Field Set 名等仅作事实源）；不申请新增属性；显式放弃提案 CheckInActivity（与 ActualVisit/VisitRecord 重复）；模板与实例不拆两个类（同一概念的两面，靠生命周期区分）。"
+
+relation_to_existing:
+  prism_core_informationobject: "子类主张：处置表单是'结构化数据记录……等数据载体'的精确实例化——模板是结构化规范，实例是结构化记录，均为信息对象而非物理事件。"
+  prism_sales_visitrecord: "互补三分：VisitRecord=机制性打卡日志（何时到离、何坐标、何照片）；VisitDisposition=业务处置内容（达成什么）；两者同属一次结单的信息面但语义可分——官方机制中二者同为 Activity 记录的不同字段族，本体上必须分立才可各自校验。"
+  prism_sales_actualvisit: "归属关系：处置实例描述一次 ActualVisit 的业务结果；既有的 visitOutcome 字符串属性是其退化投影（接受后可由结构化处置派生）。"
+  prism_sales_visitplan: "闭环关系：计划（预期拜访什么）→ 执行（ActualVisit）→ 处置（结构化结果回收）构成 FR-16/17 执行闭环的最后一环，处置质量决定 KPI（FR-20）可信度。"
+  prism_core_observation: "正交（拒绝父类）：处置是业务申报内容而非外部源测量——它由受控表单产生、可被伪造，不具备 Observation 的'外部测量事实'地位；按 core 规则不得混入观测族。"
+
+source:
+  requirement: "达能潜店雷达 SRP 需求书 FR-16 计划发布 / FR-17 执行结果回收（失败不得静默丢弃）；功能点映射矩阵 #34-36、#41"
+  manual: "/tmp/sf_pages/checkin_checkout.txt + /tmp/sf_pages/activity_logging.txt（URL 见 manual_evidence）"
+  ontology_basis: "prism-ontology ontology/sales-visit/sales-visit.ttl（VisitRecord/ActualVisit/visitOutcome 语义划界与三分论证）；ontology/core/core.ttl（InformationObject、Observation 拒绝论证）"

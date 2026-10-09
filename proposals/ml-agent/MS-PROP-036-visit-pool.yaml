@@ -1,0 +1,64 @@
+# ==============================================================================
+# MS-PROP-036-visit-pool.yaml
+# 提案：拜访门店池 (VisitPool) —— 排班前候选售点集合的受管清单工件
+# 批次：ml-sales-batch-002（SRP 销售拜访规划净新增概念批次，共 7 项，见 README.md）
+# 提案编号来源：GOVERNANCE.md §2 单调递增（本批次自 MS-PROP-031 起）
+# ==============================================================================
+
+proposal_id: "MS-PROP-036"
+title: "拜访门店池 (VisitPool)：按服务周期圈定、待排班消费的候选售点集合工件"
+initiator: "TopPrism ML Agent Program（达能潜店雷达 SRP 需求回流）"
+date: "2026-10-09"
+status: "proposed"
+lifecycle_phase: "governance_review"
+
+motivation: |
+  SRP FR-09 的产品语义是先有"池"后有"线"：周访门店池（F1）、双周访门店池
+  （F2）由准入/汰换规则（FR-09 高潜准入、FR-10 低效汰换）生成，经人工确认
+  （FR-15 线路门店池确认）后才进排班。候选集与计划必须分离——池是"候选"
+  （可增删、可模拟替换、可回滚），计划是"承诺"（已分配到人/日）。Salesforce
+  Maps 官方机制同构：Maps Advanced Visit Plan 以 visit criteria 圈定
+  records to visit（候选集定义先于排程）；Schedule 流程是"把 marker 加入
+  Schedule queue（候选队列），再一次性优化至多一周"。既有本体中
+  VisitPlan.coversOutlet 已是"承诺面"（计划覆盖哪些网点），但"候选面"
+  无任何类承载——门店池/汰换模拟/准入名单均无处安放。故申请在 L2
+  sales-visit 增设 VisitPool（InformationObject 子类）。
+
+proposed_concepts:
+  - uri: "prism:sales/VisitPool"
+    name: "拜访门店池"
+    parent: "prism-core:InformationObject"
+    description: "按服务周期（如周访/双周访频次档）圈定并受管的候选售点集合工件：由准入/汰换规则或圈选操作生成其成员清单，带圈定依据与版本，经人工确认后作为排班求解的候选输入。它是候选不是承诺——成员进出可模拟、可回滚，不直接产生拜访义务。"
+
+manual_evidence:
+  - file: "/tmp/sf_pages/visit_plans_create.txt"
+    url: "https://help.salesforce.com/s/articleView?id=sales.salesforce_maps_setup_visit_plans_create.htm"
+    quote: "Enter the plan details, including the records or objects to visit, the users to route, and the plan's date range. Enter the visit criteria."
+  - file: "/tmp/sf_pages/routes_vs_schedule.txt"
+    url: "https://help.salesforce.com/s/articleView?id=000381117"
+    quote: "Users can add markers from marker layers, or from POI search results, to their Schedule queue, and optimize up to a week of stops at once with a single action."
+  - file: "/tmp/sf_pages/mass_actions.txt"
+    url: "https://help.salesforce.com/s/articleView?id=sales.salesforce_maps_usage_visits_mass_actions.htm"
+    quote: "Manage records in a marker or polyline layer using mass actions conveniently from the plotted legend in Salesforce Maps."
+
+external_alignment:
+  - "prov:Entity：门店池是带成员快照与版本的集合工件（何时、依据什么规则、含哪些成员），可经 prov:wasGeneratedBy 关联到准入/汰换规则运行、经 prov:wasRevisionOf 表达池版本演进（W3C PROV-O，GOVERNANCE.md §2.4 血缘溯源对齐）。"
+
+five_questions:
+  objective_stability: "稳定。池是受管工件：成员清单、圈定依据、版本号客观存在且可追溯；汰换/准入改变的是池的新版本，不抹除历史版本。"
+  vendor_independence: "成立。Salesforce 以 visit criteria + Schedule queue 表达候选面，SRP 以周访/双周访池表达；'候选集合→确认→排班'是任何排程系统的公共漏斗，不以平台专有对象为前提。"
+  cross_project_inference: "需要。高潜准入（FR-09）、汰换与替换模拟（FR-10）、池确认（FR-15）、排班（FR-13）分布在不同引擎与产品层，必须统一陈述'本次排班消费的是哪个池的哪个版本'；无统一类则候选与承诺混谈、模拟与实做难辨。"
+  definitional_clarity: "明确。定义以'候选集合工件 + 周期/频次档 + 版本化 + 不产生义务'给出可判定边界；与 VisitPlan（承诺）严格二分；越界（把已发布计划的覆盖集称作池）可直接判违。"
+  anti_concept_inflation: "不膨胀。池是集合工件不是新业务实体（成员仍是 Outlet）；不携带规则引擎专有字段（准入分数等留规则层）；不申请新增属性；与 coversOutlet 的承诺面划界清晰。"
+
+relation_to_existing:
+  prism_core_informationobject: "子类主张：池是'结构化数据记录……数据载体'的精确实例化——成员清单+圈定依据+版本即其数据内容；集合工件按既有先例（WorldStateRef 等冻结视图工件）归 InformationObject。"
+  prism_sales_visitplan: "上下游划界：VisitPool 是候选面（可增删、可模拟），VisitPlan 是承诺面（coversOutlet+assignedTo+日期范围，产生拜访义务）；流程为 池(版本v) → 排班求解(VisitOptimization) → 计划。"
+  prism_outlet_outlet: "成员关系：池的成员是 Outlet；成员进出由准入/汰换规则驱动（规则评估能力见 mousheng-outlet-insight 组合声明），池本身不改变售点实体。"
+  prism_sales_customerrole: "语义衔接：入池即'该售点在本周期内是活跃服务候选'的操作化表达，与 CustomerRole（未服务网点尚未激活）形成候选↔角色的一致性校验面。"
+  prism_core_plan: "正交（拒绝父类）：池不指导未来活动的具体结构化安排（无人员、无日期、无顺序），只是排班的输入清单；立为 Plan 会模糊'候选/承诺'这条 SRP 治理红线。"
+
+source:
+  requirement: "达能潜店雷达 SRP 需求书 FR-09 周访/双周访门店池生成+高潜准入、FR-10 汰换/替换模拟、FR-15 线路门店池确认；功能点映射矩阵 #16-22、#25"
+  manual: "/tmp/sf_pages/visit_plans_create.txt + /tmp/sf_pages/routes_vs_schedule.txt + /tmp/sf_pages/mass_actions.txt（URL 见 manual_evidence）"
+  ontology_basis: "prism-ontology ontology/sales-visit/sales-visit.ttl（VisitPlan.coversOutlet 承诺面划界）；ontology/core/core.ttl（InformationObject、Plan 拒绝论证）"

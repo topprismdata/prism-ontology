@@ -1,0 +1,64 @@
+# ==============================================================================
+# MS-PROP-033-shift-constraint.yaml
+# 提案：班次约束 (ShiftConstraint) —— 业代侧工作历（班次窗口/休息/固定占用）约束
+# 批次：ml-sales-batch-002（SRP 销售拜访规划净新增概念批次，共 7 项，见 README.md）
+# 提案编号来源：GOVERNANCE.md §2 单调递增（本批次自 MS-PROP-031 起）
+# ==============================================================================
+
+proposal_id: "MS-PROP-033"
+title: "班次约束 (ShiftConstraint)：以业代工作历为对象的时间边界约束（班次窗口/每日休息/固定不可用时段）"
+initiator: "TopPrism ML Agent Program（达能潜店雷达 SRP 需求回流）"
+date: "2026-10-09"
+status: "proposed"
+lifecycle_phase: "governance_review"
+
+motivation: |
+  SRP FR-11「工作时间配置」（午休/固定不可用时段）与 FR-12「工作量测算/超载
+  告警」都要求把"一个业代某天可用多久"作为一等约束进入排班与测算。Salesforce
+  Maps 官方机制同构：应用设置中 Shift Times 按星期几设定上下班时间、Break
+  Information 设定每日休息并"自动从优化中排除"、Default Start/End Location
+  设定班次起终点；优化方法文档把 shift durations、fixed appointment times、
+  traffic windows 列为优化的输入因子。既有 prism-sales:VisitModeConstraint
+  是"对特定业态或商圈施加的拜访频次、作业时长或通行限制"——对象是售点侧
+  拜访模式，不是业代侧工作历。故申请在 L2 sales-visit 增设 ShiftConstraint
+  （core:Constraint 子类），使"班次窗口/休息/固定占用"成为可被优化引擎
+  消费、可被工作量测算汇总的公共语义。
+
+proposed_concepts:
+  - uri: "prism:sales/ShiftConstraint"
+    name: "班次约束"
+    parent: "prism-core:Constraint"
+    description: "施加于特定销售人员（或其班次日历）的时间边界硬性/软性约束：每日班次起止窗口、每日休息时段（生成排班时必须从优化中排除）、固定不可用时段与班次起终点位置。它是排班求解与工作量测算共同消费的时间预算边界。"
+
+manual_evidence:
+  - file: "/tmp/sf_pages/maps_app_settings.txt"
+    url: "https://help.salesforce.com/s/articleView?id=000380148"
+    quote: "Shift Times: Users can select working hours for each day of the week. … Break Information: … it will be automatically excluded from optimization when generating a Schedule."
+  - file: "/tmp/sf_pages/optimization_methods.txt"
+    url: "https://help.salesforce.com/s/articleView?id=000391884"
+    quote: "while considering important factors such as fixed appointment times, traffic windows, shift durations, distance, and more"
+  - file: "/tmp/sf_pages/create_route.txt"
+    url: "https://help.salesforce.com/s/articleView?id=000380182"
+    quote: "Clock Icon: Opens time-based routing options. You can use these options to configure the exact start and end times for your route, as well as custom stop durations for each of your stops."
+
+external_alignment:
+  - "无逐一对应的 W3C 标准类：Constraint 为 L1 自有语义。时间窗口面可用 W3C OWL-Time（如 TemporalEntity）作值域参考，但本提案不新增属性，不固化具体时间表示；当约束被优化活动消费时经 core:Activity 间接落入 PROV-O 语境。"
+
+five_questions:
+  objective_stability: "稳定。班次窗口与休息时段是企业/业代劳动制度的事实约定，一经设定客观存在并可按周重复；不是某次排程的临时参数。"
+  vendor_independence: "成立。Salesforce 以 Shift Times/Break Information 设置表达，SRP 以工作时间配置表达；'某人某日可用窗口+休息'是任何排程引擎的公共输入形态，不以平台专有 ID 为前提。"
+  cross_project_inference: "需要。工作量测算（容量=班次窗口-休息-固定占用）、超载告警（计划工时>容量）、排班合规（拜访落入窗口内）都要求统一陈述时间预算边界；留在各引擎内部则跨项目无法互认。"
+  definitional_clarity: "明确。定义以'对象=业代工作历 + 边界=时间窗口/休息/固定占用 + 用途=排班与测算共同消费'给出可判定边界；与售点侧限制（VisitModeConstraint）正交不重叠。"
+  anti_concept_inflation: "不膨胀。不携带平台专有设置项名；不申请新增属性（时段表示留 SHACL 约束层）；与既有 VisitModeConstraint 显式划界为'售点侧 vs 业代侧'。"
+
+relation_to_existing:
+  prism_core_constraint: "子类主张：班次约束是'在特定场景下对实体、活动施加的硬性或软性限制条件'的精确实例化——施加对象是销售人员的工作历，消费场景是排班优化与工作量测算。"
+  prism_sales_visitmodeconstraint: "正交划界：VisitModeConstraint 施加于'特定业态或商圈'（售点侧拜访模式限制）；ShiftConstraint 施加于'销售人员班次日历'（业代侧时间边界）。一个回答'这类店怎么访'，一个回答'这个人今天可用多久'。"
+  prism_sales_visitoptimization: "被消费关系：班次约束是 VisitOptimization（MS-PROP-032）的时间边界输入；官方语义'休息自动从优化中排除'即约束进入求解。"
+  prism_sales_salesrep: "约束对象：班次约束挂在 SalesRep（或其角色承担）上；同一约束可被多人共享（如统一午休制度），也可个人特化（如兼跑多围栏者的长通勤日）。"
+  prism_core_timeinterval: "值域关联：班次窗口/休息/固定占用的表示以 TimeInterval 语义为基础（本批次不新增属性，具体绑定留接受后约束层）。"
+
+source:
+  requirement: "达能潜店雷达 SRP 需求书 FR-11 工作时间配置 + FR-12 工作量测算/无解及超载告警；功能点映射矩阵 #24-26"
+  manual: "/tmp/sf_pages/maps_app_settings.txt + /tmp/sf_pages/optimization_methods.txt + /tmp/sf_pages/create_route.txt（URL 见 manual_evidence）"
+  ontology_basis: "prism-ontology ontology/core/core.ttl（Constraint、TimeInterval）；ontology/sales-visit/sales-visit.ttl（VisitModeConstraint 语义划界）"

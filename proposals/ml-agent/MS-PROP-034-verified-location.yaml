@@ -1,0 +1,65 @@
+# ==============================================================================
+# MS-PROP-034-verified-location.yaml
+# 提案：已核验坐标 (VerifiedLocation) —— 优先于机器地理编码的人工核验位置观测
+# 批次：ml-sales-batch-002（SRP 销售拜访规划净新增概念批次，共 7 项，见 README.md）
+# 提案编号来源：GOVERNANCE.md §2 单调递增（本批次自 MS-PROP-031 起）
+# ==============================================================================
+
+proposal_id: "MS-PROP-034"
+title: "已核验坐标 (VerifiedLocation)：对售点位置的人工核验观测，取值优先于机器地理编码结果"
+initiator: "TopPrism ML Agent Program（达能潜店雷达 SRP 需求回流）"
+date: "2026-10-09"
+status: "proposed"
+lifecycle_phase: "governance_review"
+
+motivation: |
+  SRP 的围栏归属（FR-02~06）、统一门店池（FR-07 OneID）、打卡距离校验
+  （Verification Distance）全部以"坐标是否可信"为地基：错误坐标=错误围栏
+  归属=错误线路=打卡误判。机器地理编码有系统性误差源（地址参数不全、
+  季度更新的底图、同名城市歧义），因此业界通行"人工核验坐标覆盖机器编码"
+  的治理机制。Salesforce Maps 官方语义明确：Verified Latitude/Longitude
+  字段一旦有值，即优先于标准经纬度用于落图；批量清除坐标时会单独询问是否
+  连 Verified 字段一并清除（人工核验值与机器值生命周期分离）。核对本仓库：
+  core.ttl 的 SpatialGeometry 是"地理空间、多边形或行政区划边界"（面），
+  outlet.ttl 无任何核验坐标概念，sales-visit.ttl 亦无。故申请在 L2
+  sales-visit 增设 VerifiedLocation（core:Observation 子类）——一次带来源、
+  带时间、带核验方式的位置测量，其结果优先于机器编码被排班/围栏/打卡消费。
+
+proposed_concepts:
+  - uri: "prism:sales/VerifiedLocation"
+    name: "已核验坐标"
+    parent: "prism-core:Observation"
+    description: "对售点（或任意可路由记录）地理位置的一次核验性观测：携带经纬度结果、核验来源与方式（人工落点/现场采集/高置信度核验）、核验时间与核验人。其测量结果在消费侧（落图、围栏归属、线路计算、打卡距离校验）优先于机器地理编码的派生坐标。"
+
+manual_evidence:
+  - file: "/tmp/sf_pages/geocoding_faq.txt"
+    url: "https://help.salesforce.com/s/articleView?id=000380853"
+    quote: "If Verified Latitude/Longitude fields are populated, Salesforce Maps uses those over the standard latitude/longitude fields to place the pin on the map. When clearing coordinates using Mass Actions, you're prompted to clear Verified fields or not."
+  - file: "/tmp/sf_pages/geocoding_faq.txt"
+    url: "https://help.salesforce.com/s/articleView?id=000380853"
+    quote: "There's a possibility of inaccurate lat/long results, especially where coverage for the country or area isn't Full coverage. … The geocoder updates on a quarterly basis."
+  - file: "/tmp/sf_pages/activity_logging.txt"
+    url: "https://help.salesforce.com/s/articleView?id=sf.salesforce_maps_setup_check_in_manage.htm"
+    quote: "Verification Distance—require mobile users to be within a given distance of the record's geolocation to check in."
+
+external_alignment:
+  - "sosa:Observation：core:Observation 已 subClassOf sosa:Observation，VerifiedLocation 天然继承——核验即一次观测（hasFeatureOfInterest=售点，observedProperty=位置，hasSimpleResult=经纬度），核验方式对应 procedure/生成机制，核验人与时间对应 provenance（W3C SOSA/SSN，GOVERNANCE.md §2.4 观测模型对齐）。"
+
+five_questions:
+  objective_stability: "稳定。核验结果是一次已发生的测量事实（谁、何时、以何方式测得该坐标），不随消费方变化；地址变更后重新核验是新增观测而非改写历史。"
+  vendor_independence: "成立。Salesforce 以 Verified Latitude/Longitude 字段承载，SRP 以门店核验流程承载；'带来源与时间的核验位置测量'是任何地图/排程系统的公共语义，不以平台专有字段为前提。"
+  cross_project_inference: "需要。围栏归属判定、OneID 合并、打卡距离校验、路线计算分布在 SRP 不同层与不同系统，必须统一陈述'该店坐标以哪次核验为准'；无统一类则各层各自取坐标、无法审计分歧。"
+  definitional_clarity: "明确。定义以'核验性观测 + 结果优先级（覆盖机器编码）+ 来源/方式/时间必带'给出可判定边界；与普通编码值（DerivedEstimate 面）严格区分；越界（把机器编码结果标为核验值）可直接判违。"
+  anti_concept_inflation: "不膨胀。不复制 Observation 已有的来源/时间属性；不申请新增属性；与 SpatialGeometry（面边界）、既有售点观测族（OutletObservation 等业务属性观测）显式划界为'位置测量'专用。"
+
+relation_to_existing:
+  prism_core_observation: "子类主张：核验坐标是'外部数据源在特定时间点对实体属性的测量与观测事实，必须携带来源与时间'的精确实例化——被测属性即位置，来源即核验人/方式。与 GOVERNANCE §2.4 SOSA 对齐一致。"
+  prism_core_derivedestimate: "对偶划界：机器地理编码结果是算法派生值（DerivedEstimate 语义：基于算法模型推导，严禁等同于既成事实）；VerifiedLocation 是核验观测事实。官方'Verified 优先'正是观测事实覆盖派生估计的治理语义。"
+  prism_core_spatialgeometry: "正交：SpatialGeometry 是区域/边界几何（面），VerifiedLocation 是单点位置测量（点）；围栏内部由面表达，面内售点落点由核验坐标表达。"
+  prism_outlet_outlet: "观测对象：VerifiedLocation observesEntity 一个 Outlet（经 prism-core:observesEntity）；一个售点可有多次核验观测，消费侧取当前生效者。"
+  prism_sales_visitrecord: "互补：VisitRecord 携带打卡时刻的 GPS 坐标（执行面现场记录），VerifiedLocation 是档案面权威位置；打卡 Verification Distance 校验正是'现场记录 vs 档案核验位置'的比对。"
+
+source:
+  requirement: "达能潜店雷达 SRP 需求书 FR-02 基础片区 / FR-06 围栏连续性校验 / FR-07 统一门店池 OneID（坐标质量前提）；功能点映射矩阵 #2-6、#13"
+  manual: "/tmp/sf_pages/geocoding_faq.txt + /tmp/sf_pages/activity_logging.txt（URL 见 manual_evidence）"
+  ontology_basis: "prism-ontology ontology/core/core.ttl（Observation → sosa:Observation、DerivedEstimate、SpatialGeometry）；ontology/outlet/outlet.ttl（无核验坐标概念，经查重确认）；ontology/sales-visit/sales-visit.ttl（VisitRecord 划界）"

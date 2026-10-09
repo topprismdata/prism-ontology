@@ -1,0 +1,70 @@
+# ==============================================================================
+# MS-PROP-031-service-package.yaml
+# 提案：拜访服务包 (ServicePackage) —— 频次/时长/工时约束的可复用规范载体
+# 批次：ml-sales-batch-002（SRP 销售拜访规划净新增概念批次，共 7 项，见 README.md）
+# 提案编号来源：GOVERNANCE.md §2 单调递增（ml-agent 批次一 MS-PROP-023..030 已占 用，
+#               本批次自 MS-PROP-031 起）
+# ==============================================================================
+
+proposal_id: "MS-PROP-031"
+title: "拜访服务包 (ServicePackage)：定义售点应获服务的频次/时长/工时约束的可复用规范载体"
+initiator: "TopPrism ML Agent Program（达能潜店雷达 SRP 需求回流）"
+date: "2026-10-09"
+status: "proposed"
+lifecycle_phase: "governance_review"
+
+motivation: |
+  SRP（达能潜店雷达）FR-11「服务包管理」要求把"一个售点应获得什么服务"
+  （拜访频次、单次时长、工时/可用时段约束）作为可配置、可版本化、可分配到
+  服务关系的规范对象，而非散落在各线路计划里的魔数。Salesforce Maps 官方
+  机制同构：Maps Advanced Visit Plan 以 visit criteria（records to visit、
+  users to route、date range）定义自动拜访；应用设置以 Default Event
+  Duration（默认停留时长）、Shift Times、Optimize By 承载同一族参数。既有的
+  prism-sales:VisitPlan.cadence 只是字符串属性（F1/F2/F3 频次），无独立载体；
+  prism-sales:VisitModeConstraint 是"对特定业态或商圈施加的限制"（售点侧），
+  不是"售点应获服务的需求规范"（服务侧）。故申请在 L2 sales-visit 增设
+  ServicePackage，使"服务标准"成为可被计划实例化、可被优化引擎消费的公共语义。
+
+proposed_concepts:
+  - uri: "prism:sales/ServicePackage"
+    name: "拜访服务包"
+    parent: "prism-core:Policy"
+    description: "定义特定售点（或服务关系）应获服务的可复用业务规范载体：拜访频次（如每周/双周）、单次作业时长、允许作业时段与工时约束。它是规范性准则而非执行事实——排班计划对其取频次投影，优化引擎对其施加硬约束。"
+
+# proposed_properties：本批次不申请新增属性（防概念膨胀，GOVERNANCE.md §2 裁定
+# 原则 2）。频次/时长等参数面留 SHACL NodeShape 接受后补充；既有
+# prism-sales:cadence 属性语义保持不变，接受后可作为 ServicePackage 频次维度
+# 在 VisitPlan 上的投影。
+
+manual_evidence:
+  - file: "/tmp/sf_pages/visit_plans_create.txt"
+    url: "https://help.salesforce.com/s/articleView?id=sales.salesforce_maps_setup_visit_plans_create.htm"
+    quote: "Enter the plan details, including the records or objects to visit, the users to route, and the plan's date range. Enter the visit criteria."
+  - file: "/tmp/sf_pages/maps_app_settings.txt"
+    url: "https://help.salesforce.com/s/articleView?id=000380148"
+    quote: "Default Event Duration: This allows you to specify the default stop duration. … Shift Times: Users can select working hours for each day of the week."
+  - file: "/tmp/sf_pages/optimization_methods.txt"
+    url: "https://help.salesforce.com/s/articleView?id=000391884"
+    quote: "considering important factors such as fixed appointment times, traffic windows, shift durations, distance, and more"
+
+external_alignment:
+  - "无逐一对应的 W3C 标准类：规范性配置载体是 L1 自有 Policy 语义。作为被计划引用、被版本化的配置工件，可按 PROV-O 以 prov:Entity 参与溯源链（GOVERNANCE.md §2.4 血缘溯源对齐的宽泛面）。"
+
+five_questions:
+  objective_stability: "稳定。服务包是企业管理规范（频次/时长/时段），一经发布即客观存在并可版本追溯；它不是临时实验字段，也不是某次排程的瞬时产物。"
+  vendor_independence: "成立。Salesforce 以 visit criteria + Default Event Duration + Shift Times 表达，SRP 以服务包配置面表达，任何 SFA/排程引擎均可按同一'频次/时长/时段'三元组接入；不以任何平台专有 ID 为前提。"
+  cross_project_inference: "需要。SRP 的服务包管理（FR-11）、工作量测算（FR-12）、排班合规校验（频次 100% 硬约束）都要陈述'该店按什么标准服务'；无统一类则该陈述只能停留在线路计划字符串里，跨项目无法统一推理。"
+  definitional_clarity: "明确。定义以'规范性载体 + 频次/时长/时段参数 + 被计划实例化'给出可判定边界，并与'实际执行事实'（ActualVisit）严格区分；越界行为（把执行结果写入服务包）可直接判违。"
+  anti_concept_inflation: "不膨胀。不携带平台专有字段（Salesforce field set 名等仅作事实源）；与既有 VisitModeConstraint（售点侧业态限制）和 cadence（计划频次属性）均已显式划界；不申请新增属性。"
+
+relation_to_existing:
+  prism_sales_visitplan: "实例化关系：VisitPlan 是服务包在特定用户/日期范围上的一次任务化投影（cadence 属性是服务包频次维度的投影）；服务包是可复用规范，计划是一次性安排，二者严格区分。"
+  prism_sales_visitmodeconstraint: "正交互补：VisitModeConstraint 是'对特定业态或商圈施加的'售点侧硬限制（如某业态禁止车销）；ServicePackage 是'该售点应获什么服务'的服务侧规范。一个限上限、一定下限，不可互替。"
+  prism_sales_servicerelationship: "挂载关系：服务包附加于销售组织与售点之间的时变服务关系之上（已服务关系才谈服务标准）；关系解除则服务包失效。"
+  prism_core_policy: "子类主张：服务包本质是'业务约束准则'（Policy 的既释语义：企业治理政策、合规规则或业务约束准则），且是先于执行存在的规范，故归 Policy 而非 Plan/InformationObject。"
+  prism_core_plan: "正交（拒绝父类）：Plan 指导未来活动的具体结构化安排（如 VisitPlan）；服务包不指定'谁在哪天拜访'，只规定服务标准，作为 Policy 可被多个 Plan 引用。"
+
+source:
+  requirement: "达能潜店雷达 SRP 需求书 FR-11 服务包管理（频次/时长/工时约束配置化）；功能点映射矩阵 #22-24"
+  manual: "/tmp/sf_pages/visit_plans_create.txt + /tmp/sf_pages/maps_app_settings.txt + /tmp/sf_pages/optimization_methods.txt（URL 见 manual_evidence）"
+  ontology_basis: "prism-ontology ontology/sales-visit/sales-visit.ttl（VisitPlan.cadence 与 VisitModeConstraint 既有语义划界）；ontology/core/core.ttl（Policy）"
