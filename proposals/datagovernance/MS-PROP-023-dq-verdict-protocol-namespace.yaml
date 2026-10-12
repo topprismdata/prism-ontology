@@ -1,0 +1,75 @@
+# ==============================================================================
+# MS-PROP-023-dq-verdict-protocol-namespace.yaml
+# 提案：数据质量裁决协议 (DQ Verdict Protocol) 与 RuleID/EvidenceID/IssueID 命名空间
+# 来源: 潜店雷达模块①数据管理整合计划 WP01 (2026-10-12, 计划文件 §2 WP01)
+# ==============================================================================
+
+proposal_id: "MS-PROP-023"
+title: "DQ 裁决协议词汇 (AdmissionAction/GovernanceDisposition) 与 RuleID/EvidenceID/IssueID 受管命名空间"
+initiator: "TopPrism 潜店雷达模块①整合计划 (E1 协议与坐标)"
+date: "2026-10-12"
+status: "proposed"
+lifecycle_phase: "governance_review"
+
+motivation: |
+  组织内四个仓库各自维护数据质量裁决词汇，边界与语义已由 2026-10-12 双路调研确认为互补：
+  - spatial-source-integrity: GateDecision 4 态准入 (AdmissionAction) × 5 态处置
+    (GovernanceDisposition) —— 事实基线，已实现且有 125 测试；
+  - geospatial-data-governance: batch_verdict 三态 (PASS/有条件合格/不合格) 与 31 条
+    冻结规则 (V1-FROZEN)；
+  - spatial-ca-benchmark: 五门状态机 (PASSED .. STRUCTURE_ONLY)；
+  - mousheng-outlet-insight: 置信分层 High/Medium/Low。
+  跨仓交换裁决时目前只能各说各话。本提案将统一协议词汇与三个受管 ID 命名空间
+  纳入 prism-ontology 概念治理，使裁决跨仓可比较、可追溯。
+  协议 schema 载体: geospatial-data-governance/protocol/dq_verdict_protocol_v1.json
+  (JSON Schema draft 2020-12，含四仓词汇对齐表与五条不变量)。
+
+proposed_concepts:
+  - uri: "prism:dq/AdmissionAction"
+    name: "统一准入动作"
+    parent: "skos:Concept"
+    description: "ALLOW / ALLOW_WITH_LIMITS / REVIEW / BLOCK。以 SSI AdmissionAction 为基线；SSI BLOCK_FOR_PROFILE 映射为 BLOCK，profile 范围记录于 scope"
+
+  - uri: "prism:dq/GovernanceDisposition"
+    name: "统一治理处置"
+    parent: "skos:Concept"
+    description: "NONE / QUARANTINE / SUSPEND_SOURCE / REPAIR_REQUIRED / INVESTIGATION_REQUIRED。SSI QUARANTINE_SCOPE 映射为 QUARANTINE。处置作用于数据源/批次，不静默改写原始记录"
+
+  - uri: "prism:dq/Severity"
+    name: "错漏分级"
+    parent: "skos:Concept"
+    description: "C0 致命 / C1 关键(Hard Gate) / C2 主要 / C3 一般，参照 GB/T 18316/24356"
+
+  - uri: "prism:dq/RuleEvaluation"
+    name: "规则评估"
+    parent: "prism-core:Observation"
+    description: "单规则执行结果: rule_id + verdict(PASS/FAIL/NOT_APPLICABLE) + severity + evidence 引用"
+
+  - uri: "prism:dq/GateDecision"
+    name: "门禁裁决"
+    parent: "prism-core:Claim"
+    description: "对一批次数据的统一裁决: action + disposition + evaluations[]。不可变，修正以新决策 supersedes 表达。与 SSI GateDecision 契约对齐"
+
+proposed_properties:
+  - uri: "prism:dq/ruleId"
+    name: "规则标识"
+    domain: "prism:dq/RuleEvaluation"
+    range: "xsd:string"
+    description: "格式 DQ-R<nnn>@dq-rules-v<n>，示例 DQ-R018@dq-rules-v1；规则语义冻结于 geospatial-data-governance rules/dq_rules_v1_frozen.json 对应版本"
+
+  - uri: "prism:dq/evidenceId"
+    name: "证据标识"
+    domain: "prism-core:Evidence"
+    range: "xsd:string"
+    description: "格式 EV-<year>-<seq>-<sha256前8位大写>；内容寻址，与 topprismwiki 证据合同的来源+锚点+哈希要素兼容"
+
+  - uri: "prism:dq/issueId"
+    name: "工单标识"
+    domain: "prism:dq/Issue"
+    range: "xsd:string"
+    description: "格式 ISSUE-<year>-<seq>；工单生命周期状态机由模块①整合计划 WP08 定义，本提案只约束标识"
+
+governance_assessment:
+  five_questions_verdict: "通过: 裁决词汇是模块①数据管理跨仓整合的协议层基石；不新增业务概念，仅收纳既有事实标准(SSI)并对齐四处本地枚举"
+  recommended_decision: "accepted (作为 prism:dq 命名空间与 L1 协议层扩展)"
+  scope_note: "仅引入命名空间与词汇 URI，不改变各仓本地枚举的内部实现；对外交换格式以 protocol/dq_verdict_protocol_v1.json 为准"
