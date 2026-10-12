@@ -3,6 +3,7 @@ requires = ["setuptools>=61.0"]
 build-backend = "setuptools.build_meta"
 
 [project]
+name = "prism-ontology"
 version = "0.1.0-rc4"
 description = "棱镜极 (TopPrism) 世界模型统一本体工程与语义权威底座"
 readme = "README.md"
@@ -28,3 +29,7 @@ dev = [
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 python_files = ["test_*.py"]
+
+[tool.setuptools]
+# 本仓交付物为 TTL/YAML 契约与测试，无 Python 包；显式空声明使元数据可构建
+packages = []
