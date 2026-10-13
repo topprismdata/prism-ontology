@@ -1,0 +1,44 @@
+# ==============================================================================
+# MS-PROP-044-experiment-run.yaml
+# 提案：实验运行 (ExperimentRun) —— 计划的确定性执行实例
+# 批次：ml-profile-batch-003
+# ==============================================================================
+
+proposal_id: "MS-PROP-044"
+title: "实验运行 (ExperimentRun)：消耗计划、产出证据、不做计划外决策的执行实例"
+initiator: "TopPrism ML Agent Program (cultivating-ml-agent)"
+date: "2026-10-13"
+status: "proposed"
+lifecycle_phase: "governance_review"
+
+motivation: |
+  计划文档 §3 要求严格区分"实验计划与运行"。runner.py 的重放契约（同 IR+同数据
+  +同代码+同种子 ⇒ 逐字节一致 manifest）把"运行"定义为可复现的执行簿记：它
+  消耗 ExperimentPlan、产出 OOF 帧/模型工件/evidence-envelope，自身不做任何
+  计划外决策。与 PR#21 的 core/Execution（MS-PROP-027）关系：本类是其 ML 特化，
+  若 027 获准则接受 aligned_to 挂其下。预期 profile_local。
+
+proposed_concepts:
+  - uri: "prism:ml/ExperimentRun"
+    name: "实验运行"
+    parent: "prism:core/Activity"
+    description: "ExperimentPlan 的一次确定性执行实例；消耗计划、产出 OOF 帧、模型工件与证据信封，不做计划外决策。"
+
+external_alignment:
+  - "sosa:Observation/Act 语义部分重叠但本类是簿记单元不是观测；不强行对齐"
+  - "语义锚定 cultivating-ml-agent framework/src/ir/runner.py（SPEC-003 重放契约）"
+
+five_questions:
+  objective_stability: "稳定（场景内）。运行由 manifest 内容哈希唯一识别。"
+  vendor_independence: "成立。MLflow 只是可选投影（ADAPTER-001）。"
+  cross_project_inference: "限定于 ml-profile。"
+  definitional_clarity: "明确。'不做计划外决策'可判违：出现计划外产物即违约。"
+  anti_concept_inflation: "不膨胀。不设 RunResult（评估结果显式不落本体，走 evidence-envelope，见批次 README）。"
+
+relation_to_existing:
+  prism_ml_experimentplan: "消耗：每次运行绑定恰好一个计划版本（MS-PROP-043）。"
+  prism_core_execution: "候选父类：若 MS-PROP-027 获准则 aligned_to 之。"
+
+source:
+  spec: "cultivating-ml-agent docs/specs/SPEC-003-replay.md；SPEC-002 §ExperimentRun"
+  adr: "cultivating-ml-agent docs/adr/ADR-002-decision-trace-boundary.md（评估结果不设实体的决议）"

@@ -1,0 +1,41 @@
+# ==============================================================================
+# MS-PROP-045-model-artifact.yaml
+# 提案：模型工件 (ModelArtifact) —— 可复演模型及其元数据的只读登记
+# 批次：ml-profile-batch-003
+# ==============================================================================
+
+proposal_id: "MS-PROP-045"
+title: "模型工件 (ModelArtifact)：引用指纹而非内嵌数据的可复演模型登记"
+initiator: "TopPrism ML Agent Program (cultivating-ml-agent)"
+date: "2026-10-13"
+status: "proposed"
+lifecycle_phase: "governance_review"
+
+motivation: |
+  下游（PJP/仓储）消费的是模型工件产出的估算，需要回答"这个估算由哪个工件
+  产生、工件的训练输入指纹是什么、能否复演"。工件本体（pickle/onnx 字节）
+  属存储层，本类只登记其元数据与指纹引用。预期裁定 profile_local。
+
+proposed_concepts:
+  - uri: "prism:ml/ModelArtifact"
+    name: "模型工件"
+    parent: "prism:core/InformationObject"
+    description: "ExperimentRun 落盘的模型对象及其元数据（训练配置、数据/特征指纹、父计划引用）；只读，可复演。"
+
+external_alignment:
+  - "无 W3C 同位类；语义锚定 cultivating-ml-agent framework/src/ir/runner.py manifest 工件段与 ADAPTER-001 MLflow artifact 映射"
+
+five_questions:
+  objective_stability: "稳定（场景内）。工件以内容哈希识别，复演失败即登记失效。"
+  vendor_independence: "成立。不绑定 pickle 格式或 MLflow。"
+  cross_project_inference: "限定于 ml-profile；跨域经估算信封引用。"
+  definitional_clarity: "明确。三件套（配置/指纹/父计划引用）+只读约束。"
+  anti_concept_inflation: "不膨胀。不登记模型文件字节，只登记其受管陈述。"
+
+relation_to_existing:
+  prism_ml_experimentrun: "产出：工件由恰好一次运行产生（MS-PROP-044）。"
+  prism_core_estimate: "关联：工件是估算（DerivedEstimate）的生成器载体，估算语义已发布、本类不重复。"
+
+source:
+  spec: "cultivating-ml-agent docs/specs/SPEC-002-ml-profile.md §ModelArtifact；SPEC-006（估算信封）"
+  adr: "cultivating-ml-agent docs/adr/ADR-001-cross-repo-responsibilities.md"

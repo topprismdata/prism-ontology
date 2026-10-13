@@ -1,0 +1,43 @@
+# ==============================================================================
+# MS-PROP-046-transfer-evidence.yaml
+# 提案：迁移证据 (TransferEvidence) —— 跨任务复用经验的强制回指载体
+# 批次：ml-profile-batch-003
+# ==============================================================================
+
+proposal_id: "MS-PROP-046"
+title: "迁移证据 (TransferEvidence)：必须可回指 DecisionTrace 的跨任务复用依据"
+initiator: "TopPrism ML Agent Program (cultivating-ml-agent)"
+date: "2026-10-13"
+status: "proposed"
+lifecycle_phase: "governance_review"
+
+motivation: |
+  计划文档架构原则"实验成功不等于 Skill 可迁移"要求：任何迁移主张必须携带
+  可回指证据（decision_trace_ref），且 ANF 晋级策略把负例迁移证据
+  （min_negative_transfer=1）设为硬阈值。prism:core/Evidence 已发布，本类是
+  其"跨任务复用"场景特化，附加回指约束。预期裁定 profile_local。
+
+proposed_concepts:
+  - uri: "prism:ml/TransferEvidence"
+    name: "迁移证据"
+    parent: "prism:core/Evidence"
+    description: "跨任务/跨竞赛复用经验时必须携带的依据记录；必须可回指 DecisionTrace（decision_trace_ref）。"
+
+external_alignment:
+  - "prov:Entity 经父类 Evidence 继承的溯源语义；decision_trace_ref 即事件链锚点"
+  - "语义锚定 cultivating-ml-agent framework/src/ir/decision_trace.py（append-only 事件链）与 ANF evidence-envelope@0.1.0"
+
+five_questions:
+  objective_stability: "稳定（场景内）。证据不可变，更正走 correction 事件。"
+  vendor_independence: "成立。回指是哈希锚点不是平台 URL。"
+  cross_project_inference: "需要但有限：跨域消费证据时统一'迁移主张必须可回指'这一判据；父类 Evidence 已承担共享语义，本类保持场景特化即可，故仍预期 profile_local。"
+  definitional_clarity: "明确。缺 decision_trace_ref 即不构成合格迁移证据，可判违。"
+  anti_concept_inflation: "不膨胀。不新设 TransferClaim（主张归 Claim 线，见 MS-PROP-047 与 PR#21 联动）。"
+
+relation_to_existing:
+  prism_core_evidence: "子类主张：迁移证据是证据的复用场景特化。"
+  prism_ml_hypothesis: "关联：证伪某假设的迁移证据同样回指 DecisionTrace（MS-PROP-047）。"
+
+source:
+  spec: "cultivating-ml-agent docs/specs/SPEC-002-ml-profile.md §TransferEvidence；SPEC-007（min_negative_transfer 阈值）"
+  adr: "cultivating-ml-agent docs/adr/ADR-002-decision-trace-boundary.md（回指决议）"
