@@ -1,0 +1,44 @@
+# ==============================================================================
+# MS-PROP-039-dataset-snapshot.yaml
+# 提案：数据集快照 (DatasetSnapshot) —— 不可变指纹视图
+# 批次：ml-profile-batch-003
+# ==============================================================================
+
+proposal_id: "MS-PROP-039"
+title: "数据集快照 (DatasetSnapshot)：行集、特征列、时间窗口与切分冻结点的不可变指纹视图"
+initiator: "TopPrism ML Agent Program (cultivating-ml-agent)"
+date: "2026-10-13"
+status: "proposed"
+lifecycle_phase: "governance_review"
+
+motivation: |
+  实验可复现的前提是"数据视图被冻结"。ExperimentIR 的 dataset_snapshot_ref
+  携带 {uri, sha256, rows, as_of, label_cutoff} 五元组，其中 label_cutoff 是
+  防标签泄漏的时序边界。该结构在组织内被 SRP 线（VisitModel 特征冻结）与
+  ML 线共同需要，但语义上是"关于数据集的陈述"而非数据集本身，故落
+  InformationObject。申请 ml-profile 场景概念，预期裁定 profile_local。
+
+proposed_concepts:
+  - uri: "prism:ml/DatasetSnapshot"
+    name: "数据集快照"
+    parent: "prism:core/InformationObject"
+    description: "训练/评估所用数据的不可变指纹视图：行集、特征列、时间窗口与切分冻结点；一经冻结不得原地修改，任何变更产生新快照。"
+
+external_alignment:
+  - "prov:Entity 经父类继承的可溯源语义；sha256 指纹即内容寻址血缘"
+  - "语义锚定 cultivating-ml-agent framework/src/ir/experiment_ir.py dataset_snapshot_ref 结构"
+
+five_questions:
+  objective_stability: "稳定。指纹内容寻址：同哈希即同快照，不同即新对象，不存在原地改写。"
+  vendor_independence: "成立。uri+sha256+行数+截止点不依赖任何平台。"
+  cross_project_inference: "限定于 ml-profile。跨域以快照引用为证据锚点，不需要共享推理。"
+  definitional_clarity: "明确。'变更产生新快照'把不可变性写成可判违规则。"
+  anti_concept_inflation: "不膨胀。不登记数据行本身（那是存储层），只登记冻结陈述。"
+
+relation_to_existing:
+  prism_core_observation: "正交：Observation 是对现实的一次观测记录；快照是对数据视图的声明。"
+  prism_ml_featureset: "依赖：FeatureSet（MS-PROP-040）声明在恰好一个快照之上。"
+
+source:
+  spec: "cultivating-ml-agent docs/specs/SPEC-001-experiment-ir.md（G1 时序可用性门禁的 label_cutoff）；SPEC-002 §DatasetSnapshot"
+  adr: "cultivating-ml-agent docs/adr/ADR-001-cross-repo-responsibilities.md"

@@ -1,0 +1,46 @@
+# ==============================================================================
+# MS-PROP-047-hypothesis.yaml
+# 提案：假设 (Hypothesis) —— 可证伪的改进陈述（父类依赖 PR#21）
+# 批次：ml-profile-batch-003
+# ==============================================================================
+
+proposal_id: "MS-PROP-047"
+title: "假设 (Hypothesis)：进入实验候选集、只能证伪不能证真的可证伪陈述"
+initiator: "TopPrism ML Agent Program (cultivating-ml-agent)"
+date: "2026-10-13"
+status: "proposed"
+lifecycle_phase: "governance_review"
+
+motivation: |
+  ExperimentIR 的 hypothesis_ref 与候选比较（SPEC-005）要求"改动会改善度量"
+  这类陈述以可证伪单元进入计划，运行后由独立证据支持或证伪。其父类
+  prism:core/Claim 不在已发布注册表，属 PR#21（ml-core-batch-001）净新增提案
+  ——本项显式声明跨批次依赖：若 Claim 被拒，本项自动降级 mapping_only，
+  仅在 ml-profile 内以局部 URI 使用，不阻塞本批次其余九项。
+
+proposed_concepts:
+  - uri: "prism:ml/Hypothesis"
+    name: "假设"
+    parent: "prism:core/Claim"
+    description: "对『某改动会改善某度量』的可证伪陈述；进入 ExperimentPlan 的候选集合，运行后由证据支持或证伪，只能证伪不能证真。"
+    governance_note: "父类依赖 MS-PROP-028（PR#21，未决）；ml-profile/0.1.0 中本概念 governance_status 已标 proposed_local 随父类。"
+
+external_alignment:
+  - "无 W3C 同位类；skos:Definition 不适用（假设非术语定义）"
+  - "语义锚定 cultivating-ml-agent framework/src/ir/experiment_ir.py hypothesis_ref 与 decide.py 拒绝词表"
+
+five_questions:
+  objective_stability: "稳定（场景内）。假设文本+目标度量+阈值构成内容哈希。"
+  vendor_independence: "成立。"
+  cross_project_inference: "限定于 ml-profile。"
+  definitional_clarity: "明确。'只能证伪不能证真'把归纳边界写成规则。"
+  anti_concept_inflation: "不膨胀。不设 Theory/Conclusion 伴生概念。"
+
+relation_to_existing:
+  prism_core_claim: "依赖：父类待 PR#21 裁定；被拒则本项降级 mapping_only。"
+  prism_ml_experimentplan: "组成：假设集是计划的候选集合（MS-PROP-043）。"
+  prism_ml_transferEvidence: "关联：证伪结论以迁移证据回指（MS-PROP-046）。"
+
+source:
+  spec: "cultivating-ml-agent docs/specs/SPEC-002-ml-profile.md §Hypothesis；SPEC-005-decide.md"
+  adr: "cultivating-ml-agent docs/adr/ADR-001-cross-repo-responsibilities.md §决策.3"

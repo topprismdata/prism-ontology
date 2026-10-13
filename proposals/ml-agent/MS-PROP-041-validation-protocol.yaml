@@ -1,0 +1,42 @@
+# ==============================================================================
+# MS-PROP-041-validation-protocol.yaml
+# 提案：验证协议 (ValidationProtocol) —— 防泄漏硬门禁的声明载体
+# 批次：ml-profile-batch-003
+# ==============================================================================
+
+proposal_id: "MS-PROP-041"
+title: "验证协议 (ValidationProtocol)：切分策略与折结构的受管声明"
+initiator: "TopPrism ML Agent Program (cultivating-ml-agent)"
+date: "2026-10-13"
+status: "proposed"
+lifecycle_phase: "governance_review"
+
+motivation: |
+  离线指标的可信度完全取决于验证协议：同一份数据在 stratified 与 time_based
+  切分下的分数不可比。ML 线把四策略（stratified/kfold/time_based/group）+
+  折结构固化为声明对象，作为 ExperimentIR G2（训练/验证分离）门禁的校验输入。
+  无此概念则"指标口径"只能靠散文描述，跨实验比较失去前提。预期裁定 profile_local。
+
+proposed_concepts:
+  - uri: "prism:ml/ValidationProtocol"
+    name: "验证协议"
+    parent: "prism:core/InformationObject"
+    description: "切分策略与折结构的声明（stratified / kfold / time_based / group 四策略）；是防泄漏硬门禁的声明载体。"
+
+external_alignment:
+  - "无 W3C 同位类；语义锚定 cultivating-ml-agent framework/src/pipeline/splits.py make_folds 与 SPEC-001 G2 门禁"
+
+five_questions:
+  objective_stability: "稳定（场景内）。协议声明内容寻址；策略枚举封闭为四种。"
+  vendor_independence: "成立。纯声明，不绑定 sklearn 实现。"
+  cross_project_inference: "限定于 ml-profile；G5 基线同口径比较依赖本声明。"
+  definitional_clarity: "明确。策略封闭枚举 + 折结构字段，SHACL 可判。"
+  anti_concept_inflation: "不膨胀。不设 Fold 独立概念（折是协议的组成部分）。"
+
+relation_to_existing:
+  prism_ml_metricdefinition: "关联：MetricDefinition（MS-PROP-042）在该协议上求值才有意义。"
+  prism_core_plan: "正交：Plan 是步骤绑定；协议是评估口径声明。"
+
+source:
+  spec: "cultivating-ml-agent docs/specs/SPEC-001-experiment-ir.md（G2/G5）；SPEC-002 §ValidationProtocol"
+  adr: "cultivating-ml-agent docs/adr/ADR-001-cross-repo-responsibilities.md"

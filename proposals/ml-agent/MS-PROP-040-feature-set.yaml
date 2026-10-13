@@ -1,0 +1,43 @@
+# ==============================================================================
+# MS-PROP-040-feature-set.yaml
+# 提案：特征集 (FeatureSet) —— 纯函数可重放的构造定义
+# 批次：ml-profile-batch-003
+# ==============================================================================
+
+proposal_id: "MS-PROP-040"
+title: "特征集 (FeatureSet)：DatasetSnapshot 之上的纯函数、可重放、零求解器依赖的派生特征声明"
+initiator: "TopPrism ML Agent Program (cultivating-ml-agent)"
+date: "2026-10-13"
+status: "proposed"
+lifecycle_phase: "governance_review"
+
+motivation: |
+  特征工程是 ML 实验中最易滋生泄漏与不可复现的环节。ML 线把特征集定义为
+  "构造定义的信息对象"而非"构造产物"：定义与数据分离、构造过程纯函数可重放，
+  重放测试（SPEC-003，runner.py 逐字节一致 manifest）才可能成立。无此概念则
+  证据链只能引用"当时算出来的列"，无法审查"声明要算什么"。预期裁定 profile_local。
+
+proposed_concepts:
+  - uri: "prism:ml/FeatureSet"
+    name: "特征集"
+    parent: "prism:core/InformationObject"
+    description: "在 DatasetSnapshot 之上声明的一组派生特征及其构造定义；构造过程必须是纯函数、可重放、零求解器依赖。"
+
+external_alignment:
+  - "无 W3C 同位类；与 dqv:Measurement 的区别：本类是构造定义，不是测量结果"
+  - "语义锚定 cultivating-ml-agent framework/src/ir/runner.py 特征编码路径与 SPEC-003 重放契约"
+
+five_questions:
+  objective_stability: "稳定（场景内）。定义以内容哈希寻址，变更即新引用。"
+  vendor_independence: "成立。不绑定任何特征存储或框架。"
+  cross_project_inference: "限定于 ml-profile。"
+  definitional_clarity: "明确。三约束（纯函数/可重放/零求解器依赖）均可由重放测试判违。"
+  anti_concept_inflation: "不膨胀。不设 Feature 单列概念（列是 FeatureSet 的属性清单，非独立登记对象）。"
+
+relation_to_existing:
+  prism_ml_datasetsnapshot: "依赖：必须绑定恰好一个快照（MS-PROP-039），否则构造起点不定。"
+  prism_core_informationobject: "子类主张：构造定义是可校验的信息对象。"
+
+source:
+  spec: "cultivating-ml-agent docs/specs/SPEC-003-replay.md；SPEC-002 §FeatureSet"
+  adr: "cultivating-ml-agent docs/adr/ADR-001-cross-repo-responsibilities.md"

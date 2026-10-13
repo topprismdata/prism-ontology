@@ -1,0 +1,47 @@
+# ==============================================================================
+# MS-PROP-038-ml-task.yaml
+# 提案：机器学习任务 (MLTask) —— 泛化预测任务意图的声明式圈定
+# 批次：ml-profile-batch-003（ML Profile 局部概念批次，共 10 项，见 README-ml-profile-batch-003.md）
+# 提案编号来源：GOVERNANCE.md §2 单调递增（023 已并入 datagovernance DQ 批次；
+#   023-030 由 ml-core-batch-001/PR#21 占用、031-037 由 ml-sales-batch-002/PR#23 占用，
+#   本批次自 038 起避让）
+# ==============================================================================
+
+proposal_id: "MS-PROP-038"
+title: "机器学习任务 (MLTask)：只圈定问题边界、不携带执行状态的任务意图声明"
+initiator: "TopPrism ML Agent Program (cultivating-ml-agent)"
+date: "2026-10-13"
+status: "proposed"
+lifecycle_phase: "governance_review"
+
+motivation: |
+  cultivating-ml-agent 的 ExperimentIR（SPEC-001）以 task_ref 指向"任务意图"，
+  当前该语义只能落在 ML Profile 局部命名空间（prism-ml，pending_proposal）。
+  跨域消费（PJP/仓储引擎读实验证据）需要知道"这条证据回答的是哪个预测问题、
+  边界是什么"，若无受管类则任务边界描述退化为自由文本，无法与 DatasetSnapshot、
+  ValidationProtocol 建立受控关系。申请 ml-profile 场景概念，预期裁定 profile_local。
+
+proposed_concepts:
+  - uri: "prism:ml/MLTask"
+    name: "机器学习任务"
+    parent: "prism:core/Activity"
+    description: "一次以泛化预测为目标的机器学习任务意图；只圈定问题边界（数据、验证、度量选型），不携带任何执行状态。"
+
+external_alignment:
+  - "无直接 W3C 同位类；ssn:Procedure 是执行过程语义，本类是意图声明，不对齐"
+  - "语义锚定 cultivating-ml-agent framework/src/ir/experiment_ir.py 的 task_ref 字段与 SPEC-002 §MLTask"
+
+five_questions:
+  objective_stability: "稳定（场景内）。任务意图随实验登记，边界一经声明不漂移；变更产生新任务引用而非改写。"
+  vendor_independence: "成立。不依赖任何平台专有 ID；MLflow 映射仅为适配器。"
+  cross_project_inference: "限定于 ml-profile 场景。跨域只需引用 task_ref 指针，不需要共享推理，故预期 profile_local。"
+  definitional_clarity: "明确。'只圈定边界、不携带执行状态'给出可判违边界：出现执行状态即非本类。"
+  anti_concept_inflation: "不膨胀。若委员会认为 core/Task（PR#21 MS-PROP-024）已覆盖，接受 aligned_to 并以 task_type 属性区分 ML 意图。"
+
+relation_to_existing:
+  prism_core_activity: "子类主张：任务是有意图产出的活动声明（与 PR#21 Task 裁定联动）。"
+  prism_ml_experimentplan: "关联：ExperimentPlan（MS-PROP-043）绑定恰好一个 MLTask；计划是绑定结构，任务是问题边界。"
+
+source:
+  spec: "cultivating-ml-agent docs/specs/SPEC-002-ml-profile.md；docs/ontology/ml-profile/0.1.0/concepts.yaml + mappings.yaml"
+  adr: "cultivating-ml-agent docs/adr/ADR-001-cross-repo-responsibilities.md（提案路径）"

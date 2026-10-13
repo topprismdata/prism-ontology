@@ -1,0 +1,44 @@
+# ==============================================================================
+# MS-PROP-042-metric-definition.yaml
+# 提案：度量定义 (MetricDefinition) —— 受管评估度量与硬门禁阈值
+# 批次：ml-profile-batch-003
+# ==============================================================================
+
+proposal_id: "MS-PROP-042"
+title: "度量定义 (MetricDefinition)：评估度量、聚合方式与硬门禁阈值的受管声明"
+initiator: "TopPrism ML Agent Program (cultivating-ml-agent)"
+date: "2026-10-13"
+status: "proposed"
+lifecycle_phase: "governance_review"
+
+motivation: |
+  ExperimentIR G3 门禁要求"指标定义与方向"先于运行注册（maximize/minimize 方向
+  决定候选比较语义，SPEC-005 decide.py 直接消费）。ML 度量（RMSLE/AUC/map@k）
+  与 outlet-insight 的 prism:insight/MetricDefinition（结构指标 HHI/Gini 等）
+  定位同构：都是"受管度量声明 + 解释边界"。若委员会认为 insight 版可泛化，
+  接受 aligned_to 上推为共同父类；否则 profile_local。
+
+proposed_concepts:
+  - uri: "prism:ml/MetricDefinition"
+    name: "度量定义"
+    parent: "prism:core/InformationObject"
+    description: "受管评估度量（如 RMSLE / AUC）及其聚合方式与硬门禁阈值；与防泄漏门禁判定绑定。"
+
+external_alignment:
+  - "dqv:Metric 语义相近（度量定义的信息对象），但本类附加硬门禁阈值与方向封闭枚举，非直接同位"
+  - "语义锚定 cultivating-ml-agent framework/src/pipeline/validate.py 门禁判定与 SPEC-001 G3"
+
+five_questions:
+  objective_stability: "稳定（场景内）。度量定义内容寻址，改阈值即新版本。"
+  vendor_independence: "成立。不绑定 sklearn/torchmetrics 实现。"
+  cross_project_inference: "与 insight/MetricDefinition 有真实合并空间，交委员会裁定 aligned_to。"
+  definitional_clarity: "明确。name+聚合+方向+阈值四件套，SHACL 可判。"
+  anti_concept_inflation: "不膨胀。不登记度量数值（数值是 Outcome/evidence-envelope 的事）。"
+
+relation_to_existing:
+  prism_insight_metricdefinition: "候选合并对象：定位同构（见 motivation），委员会可裁 aligned_to。"
+  prism_ml_validationprotocol: "关联：度量在协议声明的折结构上求值（MS-PROP-041）。"
+
+source:
+  spec: "cultivating-ml-agent docs/specs/SPEC-001-experiment-ir.md（G3）；SPEC-005 decide.md；SPEC-002 §MetricDefinition"
+  adr: "cultivating-ml-agent docs/adr/ADR-001-cross-repo-responsibilities.md"

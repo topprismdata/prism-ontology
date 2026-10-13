@@ -1,0 +1,44 @@
+# ==============================================================================
+# MS-PROP-043-experiment-plan.yaml
+# 提案：实验计划 (ExperimentPlan) —— 编译后不可隐式改写的绑定声明
+# 批次：ml-profile-batch-003
+# ==============================================================================
+
+proposal_id: "MS-PROP-043"
+title: "实验计划 (ExperimentPlan)：任务、快照、特征、协议、度量与候选假设的完整编译单元"
+initiator: "TopPrism ML Agent Program (cultivating-ml-agent)"
+date: "2026-10-13"
+status: "proposed"
+lifecycle_phase: "governance_review"
+
+motivation: |
+  计划文档 §4 的铁律"编译后 IR 不应由自然语言代理隐式修改；变更产生新版本"
+  需要一个概念载体。ExperimentIR 以 content_hash + supersedes 修订链实现该铁律，
+  其语义正是 prism:core/Plan（已发布概念）的"意图与步骤的绑定声明"。本类是
+  Plan 在 ML 场景的特化，不新设结构关系。预期裁定 profile_local（若委员会认为
+  core/Plan 已足够，接受 mapping_only，本类降级为 Profile 内别名）。
+
+proposed_concepts:
+  - uri: "prism:ml/ExperimentPlan"
+    name: "实验计划"
+    parent: "prism:core/Plan"
+    description: "一次实验的完整编译单元：任务、快照、特征集、验证协议、度量与候选假设的绑定声明；编译后不得被自然语言代理隐式修改，变更必须产生新版本（supersedes 语义）。"
+
+external_alignment:
+  - "语义锚定 cultivating-ml-agent framework/src/ir/experiment_ir.py（canonical sha256 + supersedes 修订模型，SPEC-001）"
+
+five_questions:
+  objective_stability: "稳定（场景内）。版本链不可变：任何改写产生新哈希。"
+  vendor_independence: "成立。绑定声明不含运行时。"
+  cross_project_inference: "限定于 ml-profile。"
+  definitional_clarity: "明确。'隐式修改'可由哈希重算判违。"
+  anti_concept_inflation: "不膨胀。挂在已发布 core/Plan 之下，非新结构类。"
+
+relation_to_existing:
+  prism_core_plan: "子类主张：实验计划是 Plan 的 ML 特化。"
+  prism_ml_mltask: "绑定：恰好一个 MLTask（MS-PROP-038）。"
+  prism_ml_hypothesis: "集合：候选假设集（MS-PROP-047）是计划的组成部分。"
+
+source:
+  spec: "cultivating-ml-agent docs/specs/SPEC-001-experiment-ir.md；SPEC-002 §ExperimentPlan"
+  adr: "cultivating-ml-agent docs/adr/ADR-001-cross-repo-responsibilities.md"
